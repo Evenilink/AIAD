@@ -66,19 +66,19 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	
 	@Override
 	public Context build(Context<Object> context) {
-		//context.setId("aiad");
+		context.setId("Map Exploration");
 		
-		/*ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
+		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
 		space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.WrapAroundBorders(), 50, 50);
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		grid = gridFactory.createGrid("grid", context, 
 				new GridBuilderParameters<Object>(new WrapAroundBorders(), 
 						new SimpleGridAdder<Object>(), 
-						true, 50, 50))*/
+						true, 50, 50));
 		
-		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Exploration Network Sajas", context, true);
-		netBuilder.buildNetwork();
+		/*NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Exploration Network Sajas", context, true);
+		netBuilder.buildNetwork();*/
 		
 		return super.build(context);
 	}
