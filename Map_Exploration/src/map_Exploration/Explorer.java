@@ -14,7 +14,15 @@ import sajas.domain.DFService;
 
 public class Explorer extends Agent {
 
+	private ContinuousSpace<Object> space;
+	private Grid<Object> grid;
+	
 	private boolean foundExit = false;
+	
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid) {
+		this.space = space;
+		this.grid = grid;
+	}
 	
 	@Override
 	public void setup() {
@@ -33,8 +41,8 @@ public class Explorer extends Agent {
 			e.printStackTrace();
 		}
 		
-		PledgeBehaviour behaviour = new PledgeBehaviour(this);
-		addBehaviour(behaviour);
+		/*PledgeBehaviour behaviour = new PledgeBehaviour(this);
+		addBehaviour(behaviour);*/
 	}
 	
 	@Override
@@ -64,9 +72,6 @@ public class Explorer extends Agent {
 		}
 		
 	}
-	
-	private ContinuousSpace<Object> space;
-	private Grid<Object> grid;
 	
 	/*@ScheduledMethod(start = 1, interval = 1)
 	public void step() {
