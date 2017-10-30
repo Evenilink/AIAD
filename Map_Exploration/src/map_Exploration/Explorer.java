@@ -1,10 +1,13 @@
 package map_Exploration;
 
-import com.sun.media.jai.util.Service;
-
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
 import sajas.core.Agent;
 import sajas.core.behaviours.SimpleBehaviour;
 import sajas.domain.DFService;
@@ -51,7 +54,6 @@ public class Explorer extends Agent {
 		
 		@Override
 		public void action() {
-			// TODO Auto-generated method stub
 			
 		}
 
@@ -62,4 +64,12 @@ public class Explorer extends Agent {
 		}
 		
 	}
+	
+	private ContinuousSpace<Object> space;
+	private Grid<Object> grid;
+	
+	/*@ScheduledMethod(start = 1, interval = 1)
+	public void step() {
+
+	}*/
 }
