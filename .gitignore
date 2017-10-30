@@ -1,2 +1,9 @@
 .metadata
 .recommenders
+Map_Exploration/Map_Exploration.iml
+Map_Exploration/.idea/workspace.xml
+Map_Exploration/.idea/modules.xml
+Map_Exploration/.idea/misc.xml
+Map_Exploration/.idea/libraries/repast_simphony_batch_2_4.xml
+Map_Exploration/.idea/libraries/jade.xml
+Map_Exploration/.idea/libraries/SAJaS.xml
