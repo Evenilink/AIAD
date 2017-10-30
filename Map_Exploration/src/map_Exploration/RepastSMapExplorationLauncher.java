@@ -41,7 +41,6 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
 	@Override
 	protected void launchJADE() {
-		System.out.println("Correndo Jade...\n\n\n.......\n\n\n");
 		Runtime runtime = Runtime.instance();
 		Profile profile = new ProfileImpl();
 		mainContainer = runtime.createMainContainer(profile);
@@ -52,9 +51,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private void launchAgents() {
 		try {
 			for(int i = 0; i < NUM_AGENTS; i++)
-				mainContainer.acceptNewAgent("Explorer", explorers.get(i)).start();
-		} catch(StaleProxyException e) {
-			System.out.println("Esta a falhar aqui");
+				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();
+		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
 	}
@@ -66,13 +64,10 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		explorers = new ArrayList<Explorer>();
 		
-		System.out.println("1");
 		context.setId("Map Exploration");
-		System.out.println("2");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
 		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.StrictBorders(), 50, 50);
-		System.out.println("3");
 
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		Grid<Object> grid = gridFactory.createGrid("grid", context, 
@@ -80,20 +75,17 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 						new StrictBorders(), 
 						new SimpleGridAdder<Object>(), 
 						true, 50, 50));
-		System.out.println("4");
 
 		for(int i = 0; i < NUM_AGENTS; i++) {
 			Explorer agent = new Explorer(space, grid);
 			explorers.add(agent);
 			context.add(agent);
 		}
-		System.out.println("5");
 
 		for(Object obj : context) {
 			NdPoint pt = space.getLocation(obj);
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 		}
-		System.out.println("6");
 
 		return super.build(context);
 	}
