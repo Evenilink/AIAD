@@ -1,20 +1,37 @@
 package agents;
 
+import java.util.Vector;
+
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import sajas.core.Agent;
+import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
 
 public class Explorer extends Agent {
 	
 	private boolean foundExit = false;
-	private int posX;
-	private int posY;
+	public Coordinates coordinates;
+	private int[][] matrix;
+
 	
-	public Explorer(int posX, int posY) {
-		this.posX = posX;
-		this.posY = posY;
+	public Explorer(int posX, int posY, int gridMaxX, int gridMaxY) {
+		coordinates = new Coordinates(posX, posY);
+		System.out.println("Beging");
+		System.out.println("End");
+	}
+	
+	public void setLocation(int posX, int posY) {
+		System.out.println("Agent location -> x: " + posX + ", y: " + posY);
+		coordinates.updateCoordinates(posX, posY);
+		matrix[coordinates.getX()][coordinates.getY()] = 1;
+	}
+	
+	public Coordinates getNextLocation() {
+		if(matrix[coordinates.getX()+1][coordinates.getY()] == 0)
+			return new Coordinates(coordinates.getX()+1, coordinates.getY());
+		return new Coordinates(coordinates.getX(), coordinates.getY()+1);			
 	}
 	
 	@Override
@@ -33,6 +50,17 @@ public class Explorer extends Agent {
 		} catch(FIPAException e) {
 			e.printStackTrace();
 		}
+		
+		addBehaviour(new A());
+	}
+	
+	class A extends CyclicBehaviour {
+		@Override
+		public void action() {
+			// TODO Auto-generated method stub
+			System.out.println(myAgent.getName());
+		}
+		
 	}
 	
 	@Override
