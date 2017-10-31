@@ -32,8 +32,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
 	
-	private static int MAX_GRID_X = 50;
-	private static int MAX_GRID_Y = 50;
+	private static int MAX_GRID_X = 15;
+	private static int MAX_GRID_Y = 15;
 	
 	private ContainerController mainContainer;
 	
@@ -79,7 +79,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		context.setId("Map Exploration");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.WrapAroundBorders(), 50, 50);
+		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.WrapAroundBorders(), MAX_GRID_X, MAX_GRID_Y);
 
 		System.out.println("2");
 		
