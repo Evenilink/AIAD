@@ -1,10 +1,15 @@
 package agents;
 
-import java.util.Vector;
+import java.util.List;
 
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.space.continuous.ContinuousSpace;
+import repast.simphony.space.grid.Grid;
+import repast.simphony.space.grid.GridPoint;
 import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
@@ -14,24 +19,23 @@ public class Explorer extends Agent {
 	private boolean foundExit = false;
 	public Coordinates coordinates;
 	private int[][] matrix;
+	
+	private ContinuousSpace<Object> space;
+	private Grid<Object> grid;
+	private int radious;
 
 	
-	public Explorer(int posX, int posY, int gridMaxX, int gridMaxY) {
-		coordinates = new Coordinates(posX, posY);
-		System.out.println("Beging");
-		System.out.println("End");
-	}
-	
-	public void setLocation(int posX, int posY) {
-		System.out.println("Agent location -> x: " + posX + ", y: " + posY);
-		coordinates.updateCoordinates(posX, posY);
-		matrix[coordinates.getX()][coordinates.getY()] = 1;
-	}
-	
-	public Coordinates getNextLocation() {
-		if(matrix[coordinates.getX()+1][coordinates.getY()] == 0)
-			return new Coordinates(coordinates.getX()+1, coordinates.getY());
-		return new Coordinates(coordinates.getX(), coordinates.getY()+1);			
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int gridDimensionsX, int gridDimensionsY) {
+		this.space = space;
+		this.grid = grid;
+		this.radious = radious;
+		//coordinates = new Coordinates(0, 0);
+		
+		/*matrix = new int[gridDimensionsX][gridDimensionsY];
+		for(int i = 0; i < gridDimensionsX; i++) {
+			for(int j = 0; j < gridDimensionsY; j++)
+				matrix[i][j] = 0;
+		}*/
 	}
 	
 	@Override
@@ -51,16 +55,31 @@ public class Explorer extends Agent {
 			e.printStackTrace();
 		}
 		
-		addBehaviour(new A());
+		addBehaviour(new UpdateVisualization(this));
 	}
 	
-	class A extends CyclicBehaviour {
-		@Override
-		public void action() {
-			// TODO Auto-generated method stub
-			System.out.println(myAgent.getName());
+	class UpdateVisualization extends CyclicBehaviour {
+		
+		private Agent agent;
+		
+		public UpdateVisualization(Agent agent) {
+			super(agent);
+			this.agent = agent;
 		}
 		
+		@Override
+		public void action() {
+			//System.out.println(myAgent.getName());
+			
+			GridPoint pt = grid.getLocation(agent);
+			/*if(matrix[pt.getX()][pt.getY()] == 0)
+				matrix[pt.getX()][pt.getY()] = 1;*/
+			
+			space.moveByDisplacement(agent, 1, 0);
+			grid.moveTo(agent, (int)pt.getX()+1, (int)pt.getY());
+			
+			System.out.println("x: " + pt.getX() + ", y: " + pt.getY());
+		}
 	}
 	
 	@Override

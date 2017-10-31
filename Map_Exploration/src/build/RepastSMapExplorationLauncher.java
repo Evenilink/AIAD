@@ -38,8 +38,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	
 	private ContainerController mainContainer;
 	
-	private ArrayList<ExplorerVis> explorersVis;
-	private ArrayList<Explorer> explorersAgent;
+	private ArrayList<Explorer> explorers;
 	
 	@Override
 	public String getName() {
@@ -60,7 +59,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
 		try {
 			for(int i = 0; i < NUM_AGENTS; i++)
-				mainContainer.acceptNewAgent("Explorer_" + i, explorersAgent.get(i)).start();				
+				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();				
 		} catch (StaleProxyException e) {
 			System.out.println("2");
 			e.printStackTrace();
@@ -76,8 +75,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		System.out.println("1");
 				
-		explorersVis = new ArrayList<ExplorerVis>();
-		explorersAgent = new ArrayList<Explorer>();
+		explorers = new ArrayList<Explorer>();
 		
 		context.setId("Map Exploration");
 
@@ -96,12 +94,9 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		System.out.println("3");
 		
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorerAgent = new Explorer(0, 0, MAX_GRID_X, MAX_GRID_Y);
-			explorersAgent.add(explorerAgent);
-			
-			ExplorerVis explorerVis = new ExplorerVis(space, grid, MAX_GRID_X, MAX_GRID_Y, explorerAgent, VISION_RADIOUS);
-			explorersVis.add(explorerVis);
-			context.add(explorerVis);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, MAX_GRID_X, MAX_GRID_Y);
+			explorers.add(explorer);
+			context.add(explorer);
 		}
 		
 		System.out.println("4");

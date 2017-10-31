@@ -1,16 +1,16 @@
 <repast.simphony.visualization.engine.CartesianDisplayDescriptor>
-  <name>Scene Display</name>
+  <name>New Display</name>
   <type>2D</type>
   <styles>
     <entry>
-      <string>visualization.ExplorerVis</string>
-      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+      <string>agents.Explorer</string>
+      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
-      <string>visualization.ExplorerVis</string>
-      <string>visualization.ExplorerVis.style_0.xml</string>
+      <string>agents.Explorer</string>
+      <null/>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -23,14 +23,14 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1705539841</hashCode>
+    <hashCode>750443489</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>visualization.ExplorerVis</string>
+      <string>agents.Explorer</string>
       <int>0</int>
     </entry>
   </layerOrder>
