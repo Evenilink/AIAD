@@ -23,7 +23,6 @@ import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
 import repast.simphony.space.grid.WrapAroundBorders;
 import sajas.wrapper.ContainerController;
-import visualization.ExplorerVis;
 import sajas.core.Runtime;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
