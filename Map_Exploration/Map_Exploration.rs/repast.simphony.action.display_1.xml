@@ -3,14 +3,14 @@
   <type>2D</type>
   <styles>
     <entry>
-      <string>map_Exploration.Explorer</string>
+      <string>visualization.ExplorerVis</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
-      <string>map_Exploration.Explorer</string>
-      <string>map_Exploration.Explorer.style_2.xml</string>
+      <string>visualization.ExplorerVis</string>
+      <string>visualization.ExplorerVis.style_0.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -23,14 +23,14 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>342256296</hashCode>
+    <hashCode>1705539841</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
-      <string>map_Exploration.Explorer</string>
+      <string>visualization.ExplorerVis</string>
       <int>0</int>
     </entry>
   </layerOrder>
