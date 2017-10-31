@@ -84,44 +84,22 @@ public class Explorer extends Agent {
 		@Override
 		public void action() {		
 			GridPoint pt = grid.getLocation(agent);
-			
-			System.out.println("cenas 1");
-			
+
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
-			System.out.println("cenas 2");
-
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-			System.out.println("cenas 3");
-
 			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
-			System.out.println("cenas 4");
 			
 			GridCell<Object> cell = gridCells.get(0);
-			System.out.println("cenas 5");
 			GridPoint targetPoint = cell.getPoint();
-			System.out.println("cenas 6");
 			
 			NdPoint origin = space.getLocation(agent);
-			System.out.println("cenas 7");
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
-			System.out.println("cenas 8");
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
-			System.out.println("cenas 9");
 			space.moveByVector(agent, 1, angle, 0);
-			System.out.println("cenas 10");
 			origin = space.getLocation(agent);
-			System.out.println("cenas 11");
 			grid.moveTo(agent, (int)origin.getX(), (int)origin.getY());
-			System.out.println("cenas 12");
 			
 			matrix[(int) origin.getX()][(int) origin.getY()] = 1;
-
-			/*for(GridCell<Object> cell : gridCells) {
-				
-			}*/
-			
-			//space.moveByDisplacement(agent, 1, 0);
-			//grid.moveTo(agent, (int)pt.getX()+1, (int)pt.getY());
 			
 			printMatrix();
 		}
