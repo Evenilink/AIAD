@@ -1,6 +1,7 @@
 package agents;
 
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -27,6 +28,8 @@ public class Explorer extends Agent {
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	private int radious;
+	
+	private int iteration = 0;
 
 	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int gridDimensionsX, int gridDimensionsY) {
@@ -65,11 +68,20 @@ public class Explorer extends Agent {
 	}
 	
 	private void printMatrix() {
+		int numOnes = 0;
+		
+		System.out.println("Iteration " + iteration);
 		for(int i = 0; i < matrix.length; i++) {
-			for(int j = 0; j < matrix[i].length; j++)
+			for(int j = 0; j < matrix[i].length; j++) {
+				if(matrix[i][j] == 1)
+					numOnes++;
 				System.out.print(matrix[i][j] + " | ");
+			}
 			System.out.println();
 		}
+		
+		System.out.println("Number of ones: " + numOnes + "\n");
+
 	}
 	
 	class UpdateVisualization extends CyclicBehaviour {
@@ -89,7 +101,18 @@ public class Explorer extends Agent {
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 			
-			GridCell<Object> cell = gridCells.get(0);
+			GridCell<Object> cell;
+			int i = -1;
+			do {
+				if(i >= gridCells.size()) {
+					cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
+					break;
+				}
+				i++;
+				cell = gridCells.get(i);
+				System.out.println("x: " + (int) cell.getPoint().getX() + ", y: " + (int) cell.getPoint().getY());
+			} while(matrix[(int) cell.getPoint().getX()][(int) cell.getPoint().getY()] == 1);
+			
 			GridPoint targetPoint = cell.getPoint();
 			
 			NdPoint origin = space.getLocation(agent);
@@ -101,6 +124,7 @@ public class Explorer extends Agent {
 			
 			matrix[(int) origin.getX()][(int) origin.getY()] = 1;
 			
+			iteration++;
 			printMatrix();
 		}
 	}
