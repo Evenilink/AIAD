@@ -30,12 +30,16 @@ public class Explorer extends Agent {
 	private int radious;
 	
 	private int iteration = 0;
+	
+	public int posX, posY;
 
 	
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int posX, int posY) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
+		this.posX = posX;
+		this.posY = posY;
 		
 		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
 		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
@@ -63,7 +67,7 @@ public class Explorer extends Agent {
 			e.printStackTrace();
 		}
 				
-		addBehaviour(new UpdateVisualization(this));
+		addBehaviour(new AleatoryDFS(this));
 		//addBehaviour(new VerticalMovementBehaviour(this));
 		
 		GridPoint initLocation = grid.getLocation(this);
@@ -113,11 +117,11 @@ public class Explorer extends Agent {
 		
 	}
 	
-	class UpdateVisualization extends CyclicBehaviour {
+	class AleatoryDFS extends CyclicBehaviour {
 		
 		private Agent agent;
 		
-		public UpdateVisualization(Agent agent) {
+		public AleatoryDFS(Agent agent) {
 			super(agent);
 			this.agent = agent;
 		}

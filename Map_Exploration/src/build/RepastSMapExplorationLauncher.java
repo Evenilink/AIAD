@@ -81,18 +81,24 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 						new SimpleGridAdder<Object>(), 
 						true, MAX_GRID_X, MAX_GRID_Y));
 		
+		// Creates instances of agents.
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, 7, 7);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
 		
+		// Updates/Sets all the objects position.
 		for(Object obj : context) {
-			NdPoint pt = space.getLocation(obj);
-			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
+			if(obj instanceof Explorer) {
+				space.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
+				grid.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
+			} else {
+				NdPoint pt = space.getLocation(obj);
+				grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());	
+			}
 		}
 		
 		return super.build(context);
 	}
-
 }
