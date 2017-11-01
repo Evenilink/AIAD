@@ -54,34 +54,25 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	}
 	
 	private void launchAgents() {
-		System.out.println("Jade: 1");
-
 		try {
 			for(int i = 0; i < NUM_AGENTS; i++)
 				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();				
 		} catch (StaleProxyException e) {
-			System.out.println("2");
 			e.printStackTrace();
 		}
-		
-		System.out.println("3");
 	}
 	
 	@Override
 	public Context build(Context<Object> context) {
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Map Exploration Network", context, true);
 		netBuilder.buildNetwork();
-		
-		System.out.println("1");
-				
+						
 		explorers = new ArrayList<Explorer>();
 		
 		context.setId("Map Exploration");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
 		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.WrapAroundBorders(), MAX_GRID_X, MAX_GRID_Y);
-
-		System.out.println("2");
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		Grid<Object> grid = gridFactory.createGrid("grid", context, 
@@ -89,23 +80,17 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 						new WrapAroundBorders(), 
 						new SimpleGridAdder<Object>(), 
 						true, MAX_GRID_X, MAX_GRID_Y));
-
-		System.out.println("3");
 		
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, MAX_GRID_X, MAX_GRID_Y);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
 		
-		System.out.println("4");
-
 		for(Object obj : context) {
 			NdPoint pt = space.getLocation(obj);
 			grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());
 		}
-
-		System.out.println("5");
 		
 		return super.build(context);
 	}

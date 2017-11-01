@@ -32,17 +32,16 @@ public class Explorer extends Agent {
 	private int iteration = 0;
 
 	
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int gridDimensionsX, int gridDimensionsY) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
 		
-		matrix = new int[gridDimensionsX][gridDimensionsY];
-		for(int i = 0; i < gridDimensionsX; i++) {
-			for(int j = 0; j < gridDimensionsY; j++)
-				matrix[i][j] = 0;
-		}
-		printMatrix();
+		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
+		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
+			for(int column = 0; column < grid.getDimensions().getWidth(); column++)
+				matrix[row][column] = 0;
+		}		
 	}
 	
 	@Override
@@ -65,23 +64,53 @@ public class Explorer extends Agent {
 		}
 				
 		addBehaviour(new UpdateVisualization(this));
+		//addBehaviour(new VerticalMovementBehaviour(this));
+		
+		GridPoint initLocation = grid.getLocation(this);
+		matrix[grid.getDimensions().getHeight() - 1 - initLocation.getY()][initLocation.getX()] = 1;
+		System.out.println("Grid: row = " + (initLocation.getY()) + ", column = " + initLocation.getX());
+		System.out.println("Init matrix: row = " + (grid.getDimensions().getHeight() - initLocation.getY()) + ", column = " + initLocation.getX());
+		printMatrix();
 	}
 	
 	private void printMatrix() {
 		int numOnes = 0;
 		
 		System.out.println("Iteration " + iteration);
-		for(int i = 0; i < matrix.length; i++) {
-			for(int j = 0; j < matrix[i].length; j++) {
-				if(matrix[i][j] == 1)
+		for(int row = 0; row < matrix.length; row++) {
+			for(int column = 0; column < matrix[row].length; column++) {
+				if(matrix[row][column] == 1)
 					numOnes++;
-				System.out.print(matrix[i][j] + " | ");
+				System.out.print(matrix[row][column] + " | ");
 			}
 			System.out.println();
 		}
 		
 		System.out.println("Number of ones: " + numOnes + "\n");
 
+	}
+	
+	class VerticalMovementBehaviour extends CyclicBehaviour {
+		
+		private Agent agent;
+		
+		public VerticalMovementBehaviour(Agent agent) {
+			super(agent);
+			this.agent = agent;
+		}
+
+		@Override
+		public void action() {
+			GridPoint pt = grid.getLocation(agent);
+			NdPoint origin = space.getLocation(agent);
+			space.moveByDisplacement(agent, 0, 1);
+			origin = space.getLocation(agent);
+			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
+			System.out.println("x: " + (int) Math.round(origin.getX()) + ", y: " + (int) Math.round(origin.getY()));
+		}
+		
+		
+		
 	}
 	
 	class UpdateVisualization extends CyclicBehaviour {
@@ -96,13 +125,14 @@ public class Explorer extends Agent {
 		@Override
 		public void action() {		
 			GridPoint pt = grid.getLocation(agent);
-
+			
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 			
 			GridCell<Object> cell;
 			int i = -1;
+			int row, column;
 			do {
 				if(i >= gridCells.size()) {
 					cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
@@ -110,8 +140,10 @@ public class Explorer extends Agent {
 				}
 				i++;
 				cell = gridCells.get(i);
-				System.out.println("x: " + (int) cell.getPoint().getX() + ", y: " + (int) cell.getPoint().getY());
-			} while(matrix[(int) cell.getPoint().getX()][(int) cell.getPoint().getY()] == 1);
+				row = grid.getDimensions().getHeight() - 1 - cell.getPoint().getY();
+				column = cell.getPoint().getX();
+				System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
+			} while(matrix[row][column] == 1);
 			
 			GridPoint targetPoint = cell.getPoint();
 			
@@ -120,9 +152,9 @@ public class Explorer extends Agent {
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
 			space.moveByVector(agent, 1, angle, 0);
 			origin = space.getLocation(agent);
-			grid.moveTo(agent, (int)origin.getX(), (int)origin.getY());
+			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
 			
-			matrix[(int) origin.getX()][(int) origin.getY()] = 1;
+			matrix[grid.getDimensions().getHeight() - 1 - (int) origin.getY()][(int) origin.getX()] = 1;
 			
 			iteration++;
 			printMatrix();
