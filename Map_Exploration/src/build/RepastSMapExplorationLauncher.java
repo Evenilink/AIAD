@@ -5,6 +5,8 @@ import sajas.sim.repasts.RepastSLauncher;
 import java.util.ArrayList;
 
 import agents.Explorer;
+import entities.Entity;
+import entities.Exit;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -88,11 +90,18 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 			context.add(explorer);
 		}
 		
+		// Creates the exit entity.
+		Exit exit = new Exit(3, 3);
+		context.add(exit);
+		
 		// Updates/Sets all the objects position.
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
 				space.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
 				grid.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
+			} else if(obj instanceof Entity) {
+				space.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
+				grid.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
 			} else {
 				NdPoint pt = space.getLocation(obj);
 				grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());	

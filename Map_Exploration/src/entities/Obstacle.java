@@ -1,6 +1,8 @@
 package entities;
 
-public class Obstacle {
+public class Obstacle extends Entity {
 
-
+	public Obstacle(int posX, int posY) {
+		super(posX, posY);
+	}
 }

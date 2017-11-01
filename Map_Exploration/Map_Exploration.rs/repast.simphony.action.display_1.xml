@@ -3,11 +3,19 @@
   <type>2D</type>
   <styles>
     <entry>
+      <string>entities.Exit</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>agents.Explorer</string>
       <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
     </entry>
   </styles>
   <editedStyles>
+    <entry>
+      <string>entities.Exit</string>
+      <string>entities.Exit.style_3.xml</string>
+    </entry>
     <entry>
       <string>agents.Explorer</string>
       <null/>
@@ -23,12 +31,16 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>750443489</hashCode>
+    <hashCode>-705850098</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
+    <entry>
+      <string>entities.Exit</string>
+      <int>1</int>
+    </entry>
     <entry>
       <string>agents.Explorer</string>
       <int>0</int>

@@ -3,6 +3,7 @@ package agents;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import entities.Exit;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -22,7 +23,6 @@ import sajas.domain.DFService;
 public class Explorer extends Agent {
 	
 	private boolean foundExit = false;
-	public Coordinates coordinates;
 	private int[][] matrix;
 	
 	private ContinuousSpace<Object> space;
@@ -50,8 +50,6 @@ public class Explorer extends Agent {
 	
 	@Override
 	public void setup() {
-		coordinates = new Coordinates(grid.getLocation(this).getX(), grid.getLocation(this).getY());
-
 		DFAgentDescription dfAgentDescription = new DFAgentDescription();
 		dfAgentDescription.setName(getAID());
 		
@@ -66,15 +64,12 @@ public class Explorer extends Agent {
 		} catch(FIPAException e) {
 			e.printStackTrace();
 		}
-				
-		addBehaviour(new AleatoryDFS(this));
-		//addBehaviour(new VerticalMovementBehaviour(this));
-		
+
+		// Sets his initial position in the matrix.
 		GridPoint initLocation = grid.getLocation(this);
 		matrix[grid.getDimensions().getHeight() - 1 - initLocation.getY()][initLocation.getX()] = 1;
-		System.out.println("Grid: row = " + (initLocation.getY()) + ", column = " + initLocation.getX());
-		System.out.println("Init matrix: row = " + (grid.getDimensions().getHeight() - initLocation.getY()) + ", column = " + initLocation.getX());
-		printMatrix();
+		
+		addBehaviour(new AleatoryDFS(this));
 	}
 	
 	private void printMatrix() {
@@ -127,30 +122,48 @@ public class Explorer extends Agent {
 		}
 		
 		@Override
-		public void action() {		
+		public void action() {
+			if(foundExit)
+				return;
+			
 			GridPoint pt = grid.getLocation(agent);
 			
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
-			
-			GridCell<Object> cell;
-			int i = -1;
-			int row, column;
-			do {
-				if(i >= gridCells.size()) {
-					cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
-					break;
+			GridCell<Object> cell = null;
+
+			for(GridCell<Object> tempCell : gridCells) {
+				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
+					if(obj instanceof Exit) {
+						cell = tempCell;
+						foundExit = true;
+						break;
+					}
 				}
-				i++;
-				cell = gridCells.get(i);
-				row = grid.getDimensions().getHeight() - 1 - cell.getPoint().getY();
-				column = cell.getPoint().getX();
-				System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
-			} while(matrix[row][column] == 1);
+			}
 			
-			GridPoint targetPoint = cell.getPoint();
+			if(!foundExit) {
+				SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+				
+				int i = -1;
+				int row, column;
+				do {
+					if(i >= gridCells.size()) {
+						cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
+						break;
+					}
+					i++;
+					cell = gridCells.get(i);
+					row = grid.getDimensions().getHeight() - 1 - cell.getPoint().getY();
+					column = cell.getPoint().getX();
+					System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
+				} while(matrix[row][column] == 1);
+			}
 			
+			moveAgent(cell.getPoint());
+		}
+		
+		private void moveAgent(GridPoint targetPoint) {			
 			NdPoint origin = space.getLocation(agent);
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
