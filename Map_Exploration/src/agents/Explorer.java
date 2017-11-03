@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import entities.Exit;
+import entities.Obstacle;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -19,33 +20,39 @@ import repast.simphony.util.SimUtilities;
 import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
+import utils.Coordinates;
+import utils.Utils.ExplorerState;
 
 public class Explorer extends Agent {
 	
-	private boolean foundExit = false;
-	private int[][] matrix;
-	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
+	private Coordinates coordinates;
 	private int radious;
 	
+	private int[][] matrix;
+	private ExplorerState state;
 	private int iteration = 0;
 	
-	public int posX, posY;
+	
 
 	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int posX, int posY) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
-		this.posX = posX;
-		this.posY = posY;
+		coordinates = new Coordinates(posX, posY);
+		state = ExplorerState.ALEATORY_DFS;
 		
 		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
 		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
 			for(int column = 0; column < grid.getDimensions().getWidth(); column++)
 				matrix[row][column] = 0;
 		}		
+	}
+	
+	public Coordinates getCoordinates() {
+		return coordinates;
 	}
 	
 	@Override
@@ -70,6 +77,10 @@ public class Explorer extends Agent {
 		matrix[grid.getDimensions().getHeight() - 1 - initLocation.getY()][initLocation.getX()] = 1;
 		
 		addBehaviour(new AleatoryDFS(this));
+	}
+	
+	private void getDirectionBlocking() {
+		// Returns the first direction that is blocking the pledge.
 	}
 	
 	private void printMatrix() {
@@ -123,26 +134,38 @@ public class Explorer extends Agent {
 		
 		@Override
 		public void action() {
-			if(foundExit)
+			if(state == ExplorerState.EXIT)
 				return;
 			
 			GridPoint pt = grid.getLocation(agent);
-			
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 			GridCell<Object> cell = null;
 
+			// Check if the exit is in sight.
 			for(GridCell<Object> tempCell : gridCells) {
 				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
 					if(obj instanceof Exit) {
 						cell = tempCell;
-						foundExit = true;
+						state = ExplorerState.EXIT;
 						break;
 					}
 				}
 			}
 			
-			if(!foundExit) {
+			// Check if we see obstacles.
+			for(GridCell<Object> tempCell : gridCells) {
+				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
+					if(obj instanceof Obstacle) {
+						//grid.
+						
+						state = ExplorerState.PLEDGE;
+						break;
+					}
+				}
+			}
+			
+			if(state != ExplorerState.EXIT) {
 				SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 				
 				int i = -1;
