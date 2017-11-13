@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import agents.Explorer;
 import entities.Entity;
 import entities.Exit;
+import entities.Obstacle;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -36,6 +37,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
+	
+	private static int NUM_OBSTACLES = 6;
 	
 	private ContainerController mainContainer;
 	
@@ -83,22 +86,26 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 						new SimpleGridAdder<Object>(), 
 						true, MAX_GRID_X, MAX_GRID_Y));
 		
-		// Creates instances of agents.
+		// Create instances of agents.
 		for(int i = 0; i < NUM_AGENTS; i++) {
 			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, 7, 7);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
 		
-		// Creates the exit entity.
+		// Create the exit entity.
 		Exit exit = new Exit(3, 3);
 		context.add(exit);
+		
+		// Create obstacles.
+		for(int i = 0; i < NUM_OBSTACLES; i++)
+			context.add(new Obstacle(5 + i, 6));
 		
 		// Updates/Sets all the objects position.
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
-				space.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
-				grid.moveTo(obj, ((Explorer) obj).posX, ((Explorer) obj).posY);
+				space.moveTo(obj, ((Explorer) obj).getCoordinates().getPosX(), ((Explorer) obj).getCoordinates().getPosY());
+				grid.moveTo(obj, ((Explorer) obj).getCoordinates().getPosX(), ((Explorer) obj).getCoordinates().getPosY());
 			} else if(obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
 				grid.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
