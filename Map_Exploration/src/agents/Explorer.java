@@ -24,6 +24,7 @@ public class Explorer extends Agent {
 	
 	private boolean foundExit = false;
 	private int[][] matrix;
+	private boolean pledging = false;
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
@@ -112,6 +113,23 @@ public class Explorer extends Agent {
 		
 	}
 	
+	class Pledge extends CyclicBehaviour {
+		
+		private Agent agent;
+		
+		public Pledge (Agent agent) {
+			super(agent);
+			this.agent = agent;
+		}
+		
+		@Override
+		public void action() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	class AleatoryDFS extends CyclicBehaviour {
 		
 		private Agent agent;
@@ -124,6 +142,8 @@ public class Explorer extends Agent {
 		@Override
 		public void action() {
 			if(foundExit)
+				return;
+			if (pledging)
 				return;
 			
 			GridPoint pt = grid.getLocation(agent);
