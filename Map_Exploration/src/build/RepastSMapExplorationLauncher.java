@@ -33,7 +33,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int NUM_AGENTS = 1;
 	private static int NUM_SUPER_AGENTS = 2;
 	private static int COMMUNICATION_LIMIT = 10;
-	private static int VISION_RADIOUS = 1;
+	private static int VISION_RADIUS = 1;
 	
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
@@ -88,7 +88,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		// Create instances of agents.
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, 7, 7);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIUS, 7, 7, COMMUNICATION_LIMIT);
 			explorers.add(explorer);
 			context.add(explorer);
 		}

@@ -1,13 +1,16 @@
 package agents;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import entities.Exit;
 import entities.Obstacle;
+import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -25,7 +28,7 @@ import utils.Utils.ExplorerState;
 
 public class Explorer extends Agent
 {
-
+	private int communicationLimit;
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	private Coordinates coordinates;
@@ -35,8 +38,9 @@ public class Explorer extends Agent
 	private ExplorerState state;
 	private int iteration = 0;
 
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radius, int posX, int posY)
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radius, int posX, int posY, int communicationLimit)
 	{
+		this.communicationLimit = communicationLimit;
 		this.space = space;
 		this.grid = grid;
 		this.radius = radius;
@@ -52,7 +56,7 @@ public class Explorer extends Agent
 	}
 
 	/**
-	 * @return The matrix of known or unknown space
+	 * @return The matrix of known space from an agent
 	 */
 	public int[][] getMatrix()
 	{
@@ -74,6 +78,25 @@ public class Explorer extends Agent
 					matrix[i][j] = receivedMatrix[i][j];
 			}
 		}
+	}
+	
+	/**
+	 * Trnasforms the known space from an agent into a string
+	 * so it can be sent via ACL Messaging System in Jade
+	 * @return The converted in[][] matrix in String format
+	 */
+	public String matrixToString(int[][] matrix)
+	{
+		String matrixString = "";
+		
+		for (int i = 0; i < matrix.length; i++)
+		{
+			for (int j = 0; j < matrix[i].length; j++)
+			{
+				matrixString += matrix[i][j];
+			}
+		}
+		return matrixString;
 	}
 
 	public Coordinates getCoordinates()
@@ -178,6 +201,47 @@ public class Explorer extends Agent
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radius, radius);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 			GridCell<Object> cell = null;
+			
+			//COMMUNICATION STUFF
+			GridCellNgh<Object> nghCreatorCommunication = new GridCellNgh<Object>(grid, pt, Object.class, communicationLimit, communicationLimit);
+			List<GridCell<Object>> gridCellsCommunication = nghCreatorCommunication.getNeighborhood(false);
+			
+			// Check if there are agents on communication radius, in order to exchange matrixes
+			for (GridCell<Object> tempCell : gridCellsCommunication)
+			{
+				for (Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY()))
+				{
+					if (obj instanceof Explorer)
+					{
+						//Sends my matrix to the first agent
+						ACLMessage msgSent = new ACLMessage(ACLMessage.INFORM);
+					    try{
+					    	msgSent.setContentObject(matrix);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					    msgSent.addReceiver((AID) obj);
+					    send(msgSent);
+					    
+						//Receives a matrix from an agent in
+					    ACLMessage msgRec = receive();
+					    int[][] receivedMatrix;
+					    //receivedMatrix = extractAbsContent(msgRec);
+					    
+					    
+						/*if (msgRec != null) {
+							mergeMatrix(msgRec);
+						}*/
+						//merge my matrix with obj's
+					    
+						//merge obj's matrix with mine
+						
+						break;
+					}
+				}
+			}
+			
+			
 
 			// Check if the exit is in sight.
 			for (GridCell<Object> tempCell : gridCells)
