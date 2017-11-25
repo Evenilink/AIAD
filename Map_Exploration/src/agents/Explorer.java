@@ -33,10 +33,7 @@ public class Explorer extends Agent {
 	private int[][] matrix;
 	private ExplorerState state;
 	private int iteration = 0;
-	
-	
 
-	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int posX, int posY) {
 		this.space = space;
 		this.grid = grid;
@@ -133,54 +130,29 @@ public class Explorer extends Agent {
 		}
 		
 		@Override
-		public void action() {
-			if(state == ExplorerState.EXIT)
-				return;
-			
+		public void action() {		
 			GridPoint pt = grid.getLocation(agent);
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-			GridCell<Object> cell = null;
-
-			// Check if the exit is in sight.
-			for(GridCell<Object> tempCell : gridCells) {
-				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
-					if(obj instanceof Exit) {
-						cell = tempCell;
-						state = ExplorerState.EXIT;
-						break;
-					}
-				}
-			}
 			
-			// Check if we see obstacles.
-			for(GridCell<Object> tempCell : gridCells) {
-				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
-					if(obj instanceof Obstacle) {
-						//grid.
-						
-						state = ExplorerState.PLEDGE;
-						break;
-					}
-				}
-			}
-			
-			if(state != ExplorerState.EXIT) {
-				SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+			GridCell<Object> cell = null;			
+			for(int i = 0; i < gridCells.size(); i++) {
+				int row = grid.getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
+				int column = gridCells.get(i).getPoint().getX();
+				// System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
 				
-				int i = -1;
-				int row, column;
-				do {
-					if(i >= gridCells.size()) {
-						cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
-						break;
-					}
-					i++;
+				if(matrix[row][column] != 1) {
+					matrix[row][column] = 1;
 					cell = gridCells.get(i);
-					row = grid.getDimensions().getHeight() - 1 - cell.getPoint().getY();
-					column = cell.getPoint().getX();
-					System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
-				} while(matrix[row][column] == 1);
+				}
+				break;
+			}
+			
+			if(cell == null) {
+				
+				// We need to use A* to search for the nearest zero.
+	            cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));				
 			}
 			
 			moveAgent(cell.getPoint());
@@ -193,9 +165,8 @@ public class Explorer extends Agent {
 			space.moveByVector(agent, 1, angle, 0);
 			origin = space.getLocation(agent);
 			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
-			
-			matrix[grid.getDimensions().getHeight() - 1 - (int) origin.getY()][(int) origin.getX()] = 1;
-			
+			System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
+						
 			iteration++;
 			printMatrix();
 		}
