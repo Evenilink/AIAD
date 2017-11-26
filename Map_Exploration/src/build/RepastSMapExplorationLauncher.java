@@ -101,14 +101,14 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6));
 		
-		// Updates/Sets all the objects position.
+		// Updates/Sets all the objects ition.
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
-				space.moveTo(obj, ((Explorer) obj).getCoordinates().getPosX(), ((Explorer) obj).getCoordinates().getPosY());
-				grid.moveTo(obj, ((Explorer) obj).getCoordinates().getPosX(), ((Explorer) obj).getCoordinates().getPosY());
+				space.moveTo(obj, ((Explorer) obj).getCoordinates().getX(), ((Explorer) obj).getCoordinates().getY());
+				grid.moveTo(obj, ((Explorer) obj).getCoordinates().getX(), ((Explorer) obj).getCoordinates().getY());
 			} else if(obj instanceof Entity) {
-				space.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
-				grid.moveTo(obj, ((Entity) obj).getCoordinates().getPosX(), ((Entity) obj).getCoordinates().getPosY());
+				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
+				grid.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 			} else {
 				NdPoint pt = space.getLocation(obj);
 				grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());	

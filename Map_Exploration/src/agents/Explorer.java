@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import entities.Exit;
 import entities.Obstacle;
+import grid.*;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -33,10 +34,7 @@ public class Explorer extends Agent {
 	private int[][] matrix;
 	private ExplorerState state;
 	private int iteration = 0;
-	private boolean pledging = false;
-	
 
-	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int posX, int posY) {
 		this.space = space;
 		this.grid = grid;
@@ -79,10 +77,6 @@ public class Explorer extends Agent {
 		addBehaviour(new AleatoryDFS(this));
 	}
 	
-	private void getDirectionBlocking() {
-		// Returns the first direction that is blocking the pledge.
-	}
-	
 	private void printMatrix() {
 		int numOnes = 0;
 		
@@ -118,9 +112,6 @@ public class Explorer extends Agent {
 			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
 			System.out.println("x: " + (int) Math.round(origin.getX()) + ", y: " + (int) Math.round(origin.getY()));
 		}
-		
-		
-		
 	}
 	
 	class Pledge extends CyclicBehaviour {
@@ -143,80 +134,95 @@ public class Explorer extends Agent {
 	class AleatoryDFS extends CyclicBehaviour {
 		
 		private Agent agent;
+		private Pathfinding pathfinding;
+		List<grid.Node> path; 
+		private ExplorerState state;
+		//int i = 0;
 		
 		public AleatoryDFS(Agent agent) {
 			super(agent);
 			this.agent = agent;
+			state = ExplorerState.ALEATORY_DFS;
+			pathfinding = new Pathfinding(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
+			
+			/*System.out.println("\n\n");
+			System.out.println("Shortest path\nSource -> x: " + ((Explorer)agent).getCoordinates().getX() + ", y: " + ((Explorer)agent).getCoordinates().getY() + "\nTarget -> x: 0, y: 0");
+			path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
+			for (grid.Node node : path)
+				System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
+			System.out.println("\n\n");*/
 		}
 		
 		@Override
 		public void action() {
-			if(state == ExplorerState.EXIT)
-				return;
-			if (pledging)
-				return;
-			
-			GridPoint pt = grid.getLocation(agent);
-			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
-			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-			GridCell<Object> cell = null;
-
-			// Check if the exit is in sight.
-			for(GridCell<Object> tempCell : gridCells) {
-				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
-					if(obj instanceof Exit) {
-						cell = tempCell;
-						state = ExplorerState.EXIT;
-						break;
-					}
-				}
-			}
-			
-			// Check if we see obstacles.
-			for(GridCell<Object> tempCell : gridCells) {
-				for(Object obj : grid.getObjectsAt(tempCell.getPoint().getX(), tempCell.getPoint().getY())) {
-					if(obj instanceof Obstacle) {
-						//grid.
+			/*moveAgent(new Coordinates(path.get(i).getWorldPosition().getX(), path.get(i).getWorldPosition().getY()));
+			if(i <= path.size())
+				i++;*/
+			switch(state) {
+				case ALEATORY_DFS:
+					GridPoint pt = grid.getLocation(agent);
+					GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
+					List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
+					
+					SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+					GridCell<Object> cell = null;			
+					for(int i = 0; i < gridCells.size(); i++) {
+						int row = grid.getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
+						int column = gridCells.get(i).getPoint().getX();
 						
-						state = ExplorerState.PLEDGE;
+						if(matrix[row][column] != 1) {
+							matrix[row][column] = 1;
+							cell = gridCells.get(i);
+						}
 						break;
 					}
-				}
-			}
-			
-			if(state != ExplorerState.EXIT) {
-				SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
-				
-				int i = -1;
-				int row, column;
-				do {
-					if(i >= gridCells.size()) {
-						cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));
+					
+					if(cell == null) {
+						path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), getNearestUndiscoveredPlace());
+						state = ExplorerState.A_STAR;
+			            // cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));				
+					} else {
+						moveAgent(cell.getPoint());
 						break;
 					}
-					i++;
-					cell = gridCells.get(i);
-					row = grid.getDimensions().getHeight() - 1 - cell.getPoint().getY();
-					column = cell.getPoint().getX();
-					System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
-				} while(matrix[row][column] == 1);
+				case A_STAR:
+					break;
+				case PLEDGE:
+					break;
+				case EXIT:
+					break;
+				default: break;
 			}
-			
-			moveAgent(cell.getPoint());
 		}
 		
-		private void moveAgent(GridPoint targetPoint) {			
+		private void moveAgent(GridPoint targetPoint) {
 			NdPoint origin = space.getLocation(agent);
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
 			space.moveByVector(agent, 1, angle, 0);
 			origin = space.getLocation(agent);
 			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
-			
-			matrix[grid.getDimensions().getHeight() - 1 - (int) origin.getY()][(int) origin.getX()] = 1;
-			
+			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
+						
 			iteration++;
 			printMatrix();
+		}
+		
+		private void moveAgent(Coordinates targetCoordinates) {
+			NdPoint origin = space.getLocation(agent);
+			NdPoint target = new NdPoint(targetCoordinates.getX(), targetCoordinates.getY());
+			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
+			space.moveByVector(agent, 1, angle, 0);
+			origin = space.getLocation(agent);
+			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
+			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
+						
+			iteration++;
+			printMatrix();
+		}
+		
+		private Coordinates getNearestUndiscoveredPlace() {			
+			return null;
 		}
 	}
 	

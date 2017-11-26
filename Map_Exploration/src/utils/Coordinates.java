@@ -2,19 +2,19 @@ package utils;
 
 public class Coordinates {
 
-	private int posX;
-	private int posY;
+	private int x;
+	private int y;
 	
-	public Coordinates(int posX, int posY) {
-		this.posX = posX;
-		this.posY = posY;
+	public Coordinates(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 	
-	public int getPosX() {
-		return posX;
+	public int getX() {
+		return x;
 	}
 	
-	public int getPosY() {
-		return posY;
+	public int getY() {
+		return y;
 	}
 }
