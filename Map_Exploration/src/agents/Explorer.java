@@ -119,54 +119,64 @@ public class Explorer extends Agent {
 		private Agent agent;
 		private Pathfinding pathfinding;
 		List<grid.Node> path; 
-		int i = 0;
+		private ExplorerState state;
+		//int i = 0;
 		
 		public AleatoryDFS(Agent agent) {
 			super(agent);
 			this.agent = agent;
+			state = ExplorerState.ALEATORY_DFS;
 			pathfinding = new Pathfinding(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
 			
-			System.out.println("\n\n");
+			/*System.out.println("\n\n");
 			System.out.println("Shortest path\nSource -> x: " + ((Explorer)agent).getCoordinates().getX() + ", y: " + ((Explorer)agent).getCoordinates().getY() + "\nTarget -> x: 0, y: 0");
 			path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
 			for (grid.Node node : path)
 				System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
-			System.out.println("\n\n");
-
+			System.out.println("\n\n");*/
 		}
 		
 		@Override
 		public void action() {
-			moveAgent(new Coordinates(path.get(i).getWorldPosition().getX(), path.get(i).getWorldPosition().getY()));
+			/*moveAgent(new Coordinates(path.get(i).getWorldPosition().getX(), path.get(i).getWorldPosition().getY()));
 			
 			if(i <= path.size())
-				i++;
-			
-			/*GridPoint pt = grid.getLocation(agent);
-			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
-			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-			
-			SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
-			GridCell<Object> cell = null;			
-			for(int i = 0; i < gridCells.size(); i++) {
-				int row = grid.getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
-				int column = gridCells.get(i).getPoint().getX();
-				// System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
-				
-				if(matrix[row][column] != 1) {
-					matrix[row][column] = 1;
-					cell = gridCells.get(i);
-				}
-				break;
+				i++;*/
+			switch(state) {
+				case ALEATORY_DFS:
+					GridPoint pt = grid.getLocation(agent);
+					GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
+					List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
+					
+					SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+					GridCell<Object> cell = null;			
+					for(int i = 0; i < gridCells.size(); i++) {
+						int row = grid.getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
+						int column = gridCells.get(i).getPoint().getX();
+						
+						if(matrix[row][column] != 1) {
+							matrix[row][column] = 1;
+							cell = gridCells.get(i);
+						}
+						break;
+					}
+					
+					if(cell == null) {
+						path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), getNearestUndiscoveredPlace());
+						state = ExplorerState.A_STAR;
+			            // cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));				
+					} else {
+						moveAgent(cell.getPoint());
+						break;
+					}
+				case A_STAR:
+					break;
+				case PLEDGE:
+					break;
+				case EXIT:
+					break;
+				default: break;
 			}
-			
-			if(cell == null) {
-				
-				// We need to use A* to search for the nearest zero.
-	            cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));				
-			}
-			
-			moveAgent(cell.getPoint());*/
 		}
 		
 		private void moveAgent(GridPoint targetPoint) {
@@ -193,6 +203,10 @@ public class Explorer extends Agent {
 						
 			iteration++;
 			printMatrix();
+		}
+		
+		private Coordinates getNearestUndiscoveredPlace() {			
+			return null;
 		}
 	}
 	
