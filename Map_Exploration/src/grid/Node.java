@@ -12,6 +12,12 @@ public class Node {
 	private int gCost;	// Distance from the source node.
 	private int hCost;	// Distance from the target node (heuristic).
 	
+	public Node(boolean walkable, Coordinates worldPosition, Coordinates gridPosition) {
+		this.walkable = walkable;
+		this.worldPosition = worldPosition;
+		this.gridPosition = gridPosition;
+	}
+	
 	public Node(Coordinates worldPosition, Coordinates gridPosition) {
 		this.worldPosition = worldPosition;
 		this.gridPosition = gridPosition;

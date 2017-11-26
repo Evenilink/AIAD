@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import entities.Exit;
 import entities.Obstacle;
+import grid.*;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -76,10 +77,6 @@ public class Explorer extends Agent {
 		addBehaviour(new AleatoryDFS(this));
 	}
 	
-	private void getDirectionBlocking() {
-		// Returns the first direction that is blocking the pledge.
-	}
-	
 	private void printMatrix() {
 		int numOnes = 0;
 		
@@ -115,18 +112,26 @@ public class Explorer extends Agent {
 			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
 			System.out.println("x: " + (int) Math.round(origin.getX()) + ", y: " + (int) Math.round(origin.getY()));
 		}
-		
-		
-		
 	}
 	
 	class AleatoryDFS extends CyclicBehaviour {
 		
 		private Agent agent;
+		private Pathfinding pathfinding;
 		
 		public AleatoryDFS(Agent agent) {
 			super(agent);
 			this.agent = agent;
+			pathfinding = new Pathfinding(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
+			
+			System.out.println("\n\n");
+			System.out.println("Shortest path\nSource -> x: " + ((Explorer)agent).getCoordinates().getX() + ", y: " + ((Explorer)agent).getCoordinates().getY() + "\nTarget -> x: 0, y: 0");
+			List<grid.Node> path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
+			for (grid.Node node : path) {
+				System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
+			}
+			System.out.println("\n\n");
+
 		}
 		
 		@Override
@@ -165,7 +170,7 @@ public class Explorer extends Agent {
 			space.moveByVector(agent, 1, angle, 0);
 			origin = space.getLocation(agent);
 			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
-			System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
+			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
 						
 			iteration++;
 			printMatrix();

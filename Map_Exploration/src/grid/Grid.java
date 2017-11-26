@@ -18,7 +18,7 @@ public class Grid {
 		
 		for(int y = gridSizeY - 1; y >= 0; y--)
 			for(int x = 0; x < gridSizeX; x++)
-				grid[y][x] = new Node(new Coordinates(x, gridSizeY - y), new Coordinates(x, y));
+				grid[y][x] = new Node(true, new Coordinates(x, gridSizeY - y), new Coordinates(x, y));
 	}
 	
 	/**
