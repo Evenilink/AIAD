@@ -114,6 +114,23 @@ public class Explorer extends Agent {
 		}
 	}
 	
+	class Pledge extends CyclicBehaviour {
+		
+		private Agent agent;
+		
+		public Pledge (Agent agent) {
+			super(agent);
+			this.agent = agent;
+		}
+		
+		@Override
+		public void action() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
 	class AleatoryDFS extends CyclicBehaviour {
 		
 		private Agent agent;
@@ -139,7 +156,6 @@ public class Explorer extends Agent {
 		@Override
 		public void action() {
 			/*moveAgent(new Coordinates(path.get(i).getWorldPosition().getX(), path.get(i).getWorldPosition().getY()));
-			
 			if(i <= path.size())
 				i++;*/
 			switch(state) {
