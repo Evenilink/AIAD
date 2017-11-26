@@ -1,7 +1,7 @@
 package grid;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 
 import utils.Coordinates;
@@ -25,7 +25,7 @@ public class Pathfinding {
 		Node targetNode = grid.nodeFromWorldPoint(targetWorldPosition);
 		
 		List<Node> openSet = new ArrayList<Node>();
-		HashSet<Node> closedSet = new HashSet<Node>();
+		List<Node> closedSet = new ArrayList<Node>();
 		openSet.add(sourceNode);
 		
 		while(openSet.size() > 0) {
@@ -72,6 +72,7 @@ public class Pathfinding {
 			currentNode = currentNode.getParent();
 		}
 		
+		Collections.reverse(path);
 		return path;
 	}
 	

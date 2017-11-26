@@ -118,6 +118,8 @@ public class Explorer extends Agent {
 		
 		private Agent agent;
 		private Pathfinding pathfinding;
+		List<grid.Node> path; 
+		int i = 0;
 		
 		public AleatoryDFS(Agent agent) {
 			super(agent);
@@ -126,17 +128,21 @@ public class Explorer extends Agent {
 			
 			System.out.println("\n\n");
 			System.out.println("Shortest path\nSource -> x: " + ((Explorer)agent).getCoordinates().getX() + ", y: " + ((Explorer)agent).getCoordinates().getY() + "\nTarget -> x: 0, y: 0");
-			List<grid.Node> path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
-			for (grid.Node node : path) {
+			path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
+			for (grid.Node node : path)
 				System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
-			}
 			System.out.println("\n\n");
 
 		}
 		
 		@Override
-		public void action() {		
-			GridPoint pt = grid.getLocation(agent);
+		public void action() {
+			moveAgent(new Coordinates(path.get(i).getWorldPosition().getX(), path.get(i).getWorldPosition().getY()));
+			
+			if(i <= path.size())
+				i++;
+			
+			/*GridPoint pt = grid.getLocation(agent);
 			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 			List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 			
@@ -160,12 +166,25 @@ public class Explorer extends Agent {
 	            cell = gridCells.get(ThreadLocalRandom.current().nextInt(0, gridCells.size()));				
 			}
 			
-			moveAgent(cell.getPoint());
+			moveAgent(cell.getPoint());*/
 		}
 		
-		private void moveAgent(GridPoint targetPoint) {			
+		private void moveAgent(GridPoint targetPoint) {
 			NdPoint origin = space.getLocation(agent);
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
+			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
+			space.moveByVector(agent, 1, angle, 0);
+			origin = space.getLocation(agent);
+			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
+			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
+						
+			iteration++;
+			printMatrix();
+		}
+		
+		private void moveAgent(Coordinates targetCoordinates) {
+			NdPoint origin = space.getLocation(agent);
+			NdPoint target = new NdPoint(targetCoordinates.getX(), targetCoordinates.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
 			space.moveByVector(agent, 1, angle, 0);
 			origin = space.getLocation(agent);
