@@ -77,12 +77,12 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		context.setId("Map Exploration");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.WrapAroundBorders(), MAX_GRID_X, MAX_GRID_Y);
+		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.StrictBorders(), MAX_GRID_X, MAX_GRID_Y);
 		
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
 		Grid<Object> grid = gridFactory.createGrid("grid", context, 
 				new GridBuilderParameters<Object>(
-						new WrapAroundBorders(), 
+						new StrictBorders(),
 						new SimpleGridAdder<Object>(), 
 						true, MAX_GRID_X, MAX_GRID_Y));
 		

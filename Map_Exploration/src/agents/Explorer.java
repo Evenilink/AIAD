@@ -70,19 +70,17 @@ public class Explorer extends Agent {
 
 		// Sets his initial position in the matrix.
 		GridPoint initLocation = grid.getLocation(this);
+		System.out.println("Initial location -> x: " + initLocation.getX() + ", y: " + initLocation.getY());
 		matrix[grid.getDimensions().getHeight() - 1 - initLocation.getY()][initLocation.getX()] = 1;
+		System.out.println("y: " + (grid.getDimensions().getHeight() - 1 - initLocation.getY()) + ", x: " + initLocation.getX());
 		
 		addBehaviour(new AleatoryDFS(this));
 	}
 	
-	private void printMatrix(NdPoint pt) {
-		int numOnes = 0;
-		
-		System.out.println("Iteration " + iteration + "\nCurrent poisition -> x: " + (int)pt.getX() + ", y: " + (int)pt.getY());
+	private void printMatrix(NdPoint pt) {		
+		System.out.println("Iteration " + iteration + "\nCurrent position -> x: " + (int)pt.getX() + ", y: " + (int)pt.getY());
 		for(int row = 0; row < matrix.length; row++) {
 			for(int column = 0; column < matrix[row].length; column++) {
-				if(matrix[row][column] == 1)
-					numOnes++;
 				System.out.print(matrix[row][column] + " | ");
 			}
 			System.out.println(" " + row);
@@ -90,8 +88,6 @@ public class Explorer extends Agent {
 		
 		for(int column = 0; column < matrix[0].length; column++)
 			System.out.print(column + "   ");
-		
-		System.out.println("Number of ones: " + numOnes + "\n");
 	}
 	
 	class VerticalMovementBehaviour extends CyclicBehaviour {
@@ -164,7 +160,7 @@ public class Explorer extends Agent {
 					GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, radious, radious);
 					List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 					
-					SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+					// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 					GridCell<Object> cell = null;			
 					for(int i = 0; i < gridCells.size(); i++) {
 						int row = grid.getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
@@ -179,7 +175,14 @@ public class Explorer extends Agent {
 						}
 					}
 					
-					if(cell == null) {
+					NdPoint origin = space.getLocation(agent);
+					printMatrix(origin);
+					iteration++;
+					
+					if(cell != null) {
+						moveAgent(cell.getPoint());
+						break;
+					} else {
 						Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
 						if(nearestUndiscovered != null) {
 							System.out.println("Nearest zero: x: " + nearestUndiscovered.getX() + ", y: " + nearestUndiscovered.getY());
@@ -191,9 +194,6 @@ public class Explorer extends Agent {
 							System.out.println("Map is fully discovered");
 							break;
 						}
-					} else {
-						moveAgent(cell.getPoint());
-						break;
 					}
 				case A_STAR:
 					moveAgent(new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY()));
@@ -217,26 +217,18 @@ public class Explorer extends Agent {
 			NdPoint origin = space.getLocation(agent);
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
-			space.moveByVector(agent, 1, angle, 0);
-			origin = space.getLocation(agent);
-			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
-			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
-						
-			iteration++;
-			printMatrix(origin);
+			double distance = (((angle*180/Math.PI) % 5) == 0) ? utils.Utils.sqrt2 : 1;
+			origin = space.moveByVector(agent, distance, angle, 0);
+			grid.moveTo(agent, (int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 		}
 		
-		private void moveAgent(Coordinates targetCoordinates) {
+		private void moveAgent(Coordinates targetCoordinates) {			
 			NdPoint origin = space.getLocation(agent);
 			NdPoint target = new NdPoint(targetCoordinates.getX(), targetCoordinates.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
-			space.moveByVector(agent, 1, angle, 0);
-			origin = space.getLocation(agent);
-			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
-			// System.out.println("x: " + (int) origin.getX() + ", y: " + (int) origin.getY());
-						
-			iteration++;
-			printMatrix(origin);
+			double distance = (((angle*180/Math.PI) % 5) == 0) ? utils.Utils.sqrt2 : 1;
+			origin = space.moveByVector(agent, distance, angle, 0);
+			grid.moveTo(agent, (int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 		}
 		
 		/**

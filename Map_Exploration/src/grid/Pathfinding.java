@@ -87,7 +87,7 @@ public class Pathfinding {
 		int distY = Math.abs(target.getGridPosition().getY() - source.getGridPosition().getY());
 		
 		if(distX > distY)
-			return 14 * distY + 10 * (distX - distY);
-		return 14 * distX + 10 * (distY - distX);
+			return 141 * distY + 10 * (distX - distY);
+		return 141 * distX + 10 * (distY - distX);
 	}
 }
