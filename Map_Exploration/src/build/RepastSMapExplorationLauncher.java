@@ -88,7 +88,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		// Create instances of agents.
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, 7, 7);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
@@ -104,8 +104,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		// Updates/Sets all the objects ition.
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
-				space.moveTo(obj, ((Explorer) obj).getCoordinates().getX(), ((Explorer) obj).getCoordinates().getY());
-				grid.moveTo(obj, ((Explorer) obj).getCoordinates().getX(), ((Explorer) obj).getCoordinates().getY());
+				space.moveTo(obj, 7, 7);
+				grid.moveTo(obj, 7, 7);
 			} else if(obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 				grid.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());

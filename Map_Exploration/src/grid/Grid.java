@@ -12,13 +12,13 @@ public class Grid {
 	private int gridSizeY;
 	
 	public Grid(int gridSizeX, int gridSizeY) {
-		grid = new Node[gridSizeX][gridSizeY];
+		grid = new Node[gridSizeY][gridSizeX];
 		this.gridSizeX = gridSizeX;
 		this.gridSizeY = gridSizeY;
 		
 		for(int y = gridSizeY - 1; y >= 0; y--)
 			for(int x = 0; x < gridSizeX; x++)
-				grid[y][x] = new Node(true, new Coordinates(x, gridSizeY - y), new Coordinates(x, y));
+				grid[y][x] = new Node(true, new Coordinates(x, gridSizeY - 1 - y), new Coordinates(x, y));
 	}
 	
 	/**

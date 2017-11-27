@@ -62,4 +62,12 @@ public class Node {
 	public void setHCost(int value) {
 		hCost = value;
 	}
+	
+	public boolean equals(Object other) {
+		if(!(other instanceof Node))
+			return false;
+		
+		Node otherNode = (Node) other;
+		return (worldPosition.equals(otherNode.getWorldPosition()) && gridPosition.equals(otherNode.getGridPosition()));
+	}
 }

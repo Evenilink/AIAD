@@ -3,11 +3,16 @@ package agents;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.omg.CORBA.INTERNAL;
+
+import entities.Exit;
 import entities.Obstacle;
 import grid.Pathfinding;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.SpatialMath;
@@ -15,6 +20,8 @@ import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import repast.simphony.util.SimUtilities;
+import sajas.core.AID;
 import sajas.core.Agent;
 import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
@@ -25,17 +32,17 @@ public class Explorer extends Agent {
 	
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
-	private Coordinates coordinates;
 	private int radious;
+	private int communicationLimit;
 	
 	private int[][] matrix;
 	private int iteration = 0;
 
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int posX, int posY) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
-		coordinates = new Coordinates(posX, posY);
+		this.communicationLimit = communicationLimit;
 		
 		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
 		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
@@ -43,11 +50,7 @@ public class Explorer extends Agent {
 				matrix[row][column] = 0;
 		}
 	}
-	
-	public Coordinates getCoordinates() {
-		return coordinates;
-	}
-	
+		
 	@Override
 	public void setup() {
 		DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -74,17 +77,39 @@ public class Explorer extends Agent {
 		addBehaviour(new AleatoryDFS(this));
 	}
 	
+	public int[][] getMatrix() {
+		return matrix;
+	}
+
+	/**
+	 * @brief Merges the matrix of the receiving agent with the matrix received
+	 *        from other agents inside the communication radius
+	 * @param receivedMatrix
+	 */
+	public void mergeMatrix(int[][] receivedMatrix) {
+		for (int i = 0; i < receivedMatrix.length; i++)
+		{
+			for (int j = 0; j < receivedMatrix[i].length; j++)
+			{
+				if (receivedMatrix[i][j] != 0 && matrix[i][j] == 0)
+					matrix[i][j] = receivedMatrix[i][j];
+			}
+		}
+	}
+	
 	private void printMatrix(NdPoint pt) {		
-		System.out.println("Iteration " + iteration + "\nCurrent position -> x: " + (int)pt.getX() + ", y: " + (int)pt.getY());
+		System.out.println("Iteration " + iteration + "\nCurrent position -> x: " + (int)Math.round(pt.getX()) + ", y: " + (int)Math.round(pt.getY()));
 		for(int row = 0; row < matrix.length; row++) {
 			for(int column = 0; column < matrix[row].length; column++) {
 				System.out.print(matrix[row][column] + " | ");
 			}
-			System.out.println(" " + row);
+			System.out.println(" " + (grid.getDimensions().getHeight() - 1 - row));
 		}
 		
 		for(int column = 0; column < matrix[0].length; column++)
 			System.out.print(column + "   ");
+		
+		System.out.println("\n");
 	}
 	
 	class VerticalMovementBehaviour extends CyclicBehaviour {
@@ -203,15 +228,8 @@ public class Explorer extends Agent {
 			this.agent = agent;
 			state = ExplorerState.ALEATORY_DFS;
 			pathfinding = new Pathfinding(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
-			
-			/*System.out.println("\n\n");
-			System.out.println("Shortest path\nSource -> x: " + ((Explorer)agent).getCoordinates().getX() + ", y: " + ((Explorer)agent).getCoordinates().getY() + "\nTarget -> x: 0, y: 0");
-			path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), new Coordinates(0, 0));
-			for (grid.Node node : path)
-				System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
-			System.out.println("\n\n");*/
 		}
-		
+
 		@Override
 		public void action() {
 			GridPoint pt = grid.getLocation(agent);
@@ -241,18 +259,23 @@ public class Explorer extends Agent {
 					iteration++;
 					
 					if(cell != null) {
+						System.out.println("Moving to point => x: " + cell.getPoint().getX() + ", y: " + cell.getPoint().getY());
 						moveAgent(cell.getPoint());
 						break;
 					} else {
 						Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
 						if(nearestUndiscovered != null) {
 							System.out.println("Nearest zero: x: " + nearestUndiscovered.getX() + ", y: " + nearestUndiscovered.getY());
-							path = pathfinding.FindPath(((Explorer)agent).getCoordinates(), nearestUndiscovered);
+							path = pathfinding.FindPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
 							state = ExplorerState.A_STAR;
-							System.out.println("Changing to A*, going from\nx: " + pt.getX() + ", y: " + pt.getY() + " to\nx: " + path.get(path.size()-1).getWorldPosition().getX() + ", y: " + path.get(path.size()-1).getWorldPosition().getY() + "\n");
+							/*for(int i = 0; i < path.size(); i++) {
+								System.out.println((i+1) + " => x: " + path.get(i).getWorldPosition().getX() + ", y: " + path.get(i).getWorldPosition().getY());
+							}*/
+							//System.out.println("Changing to A*, going from\nx: " + pt.getX() + ", y: " + pt.getY() + " to\nx: " + path.get(path.size()-1).getWorldPosition().getX() + ", y: " + path.get(path.size()-1).getWorldPosition().getY() + "\n");
 						} else {
 							// The map is fully discovered, should we go for the exit?
 							System.out.println("Map is fully discovered");
+							state = ExplorerState.EXIT;
 							break;
 						}
 					}
@@ -276,19 +299,33 @@ public class Explorer extends Agent {
 		
 		private void moveAgent(GridPoint targetPoint) {
 			NdPoint origin = space.getLocation(agent);
+			//origin = new NdPoint((int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
+			//System.out.println("origin => x:" + origin.getX() + ", y: " + origin.getY() + ", target => x: " + target.getX() + ", y: " + target.getY());
+			//System.out.println("Angulo: " + (angle*180/Math.PI));
 			double distance = (((angle*180/Math.PI) % 5) == 0) ? utils.Utils.sqrt2 : 1;
-			origin = space.moveByVector(agent, distance, angle, 0);
+			try {
+				origin = space.moveByVector(agent, distance, angle, 0);
+			} catch (repast.simphony.space.SpatialException e) {
+				e.printStackTrace();
+			}
 			grid.moveTo(agent, (int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 		}
 		
 		private void moveAgent(Coordinates targetCoordinates) {			
 			NdPoint origin = space.getLocation(agent);
+			//origin = new NdPoint((int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 			NdPoint target = new NdPoint(targetCoordinates.getX(), targetCoordinates.getY());
 			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
+			//System.out.println("A* ====== origin => x:" + origin.getX() + ", y: " + origin.getY() + ", target => x: " + target.getX() + ", y: " + target.getY());
+			//System.out.println("Angulo: " + (angle*180/Math.PI));
 			double distance = (((angle*180/Math.PI) % 5) == 0) ? utils.Utils.sqrt2 : 1;
-			origin = space.moveByVector(agent, distance, angle, 0);
+			try {
+				origin = space.moveByVector(agent, distance, angle, 0);
+			} catch (repast.simphony.space.SpatialException e) {
+				e.printStackTrace();
+			}
 			grid.moveTo(agent, (int)Math.round(origin.getX()), (int)Math.round(origin.getY()));
 		}
 		
@@ -301,9 +338,19 @@ public class Explorer extends Agent {
 			Coordinates currCoordinates = matrixFromWorldPoint(currentPosition);
 			Coordinates nearestUndiscovered = null;
 			
-			// Distance from the current position to the furthest edge of the matrix.
-			int maxDistance = (grid.getDimensions().getWidth() > grid.getDimensions().getHeight()) ? (grid.getDimensions().getWidth() - currCoordinates.getX()) : (grid.getDimensions().getHeight() - currCoordinates.getY());
-			
+			int maxDistance;	// Distance from the current position to the furthest edge of the matrix.
+			if(grid.getDimensions().getWidth() > grid.getDimensions().getHeight()) {
+				int matrixMaxIndexX = grid.getDimensions().getWidth() - 1;
+				int leftCellsAmount = matrixMaxIndexX - currCoordinates.getX();
+				int rightCellsAmount = matrixMaxIndexX - (matrixMaxIndexX - currCoordinates.getX());
+				maxDistance = (leftCellsAmount > rightCellsAmount) ? leftCellsAmount : rightCellsAmount;
+			} else {
+				int matrixMaxIndexY = grid.getDimensions().getHeight() - 1;
+				int leftCellsAmount = matrixMaxIndexY - currCoordinates.getY();
+				int rightCellsAmount = matrixMaxIndexY - (matrixMaxIndexY - currCoordinates.getY());
+				maxDistance = (leftCellsAmount > rightCellsAmount) ? leftCellsAmount : rightCellsAmount;
+			}
+						
 			for(int radious = 2; radious < maxDistance; radious++) {
 				nearestUndiscovered = getUndiscoveredInRadious(currCoordinates, radious);
 				if(nearestUndiscovered != null)
@@ -319,7 +366,10 @@ public class Explorer extends Agent {
 		 * @param radious
 		 * @return
 		 */
-		private Coordinates getUndiscoveredInRadious(Coordinates currCoordinates, int radious) {			
+		private Coordinates getUndiscoveredInRadious(Coordinates currCoordinates, int radious) {
+			Coordinates nearestCoordinate = null;
+			float nearestDistance = Float.MAX_VALUE;
+			
 			for(int column = currCoordinates.getX() - radious; column <= currCoordinates.getX() + radious; column++) {
 				for(int row = currCoordinates.getY() - radious; row <= currCoordinates.getY() + radious; row++) {
 					// Are the points on the grid?
@@ -327,13 +377,18 @@ public class Explorer extends Agent {
 						// Do the points not belong in the radious?
 						if(column != currCoordinates.getX() - radious && column != currCoordinates.getX() + radious && row != currCoordinates.getY() - radious && row != currCoordinates.getY() + radious)
 							continue;
-						if(matrix[row][column] == 0)
-							return new Coordinates(column, row);
+						
+						Coordinates coordinates = new Coordinates(column, row);
+						float distance = utils.Utils.getDistance(currCoordinates, coordinates);
+						if(matrix[row][column] == 0 && distance < nearestDistance) {
+							nearestCoordinate = coordinates;
+							nearestDistance = distance;
+						}
 					}
 				}
 			}
 			
-			return null;
+			return nearestCoordinate;
 		}
 	}
 	
@@ -347,7 +402,7 @@ public class Explorer extends Agent {
 	}
 	
 	private Coordinates worldPointFromMatrix(Coordinates coordinates) {
-		return new Coordinates(coordinates.getX(), grid.getDimensions().getHeight() - coordinates.getY());
+		return new Coordinates(coordinates.getX(), grid.getDimensions().getHeight() - 1 - coordinates.getY());
 	}
 	
 	@Override

@@ -30,11 +30,16 @@ public class Pathfinding {
 		
 		while(openSet.size() > 0) {
 			Node currentNode = openSet.get(0);
+			for (Node node : openSet) {
+				if(node.getFCost() < currentNode.getFCost() || (node.getFCost() == currentNode.getFCost() && node.getHCost() < currentNode.getHCost()))
+					currentNode = node;
+			}
+			
 			openSet.remove(currentNode);
 			closedSet.add(currentNode);
 			
 			// Path has been found.
-			if(currentNode == targetNode)
+			if(currentNode.equals(targetNode))
 				return ReversePath(sourceNode, targetNode);
 			
 			for (Node neighbour : grid.getNeighbours(currentNode)) {
@@ -67,7 +72,7 @@ public class Pathfinding {
 		List<Node> path = new ArrayList<Node>();
 		Node currentNode = endNode;
 		
-		while(currentNode != startNode) {
+		while(!currentNode.equals(startNode)) {
 			path.add(currentNode);
 			currentNode = currentNode.getParent();
 		}
@@ -87,7 +92,7 @@ public class Pathfinding {
 		int distY = Math.abs(target.getGridPosition().getY() - source.getGridPosition().getY());
 		
 		if(distX > distY)
-			return 141 * distY + 10 * (distX - distY);
-		return 141 * distX + 10 * (distY - distX);
+			return 14 * distY + 10 * (distX - distY);
+		return 14 * distX + 10 * (distY - distX);
 	}
 }
