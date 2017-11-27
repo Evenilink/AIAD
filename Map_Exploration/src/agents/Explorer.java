@@ -11,6 +11,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
@@ -223,26 +224,22 @@ public class Explorer extends Agent
 					    msgSent.addReceiver((AID) obj);
 					    send(msgSent);
 					    
-						//Receives a matrix from an agent in
+						//Receives a matrix from an agent
 					    ACLMessage msgRec = receive();
-					    int[][] receivedMatrix;
-					    //receivedMatrix = extractAbsContent(msgRec);
-					    
-					    
-						/*if (msgRec != null) {
-							mergeMatrix(msgRec);
-						}*/
-						//merge my matrix with obj's
-					    
-						//merge obj's matrix with mine
-						
+					    try
+						{
+					    	//Receives matrix and merges with his own
+							int[][] receivedMatrix = (int[][]) receive().getContentObject();
+							mergeMatrix(receivedMatrix);
+						} catch (UnreadableException e)
+						{
+							e.printStackTrace();
+						}
 						break;
 					}
 				}
 			}
 			
-			
-
 			// Check if the exit is in sight.
 			for (GridCell<Object> tempCell : gridCells)
 			{
@@ -292,7 +289,6 @@ public class Explorer extends Agent
 					System.out.println("row:" + (cell.getPoint().getY()) + ", column: " + cell.getPoint().getX());
 				} while (matrix[row][column] == 1);
 			}
-
 			moveAgent(cell.getPoint());
 		}
 
