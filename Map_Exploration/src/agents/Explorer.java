@@ -1,7 +1,9 @@
 package agents;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import entities.Obstacle;
 import grid.Pathfinding;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -104,22 +106,86 @@ public class Explorer extends Agent {
 			System.out.println("x: " + (int) Math.round(origin.getX()) + ", y: " + (int) Math.round(origin.getY()));
 		}
 	}
-	
+
 	class Pledge extends CyclicBehaviour {
-		
+
 		private Agent agent;
-		
-		public Pledge (Agent agent) {
+		private GridPoint startingPoint;
+		private GridPoint previousPoint;
+
+		Pledge (Agent agent) {
 			super(agent);
 			this.agent = agent;
+			this.startingPoint = grid.getLocation(agent);
+			this.previousPoint = this.startingPoint;
 		}
-		
+
 		@Override
 		public void action() {
-			// TODO Auto-generated method stub
-			
+			GridPoint pt = grid.getLocation(agent);
+			if (this.previousPoint != this.startingPoint && pt == this.startingPoint) {
+				System.out.println("SWITCH OUT OF PLEDGE!");
+			}
+
+			ArrayList<GridCell<Object>> possibleCells = new ArrayList<>();
+
+			GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, pt, Object.class, 1, 1);
+			GridPoint frontPt = pt, backPt = pt, rightPt = pt, leftPt = pt;
+
+			if (pt.getX() > this.previousPoint.getX()) {
+				// Facing Right
+				frontPt = new GridPoint(pt.getX() + 1, pt.getY());
+				backPt = new GridPoint(pt.getX() - 1, pt.getY());
+				rightPt = new GridPoint(pt.getX(), pt.getY() - 1);
+				leftPt = new GridPoint(pt.getX(), pt.getY() + 1);
+			} else if (pt.getX() < this.previousPoint.getX()) {
+				// Facing Left
+				frontPt = new GridPoint(pt.getX() - 1, pt.getY());
+				backPt = new GridPoint(pt.getX() + 1, pt.getY());
+				rightPt = new GridPoint(pt.getX(), pt.getY() + 1);
+				leftPt = new GridPoint(pt.getX(), pt.getY() - 1);
+			} else if (pt.getY() > this.previousPoint.getY()) {
+				// Facing Upwards
+				frontPt = new GridPoint(pt.getX(), pt.getY() + 1);
+				backPt = new GridPoint(pt.getX(), pt.getY() - 1);
+				rightPt = new GridPoint(pt.getX() + 1, pt.getY());
+				leftPt = new GridPoint(pt.getX() - 1, pt.getY());
+			} else if (pt.getY() < this.previousPoint.getY()) {
+				// Facing Downwards
+				frontPt = new GridPoint(pt.getX(), pt.getY() - 1);
+				backPt = new GridPoint(pt.getX(), pt.getY() + 1);
+				rightPt = new GridPoint(pt.getX() - 1, pt.getY());
+				leftPt = new GridPoint(pt.getX() + 1, pt.getY());
+			}
+
+			Object frontObject = grid.getObjectsAt(frontPt.getX(), frontPt.getY());
+			//Object backObject = grid.getObjectsAt(backPt.getX(), backPt.getY());
+			Object rightObject = grid.getObjectsAt(rightPt.getX(), rightPt.getY());
+			//Object leftObject = grid.getObjectsAt(leftPt.getX(), leftPt.getY());
+
+			if (rightObject == null) {
+				moveAgent(rightPt);
+			} else if (frontObject == null && rightObject instanceof Obstacle) {
+				moveAgent(frontPt);
+			} else if (frontObject instanceof Obstacle && rightObject instanceof Obstacle) {
+				moveAgent(leftPt);
+			} else moveAgent(backPt);
+
+			this.previousPoint = pt;
 		}
-		
+
+		private void moveAgent(GridPoint targetPoint) {
+			NdPoint origin = space.getLocation(agent);
+			NdPoint target = new NdPoint(targetPoint.getX(), targetPoint.getY());
+			double angle = SpatialMath.calcAngleFor2DMovement(space, origin, target);
+			space.moveByVector(agent, 1, angle, 0);
+			origin = space.getLocation(agent);
+			grid.moveTo(agent, (int) origin.getX(), (int) origin.getY());
+
+			//matrix[grid.getDimensions().getHeight() - 1 - (int) origin.getY()][(int) origin.getX()] = 1;
+
+			iteration++;
+		}
 	}
 	
 	class AleatoryDFS extends CyclicBehaviour {
