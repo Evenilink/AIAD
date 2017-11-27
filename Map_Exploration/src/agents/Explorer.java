@@ -218,17 +218,16 @@ public class Explorer extends Agent
 						ACLMessage msgSent = new ACLMessage(ACLMessage.INFORM);
 					    try{
 					    	msgSent.setContentObject(matrix);
+					    	msgSent.addReceiver((AID) obj);
+						    send(msgSent);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-					    msgSent.addReceiver((AID) obj);
-					    send(msgSent);
 					    
-						//Receives a matrix from an agent
-					    ACLMessage msgRec = receive();
+					    //Receives matrix and merges with his own
+					    //ACLMessage msgRec = receive(); <- is this needed??
 					    try
 						{
-					    	//Receives matrix and merges with his own
 							int[][] receivedMatrix = (int[][]) receive().getContentObject();
 							mergeMatrix(receivedMatrix);
 						} catch (UnreadableException e)
