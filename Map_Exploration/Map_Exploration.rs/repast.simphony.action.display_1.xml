@@ -8,7 +8,11 @@
     </entry>
     <entry>
       <string>agents.Explorer</string>
-      <string>repast.simphony.visualizationOGL2D.DefaultStyleOGL2D</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>entities.Obstacle</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
   </styles>
   <editedStyles>
@@ -18,7 +22,11 @@
     </entry>
     <entry>
       <string>agents.Explorer</string>
-      <null/>
+      <string>agents.Explorer.style_4.xml</string>
+    </entry>
+    <entry>
+      <string>entities.Obstacle</string>
+      <string>entities.Obstacle.style_4.xml</string>
     </entry>
   </editedStyles>
   <netStyles/>
@@ -31,7 +39,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-705850098</hashCode>
+    <hashCode>-399833312</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
@@ -43,6 +51,10 @@
     </entry>
     <entry>
       <string>agents.Explorer</string>
+      <int>2</int>
+    </entry>
+    <entry>
+      <string>entities.Obstacle</string>
       <int>0</int>
     </entry>
   </layerOrder>
