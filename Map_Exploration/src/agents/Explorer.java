@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.omg.CORBA.INTERNAL;
 
+import algorithms.astar.Pathfinding;
 import entities.Exit;
 import entities.Obstacle;
-import grid.Pathfinding;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -220,7 +220,7 @@ public class Explorer extends Agent {
 		
 		// A* vars.
 		private Pathfinding pathfinding;
-		private List<grid.Node> path; 
+		private List<algorithms.astar.Node> path; 
 		private int pathNode = 0;
 		
 		public AleatoryDFS(Agent agent) {

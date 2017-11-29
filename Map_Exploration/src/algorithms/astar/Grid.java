@@ -1,4 +1,4 @@
-package grid;
+package algorithms.astar;
 
 import java.util.ArrayList;
 import java.util.List;
