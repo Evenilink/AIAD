@@ -1,6 +1,7 @@
 package algorithms.pledge;
 
 import repast.simphony.space.grid.GridPoint;
+import utils.Coordinates;
 
 public class NeighbourPoints {
     public enum Direction {
@@ -61,32 +62,32 @@ public class NeighbourPoints {
     }
 
 
-    public GridPoint front() {
-        return frontPoint;
+    public Coordinates front() {
+        return Coordinates.FromGridPoint(frontPoint);
     }
 
     public void front(GridPoint frontPoint) {
         this.frontPoint = frontPoint;
     }
 
-    public GridPoint back() {
-        return backPoint;
+    public Coordinates back() {
+        return Coordinates.FromGridPoint(backPoint);
     }
 
     public void back(GridPoint backPoint) {
         this.backPoint = backPoint;
     }
 
-    public GridPoint left() {
-        return leftPoint;
+    public Coordinates left() {
+        return Coordinates.FromGridPoint(leftPoint);
     }
 
     public void left(GridPoint leftPoint) {
         this.leftPoint = leftPoint;
     }
 
-    public GridPoint right() {
-        return rightPoint;
+    public Coordinates right() {
+        return Coordinates.FromGridPoint(rightPoint);
     }
 
     public void right(GridPoint rightPoint) {

@@ -10,6 +10,7 @@ import communication.Message;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
+import utils.Coordinates;
 import utils.Utils.ExplorerState;
 import utils.Utils.MessageType;
 
@@ -64,7 +65,7 @@ public class DFS {
 		iteration++;*/
 		
 		if(destinationCell != null)
-			agent.moveAgent(destinationCell.getPoint());
+			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
 		else if(agent.mapFullyExplored())
 			behaviour.changeState(ExplorerState.EXIT);
 		else behaviour.changeState(ExplorerState.A_STAR);

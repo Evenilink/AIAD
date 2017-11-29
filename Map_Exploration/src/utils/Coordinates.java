@@ -1,10 +1,15 @@
 package utils;
 
+import repast.simphony.space.grid.GridPoint;
+
 public class Coordinates {
+	public static Coordinates FromGridPoint(GridPoint point) {
+		return new Coordinates(point.getX(), point.getY());
+	}
 
 	private int x;
 	private int y;
-	
+
 	public Coordinates(int x, int y) {
 		this.x = x;
 		this.y = y;

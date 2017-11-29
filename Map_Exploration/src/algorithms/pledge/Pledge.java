@@ -4,6 +4,7 @@ import agents.Explorer;
 import entities.Obstacle;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import utils.Coordinates;
 
 public class Pledge {
     private final Grid grid;
@@ -11,7 +12,7 @@ public class Pledge {
     private GridPoint startingPoint;
     private GridPoint previousPoint;
 
-    private GridPoint getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
+    private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
         if (objs.right() == null) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
             return pts.right();
@@ -57,7 +58,7 @@ public class Pledge {
         }
 
         GridPoint pt = grid.getLocation(agent); // Current point
-        GridPoint nextLocation;
+        Coordinates nextLocation;
 
         if (pt.getX() > this.previousPoint.getX()) {
             // Facing Right
@@ -98,6 +99,6 @@ public class Pledge {
         }
 
         this.previousPoint = pt;
-        this.agent.moveAgent(nextLocation != null ? nextLocation : pt);
+        this.agent.moveAgent(nextLocation != null ? nextLocation : Coordinates.FromGridPoint(pt));
     }
 }

@@ -53,7 +53,7 @@ public class Exploration extends CyclicBehaviour {
 					astar.setPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
 				}
 				else {
-					//WHAT???????????????				
+					//TODO: Exit must be found, implement coop algorithm
 				}
 				break;
 			default: break;

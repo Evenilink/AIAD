@@ -67,11 +67,6 @@ public class Explorer extends Agent {
 		}
 	}
 	
-	public void moveAgent(GridPoint targetPoint) {
-		if (space.moveTo(this, targetPoint.getX(), targetPoint.getY()))
-			grid.moveTo(this, targetPoint.getX(), targetPoint.getY());
-	}
-	
 	public void moveAgent(Coordinates targetCoordinates) {
 		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY()))
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
