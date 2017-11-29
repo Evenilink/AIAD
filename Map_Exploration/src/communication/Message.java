@@ -48,7 +48,18 @@ public class Message extends Agent {
 	
 	public Object receiveMessage() throws UnreadableException {
 		ACLMessage msg = blockingReceive();
-		Object obj = msg.getContentObject();
+		return msg.getContentObject();
+	}
+	
+	/*******************************/
+	/***** Getters and setters *****/
+	/*******************************/
+	
+	public MessageType getMessageType() {
+		return messageType;
+	}
+	
+	public Object getObject() {
 		return obj;
 	}
 }

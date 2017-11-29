@@ -29,12 +29,7 @@ public class Explorer extends Agent {
 		this.grid = grid;
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
-		matrix = new Matrix(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
-
-		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
-			for(int column = 0; column < grid.getDimensions().getWidth(); column++)
-				matrix.setValue(row, column, 0);
-		}
+		matrix = new Matrix(grid.getDimensions().getHeight(), grid.getDimensions().getWidth());
 	}
 	
 	@Override
@@ -55,9 +50,9 @@ public class Explorer extends Agent {
 		// Sets his initial position in the matrix.
 		GridPoint initLocation = grid.getLocation(this);
 		Exploration behaviour = new Exploration(this);
-		setMatrixValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
+		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		addBehaviour(behaviour);
-		addBehaviour(new Messaging());
+		addBehaviour(new Messaging(this));
 	}
 	
 	@Override
@@ -74,10 +69,6 @@ public class Explorer extends Agent {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 	}
 	
-	public boolean mapFullyExplored() {
-		return ((matrix.length() * matrix[0].length) == discoveredCells);
-	}
-	
 	public Grid<Object> getGrid() {
 		return grid;
 	}
@@ -90,17 +81,7 @@ public class Explorer extends Agent {
 		return space;
 	}
 	
-	public int[][] getMatrix() {
+	public Matrix getMatrix() {
 		return matrix;
-	}
-	
-	public int getMatrixValue(int column, int row) {
-		return matrix[row][column];
-	}
-	
-	public void setMatrixValue(int column, int row, int value) {
-		matrix[row][column] = value;
-		if(value != 0)
-			discoveredCells++;
 	}
 }

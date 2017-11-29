@@ -53,8 +53,8 @@ public class DFS {
 			
 			// If the point is inside the grid...
 			if(row >= 0 && row < agent.getGrid().getDimensions().getWidth() && column >= 0 && column < agent.getGrid().getDimensions().getHeight()) {
-				if(agent.getMatrixValue(column, row) != 1) {
-					agent.setMatrixValue(column, row, 1);
+				if(agent.getMatrix().getValue(column, row) != 1) {
+					agent.getMatrix().setValue(column, row, 1);
 					destinationCell = gridCell;
 				}
 			}
@@ -66,7 +66,7 @@ public class DFS {
 		
 		if(destinationCell != null)
 			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
-		else if(agent.mapFullyExplored())
+		else if(agent.getMatrix().mapFullyExplored())
 			behaviour.changeState(ExplorerState.EXIT);
 		else behaviour.changeState(ExplorerState.A_STAR);
 	}

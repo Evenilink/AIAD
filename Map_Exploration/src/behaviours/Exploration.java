@@ -113,7 +113,7 @@ public class Exploration extends CyclicBehaviour {
 					
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if(agent.getMatrixValue(column, row) == 0 && distance < nearestDistance) {
+					if(agent.getMatrix().getValue(column, row) == 0 && distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
