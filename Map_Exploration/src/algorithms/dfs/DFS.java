@@ -1,21 +1,24 @@
 package algorithms.dfs;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 import agents.Explorer;
-import behaviours.AleatoryDFS;
+import behaviours.Exploration;
+import communication.Message;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import utils.Utils.ExplorerState;
+import utils.Utils.MessageType;
 
 public class DFS {
 
 	private Explorer agent;
-	private AleatoryDFS behaviour;
+	private Exploration behaviour;
 	
-	public DFS(Explorer agent, AleatoryDFS behaviour) {
+	public DFS(Explorer agent, Exploration behaviour) {
 		this.agent = agent;
 		this.behaviour = behaviour;
 	}
@@ -29,10 +32,18 @@ public class DFS {
 		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : gridCells) {
+			
 			Iterator<Object> it = gridCell.items().iterator();
 			while(it.hasNext()) {
-				if(it.next() instanceof Explorer) {
-					
+				Object obj = it.next();
+				if(obj instanceof Explorer) {
+					Explorer otherExplorer = (Explorer) obj;
+					Message msgSend = new Message(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
+					try {
+						msgSend.sendMessage();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			
@@ -41,8 +52,8 @@ public class DFS {
 			
 			// If the point is inside the grid...
 			if(row >= 0 && row < agent.getGrid().getDimensions().getWidth() && column >= 0 && column < agent.getGrid().getDimensions().getHeight()) {
-				if(behaviour.getMatrixValue(column, row) != 1) {
-					behaviour.setMatrixValue(column, row, 1);
+				if(agent.getMatrixValue(column, row) != 1) {
+					agent.setMatrixValue(column, row, 1);
 					destinationCell = gridCell;
 				}
 			}
@@ -54,7 +65,7 @@ public class DFS {
 		
 		if(destinationCell != null)
 			agent.moveAgent(destinationCell.getPoint());
-		else if(behaviour.mapFullyExplored())
+		else if(agent.mapFullyExplored())
 			behaviour.changeState(ExplorerState.EXIT);
 		else behaviour.changeState(ExplorerState.A_STAR);
 	}

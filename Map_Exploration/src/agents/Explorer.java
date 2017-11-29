@@ -1,12 +1,11 @@
 package agents;
 
-import behaviours.AleatoryDFS;
+import behaviours.Exploration;
+import behaviours.Messaging;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import repast.simphony.space.SpatialMath;
 import repast.simphony.space.continuous.ContinuousSpace;
-import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.Agent;
@@ -20,25 +19,29 @@ public class Explorer extends Agent {
 	private int radious;
 	private int communicationLimit;
 	
-	private AleatoryDFS behaviour;
-
+	private int[][] matrix;
+	private int discoveredCells;
+	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
-		behaviour = new AleatoryDFS(this);
-	}
 		
+		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
+		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
+			for(int column = 0; column < grid.getDimensions().getWidth(); column++)
+				matrix[row][column] = 0;
+		}
+	}
+	
 	@Override
 	public void setup() {
 		DFAgentDescription dfAgentDescription = new DFAgentDescription();
 		dfAgentDescription.setName(getAID());
-		
 		ServiceDescription serviceDescription = new ServiceDescription();
 		serviceDescription.setName(getName());
-		serviceDescription.setType("Explorer");
-		
+		serviceDescription.setType("Explorer basic");
 		dfAgentDescription.addServices(serviceDescription);
 		
 		try {
@@ -49,8 +52,10 @@ public class Explorer extends Agent {
 
 		// Sets his initial position in the matrix.
 		GridPoint initLocation = grid.getLocation(this);
-		behaviour.setMatrixValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
+		Exploration behaviour = new Exploration(this);
+		setMatrixValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		addBehaviour(behaviour);
+		addBehaviour(new Messaging());
 	}
 	
 	@Override
@@ -72,6 +77,10 @@ public class Explorer extends Agent {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 	}
 	
+	public boolean mapFullyExplored() {
+		return ((matrix.length * matrix[0].length) == discoveredCells);
+	}
+	
 	public Grid<Object> getGrid() {
 		return grid;
 	}
@@ -82,5 +91,19 @@ public class Explorer extends Agent {
 	
 	public ContinuousSpace<Object> getSpace() {
 		return space;
+	}
+	
+	public int[][] getMatrix() {
+		return matrix;
+	}
+	
+	public int getMatrixValue(int column, int row) {
+		return matrix[row][column];
+	}
+	
+	public void setMatrixValue(int column, int row, int value) {
+		matrix[row][column] = value;
+		if(value != 0)
+			discoveredCells++;
 	}
 }

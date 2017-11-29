@@ -3,20 +3,20 @@ package algorithms.astar;
 import java.util.List;
 
 import agents.Explorer;
-import behaviours.AleatoryDFS;
+import behaviours.Exploration;
 import utils.Coordinates;
 import utils.Utils.ExplorerState;
 
 public class AStar {
 
 	private Explorer agent;
-	private AleatoryDFS behaviour;
+	private Exploration behaviour;
 	
 	private Pathfinding pathfinding;
 	private List<algorithms.astar.Node> path; 
 	private int pathNode;
 	
-	public AStar(Explorer agent, AleatoryDFS behaviour) {
+	public AStar(Explorer agent, Exploration behaviour) {
 		this.agent = agent;
 		this.behaviour = behaviour;
 		pathfinding = new Pathfinding(agent.getGrid().getDimensions().getWidth(), agent.getGrid().getDimensions().getHeight());
@@ -28,7 +28,7 @@ public class AStar {
 		pathNode++;
 		
 		if(pathNode == path.size()) {
-			behaviour.changeState(ExplorerState.ALEATORY_DFS);
+			behaviour.changeState(ExplorerState.DFS);
 			path = null;
 			pathNode = 0;
 		}

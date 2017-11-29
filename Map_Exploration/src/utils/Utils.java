@@ -3,14 +3,20 @@ package utils;
 import repast.simphony.space.grid.GridPoint;
 
 public class Utils {
-
+	
 	public static final double sqrt2 = Math.sqrt(2);
 	
 	public enum ExplorerState {
-		ALEATORY_DFS,
+		DFS,
 		A_STAR,
 		PLEDGE,
 		EXIT
+		// What if we have an IDLE state??????
+	}
+	
+	public enum MessageType {
+		MATRIX,
+		HELP
 	}
 	
 	public static float getDistance(Coordinates source, Coordinates target) {

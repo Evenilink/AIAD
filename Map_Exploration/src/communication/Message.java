@@ -7,34 +7,38 @@ import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import sajas.core.Agent;
+import utils.Utils.MessageType;
 
-public class transport extends Agent
-{
+public class Message extends Agent {
+	
 	private String str;
 	private Object obj;
-	private AID destination;
+	private AID destination;	// Agent identifier;
+	private MessageType messageType;
 	
-	public transport(Object obj, AID destination)
-	{
+	public Message(MessageType messageType, Object obj, AID destination) {
+		this.messageType = messageType;
 		this.obj = obj;
 		this.destination = destination;
 	}
 	
-	public transport(String str, AID destination)
-	{
+	public Message(MessageType messageType, String str, AID destination) {
+		this.messageType = messageType;
 		this.str = str;
 		this.destination = destination;
 	}
 	
-	public void sendMessage() throws IOException
-	{
-		if (str == null){
+	public Message() {
+		
+	}
+	
+	public void sendMessage() throws IOException {
+		if (obj != null) {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		    msg.setContentObject((Serializable) this.obj);
 		    msg.addReceiver(destination);
 		    send(msg);
-	    }
-		else {
+	    } else {
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		    msg.setContentObject((Serializable) this.str);
 		    msg.addReceiver(destination);
@@ -42,14 +46,9 @@ public class transport extends Agent
 		}
 	}
 	
-	public Object receiveMessage() throws UnreadableException
-	{
-		ACLMessage msg = receive();
-		if (msg != null) {
-			Object obj = msg.getContentObject();
-		} else {
-			blockingReceive();
-		}
+	public Object receiveMessage() throws UnreadableException {
+		ACLMessage msg = blockingReceive();
+		Object obj = msg.getContentObject();
 		return obj;
 	}
 }

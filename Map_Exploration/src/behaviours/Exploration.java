@@ -8,40 +8,27 @@ import sajas.core.behaviours.CyclicBehaviour;
 import utils.Coordinates;
 import utils.Utils.ExplorerState;
 
-public class AleatoryDFS extends CyclicBehaviour {
+public class Exploration extends CyclicBehaviour {
 
-	public Explorer agent;
-	public ExplorerState state;
+	private Explorer agent;
+	private ExplorerState state;
+		
+	private DFS dfs;
+	private AStar astar;
 	
-	private int[][] matrix;
-	private int discoveredCells;
-	private int iteration = 0;
-	
-	public DFS dfs;
-	public AStar astar;
-	
-	public AleatoryDFS(Explorer agent) {
+	public Exploration(Explorer agent) {
 		super(agent);
 		this.agent = agent;
-		state = ExplorerState.ALEATORY_DFS;
-		discoveredCells = 0;
-
-		matrix = new int[agent.getGrid().getDimensions().getHeight()][agent.getGrid().getDimensions().getWidth()];
-		for(int row = 0; row < agent.getGrid().getDimensions().getHeight(); row++) {
-			for(int column = 0; column < agent.getGrid().getDimensions().getWidth(); column++)
-				matrix[row][column] = 0;
-		}		
+		state = ExplorerState.DFS;
 		
 		dfs = new DFS(agent, this);
 		astar = new AStar(agent, this);
 	}
 
 	@Override
-	public void action() {
-		GridPoint pt = agent.getGrid().getLocation(agent);
-		
+	public void action() {	
 		switch(state) {
-			case ALEATORY_DFS:
+			case DFS:
 				dfs.run();
 				break;
 			case A_STAR:
@@ -53,10 +40,6 @@ public class AleatoryDFS extends CyclicBehaviour {
 				break;
 			default: break;
 		}
-	}
-	
-	public boolean mapFullyExplored() {
-		return ((matrix.length * matrix[0].length) == discoveredCells);
 	}
 	
 	public void changeState(ExplorerState newState) {
@@ -130,7 +113,7 @@ public class AleatoryDFS extends CyclicBehaviour {
 					
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if(matrix[row][column] == 0 && distance < nearestDistance) {
+					if(agent.getMatrixValue(column, row) == 0 && distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
@@ -139,15 +122,5 @@ public class AleatoryDFS extends CyclicBehaviour {
 		}
 		
 		return nearestCoordinate;
-	}
-	
-	public int getMatrixValue(int column, int row) {
-		return matrix[row][column];
-	}
-	
-	public void setMatrixValue(int column, int row, int value) {
-		matrix[row][column] = value;
-		if(value != 0)
-			discoveredCells++;
 	}
 }
