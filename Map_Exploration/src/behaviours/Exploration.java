@@ -3,6 +3,7 @@ package behaviours;
 import agents.Explorer;
 import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
+import algorithms.pledge.Pledge;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
 import utils.Coordinates;
@@ -15,6 +16,7 @@ public class Exploration extends CyclicBehaviour {
 		
 	private DFS dfs;
 	private AStar astar;
+	private Pledge pledge;
 	
 	public Exploration(Explorer agent) {
 		super(agent);
@@ -23,6 +25,7 @@ public class Exploration extends CyclicBehaviour {
 		
 		dfs = new DFS(agent, this);
 		astar = new AStar(agent, this);
+		pledge = new Pledge(agent);
 	}
 
 	@Override
@@ -35,6 +38,7 @@ public class Exploration extends CyclicBehaviour {
 				astar.run();
 				break;
 			case PLEDGE:
+				pledge.run();
 				break;
 			case EXIT:
 				break;
@@ -43,8 +47,6 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public void changeState(ExplorerState newState) {
-		System.out.println("0");
-		
 		switch(newState) {
 			case A_STAR:
 				GridPoint pt = agent.getGrid().getLocation(agent);
@@ -55,6 +57,9 @@ public class Exploration extends CyclicBehaviour {
 				else {
 					//TODO: Exit must be found, implement coop algorithm
 				}
+				break;
+			case PLEDGE:
+				pledge.init();
 				break;
 			default: break;
 		}

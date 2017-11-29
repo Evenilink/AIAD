@@ -65,8 +65,10 @@ public class Explorer extends Agent {
 	}
 	
 	public void moveAgent(Coordinates targetCoordinates) {
-		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY()))
+		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
+			getMatrix().updateMatrix(getGrid(), targetCoordinates, getRadious());
+		}
 	}
 	
 	public Grid<Object> getGrid() {

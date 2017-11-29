@@ -35,7 +35,7 @@ public class Pledge {
         this.grid = agent.getGrid();
     }
 
-    public void start() {
+    public void init() {
         this.startingPoint = this.grid.getLocation(this.agent);
         this.previousPoint = this.startingPoint;
     }
@@ -54,7 +54,7 @@ public class Pledge {
             return;
         }
         if (this.previousPoint == null) {
-            this.start();
+            this.init();
         }
 
         GridPoint pt = grid.getLocation(agent); // Current point
