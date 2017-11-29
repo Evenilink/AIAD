@@ -21,8 +21,8 @@ public class Messaging extends CyclicBehaviour {
 	public void action() {
 		try {
 			Object obj = msgReceive.receiveMessage();
-			
-			if(obj instanceof Message) {
+
+			if(obj != null && obj instanceof Message) {
 				Message msg = (Message) obj;
 				MessageType msgType = msg.getMessageType();
 				

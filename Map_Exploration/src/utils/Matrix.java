@@ -1,62 +1,62 @@
 package utils;
 
 import agents.Explorer;
-import communication.Message;
 import entities.Entity;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class Matrix {
+public class Matrix implements Serializable {
 	
     private int[][] matrix;
     private int undiscoveredCells;
 
     public Matrix (int rows, int columns) {
         this.matrix = new int[columns][rows];
-        undiscoveredCells = matrix.length * matrix[0].length;
         
 		for(int row = 0; row < rows; row++) {
 			for(int column = 0; column < columns; column++)
 				setValue(row, column, 0);
 		}
 
+        undiscoveredCells = getNumColumns() * getNumRows();		
 		printMatrix();
     }
 
-    public int getValue(int row, int column) {
-    	return matrix[row][column];
-    }
-    
-    public void setValue(int row, int column, int val) {
-        if(matrix[row][column] == 0)
-        	undiscoveredCells--;
-        this.matrix[row][column] = val;
-    }
-
-    public final int[][] getMatrix() { return matrix; }
-
-    public int length() { return  matrix.length; }
-    
-	public boolean hasUndiscoveredCells() {
-		return undiscoveredCells > 0;
+	/**
+	 * Merges the matrix of the receiving agent with the matrix received
+	 * from other agents inside the communication radius.
+	 * @param receivedMatrix
+	 */
+	public void mergeMatrix(Matrix otherMatrix) {
+		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
+			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
+				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
+					setValue(column, row, otherMatrix.getValue(row, column));
+			}
+		}
+		
+		printMatrix();
 	}
 	
-	public int getNumRows() {
-		return matrix.length;
+	private void printMatrix() {		
+		for(int row = 0; row < matrix.length; row++) {
+			for(int column = 0; column < matrix[row].length; column++)
+				System.out.print(matrix[row][column] + " | ");
+			System.out.println(" " + (getNumRows() - 1 - row));
+		}
+		
+		for(int column = 0; column < matrix[0].length; column++)
+			System.out.print(column + "   ");
+		
+		System.out.println("\n");
 	}
 	
-	public int getNumColumns() {
-		return matrix[0].length;
-	}
-
 	public void updateMatrix(Grid<Object> grid, Coordinates center, int radius) {
         GridPoint centerPoint = new GridPoint(center.getX(), center.getY());
         GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, centerPoint, Object.class, radius, radius);
@@ -88,7 +88,7 @@ public class Matrix {
         this.printMatrix();
     }
 
-    public void printMatrix() {
+    /*public void printMatrix() {
         //public static void printMatrix(int[][] matrix, Consumer<int[]> rowPrinter) {
         Consumer<int[]> pipeDelimiter = (row) -> {
             Arrays.stream(row).forEach((el) -> System.out.print("| " + el + " "));
@@ -96,19 +96,35 @@ public class Matrix {
         };
             Arrays.stream(matrix)
                     .forEach((row) -> pipeDelimiter.accept(row));
-    }
+    }*/
+
+	/*******************************/
+	/***** Getters and setters *****/
+	/*******************************/
 	
-	/**
-	 * Merges the matrix of the receiving agent with the matrix received
-	 * from other agents inside the communication radius.
-	 * @param otherMatrix
-	 */
-	public void mergeMatrix(Matrix otherMatrix) {
-		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
-			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
-				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
-					setValue(column, row, otherMatrix.getValue(row, column));
-			}
-		}
+    public final int[][] getMatrix() { return matrix; }
+	
+    public int getValue(int row, int column) {
+    	return matrix[row][column];
+    }
+    
+    public void setValue(int row, int column, int val) {
+        if(matrix[row][column] == 0)
+        	undiscoveredCells--;
+        this.matrix[row][column] = val;
+    }
+
+    public int length() { return  matrix.length; }
+    
+	public boolean hasUndiscoveredCells() {
+		return undiscoveredCells > 0;
+	}
+	
+	public int getNumRows() {
+		return matrix.length;
+	}
+	
+	public int getNumColumns() {
+		return matrix[0].length;
 	}
 }

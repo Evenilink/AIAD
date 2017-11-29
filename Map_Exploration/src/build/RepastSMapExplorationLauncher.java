@@ -24,13 +24,12 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridBuilderParameters;
 import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
-import repast.simphony.space.grid.WrapAroundBorders;
 import sajas.wrapper.ContainerController;
 import sajas.core.Runtime;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
-	private static int NUM_AGENTS = 2;
+	private static int NUM_AGENTS = 0;
 	private static int NUM_SUPER_AGENTS = 2;
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
@@ -38,7 +37,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
 	
-	private static int NUM_OBSTACLES = 6;
+	private static int NUM_OBSTACLES = 0;
 	
 	private ContainerController mainContainer;
 	
@@ -60,7 +59,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	
 	private void launchAgents() {
 		try {
-			for(int i = 0; i < NUM_AGENTS; i++)
+			for(int i = 0; i < NUM_AGENTS + NUM_SUPER_AGENTS; i++)
 				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();				
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
@@ -70,10 +69,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	@Override
 	public Context build(Context<Object> context) {
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Map Exploration Network", context, true);
-		netBuilder.buildNetwork();
-						
-		explorers = new ArrayList<Explorer>();
-		
+		netBuilder.buildNetwork();		
 		context.setId("Map Exploration");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
@@ -86,9 +82,17 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 						new SimpleGridAdder<Object>(), 
 						true, MAX_GRID_X, MAX_GRID_Y));
 		
+		
 		// Create instances of agents.
+		explorers = new ArrayList<Explorer>();
 		for(int i = 0; i < NUM_AGENTS; i++) {
 			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT);
+			explorers.add(explorer);
+			context.add(explorer);
+		}
+		
+		for(int i = 0; i < NUM_SUPER_AGENTS; i++) {
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
@@ -110,8 +114,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 					grid.moveTo(obj, 7, 7);	
 					i++;
 				} else {
-					space.moveTo(obj, 6, 6);
-					grid.moveTo(obj, 6, 6);
+					space.moveTo(obj, 1, 2);
+					grid.moveTo(obj, 1, 2);
 				}
 			} else if(obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());

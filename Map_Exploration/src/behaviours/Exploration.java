@@ -29,7 +29,8 @@ public class Exploration extends CyclicBehaviour {
 	}
 
 	@Override
-	public void action() {	
+	public void action() {
+		System.out.println("State: " + state);
 		switch(state) {
 			case DFS:
 				dfs.run();

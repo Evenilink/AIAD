@@ -1,18 +1,14 @@
 package algorithms.dfs;
 
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import agents.Explorer;
 import behaviours.Exploration;
-import communication.Message;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
 import utils.Utils.ExplorerState;
-import utils.Utils.MessageType;
 
 public class DFS {
 
@@ -25,6 +21,8 @@ public class DFS {
 	}
 	
 	public void run() {
+		System.out.println("Running dfs");
+
 		GridPoint pt = agent.getGrid().getLocation(agent);
 		
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
@@ -34,7 +32,7 @@ public class DFS {
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : gridCells) {
 			
-			Iterator<Object> it = gridCell.items().iterator();
+			/*Iterator<Object> it = gridCell.items().iterator();
 			while(it.hasNext()) {
 				Object obj = it.next();
 				if(obj instanceof Explorer) {
@@ -46,7 +44,7 @@ public class DFS {
 						e.printStackTrace();
 					}
 				}
-			}
+			}*/
 			
 			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();
 			int column = gridCell.getPoint().getX();
@@ -64,10 +62,17 @@ public class DFS {
 		printMatrix(origin);
 		iteration++;*/
 		
-		if(destinationCell != null)
+		if(destinationCell != null) {
+			System.out.println("1");
 			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
-		else if(!agent.getMatrix().hasUndiscoveredCells())
+		}
+		else if(!agent.getMatrix().hasUndiscoveredCells()) {
 			behaviour.changeState(ExplorerState.EXIT);
-		else behaviour.changeState(ExplorerState.A_STAR);
+			System.out.println("2");
+		}
+		else {
+			behaviour.changeState(ExplorerState.A_STAR);
+			System.out.println("3");
+		}
 	}
 }

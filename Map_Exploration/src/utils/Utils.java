@@ -19,6 +19,11 @@ public class Utils {
 		HELP
 	}
 	
+	public enum AgentType {
+		SUPER_AGENT,
+		NORMAL_AGENT
+	}
+	
 	public static float getDistance(Coordinates source, Coordinates target) {
 		int distX = Math.abs(target.getX() - source.getX());
 		int distY = Math.abs(target.getY() - source.getY());

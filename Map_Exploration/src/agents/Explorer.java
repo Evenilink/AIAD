@@ -2,6 +2,7 @@ package agents;
 
 import behaviours.Exploration;
 import behaviours.Messaging;
+import behaviours.SharingInfo;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -12,6 +13,7 @@ import sajas.core.Agent;
 import sajas.domain.DFService;
 import utils.Coordinates;
 import utils.Matrix;
+import utils.Utils.AgentType;
 
 public class Explorer extends Agent {
 	
@@ -19,16 +21,24 @@ public class Explorer extends Agent {
 	private Grid<Object> grid;
 	private int radious;
 	private int communicationLimit;
+	private AgentType agentType;
 	private Matrix matrix;
-	
-
-	private int discoveredCells;
+			
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious) {
+		this.space = space;
+		this.grid = grid;
+		this.radious = radious;
+		this.communicationLimit = 20;		//CHANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		agentType = AgentType.SUPER_AGENT;
+		matrix = new Matrix(grid.getDimensions().getHeight(), grid.getDimensions().getWidth());
+	}
 	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
+		agentType = AgentType.NORMAL_AGENT;
 		matrix = new Matrix(grid.getDimensions().getHeight(), grid.getDimensions().getWidth());
 	}
 	
@@ -38,7 +48,9 @@ public class Explorer extends Agent {
 		dfAgentDescription.setName(getAID());
 		ServiceDescription serviceDescription = new ServiceDescription();
 		serviceDescription.setName(getName());
-		serviceDescription.setType("Explorer basic");
+		if(agentType == AgentType.NORMAL_AGENT)
+			serviceDescription.setType("Normal Explorer");
+		else serviceDescription.setType("Super Explorer");
 		dfAgentDescription.addServices(serviceDescription);
 		
 		try {
@@ -53,6 +65,19 @@ public class Explorer extends Agent {
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		addBehaviour(behaviour);
 		addBehaviour(new Messaging(this));
+		
+		if(agentType == AgentType.SUPER_AGENT) {			
+			DFAgentDescription template = new DFAgentDescription();
+			ServiceDescription sd = new ServiceDescription();
+			sd.setType("Super Explorer");
+			template.addServices(sd);
+			try {
+				DFAgentDescription[] result = DFService.search(this, template);
+				addBehaviour(new SharingInfo(this, result));
+			} catch (FIPAException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

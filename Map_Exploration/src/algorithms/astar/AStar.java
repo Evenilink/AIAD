@@ -24,6 +24,8 @@ public class AStar {
 	}
 	
 	public void run() {
+		System.out.println("4");
+
 		agent.moveAgent(new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY()));
 		pathNode++;
 		

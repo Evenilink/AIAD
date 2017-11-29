@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import jade.core.AID;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import sajas.core.Agent;
@@ -28,8 +29,35 @@ public class Message extends Agent {
 		this.destination = destination;
 	}
 	
+	/**
+	 * Constructor used for messages that are always being received.
+	 */
 	public Message() {
 		
+	}
+	
+	/**
+	 * Constructor for messages sent by Super Agents that are constantly
+	 * sharing location information.
+	 * @param messageType
+	 * @param str
+	 * @param receivers
+	 * @throws IOException 
+	 */
+	public Message(MessageType messageType, Object obj, DFAgentDescription[] receivers) throws IOException {
+		this.messageType = messageType;
+		this.obj = obj;
+		
+		msg = new ACLMessage(ACLMessage.INFORM);
+		msg.setContentObject((Serializable) this.obj);
+		for (int i = 0; i < receivers.length; i++)
+			msg.addReceiver(receivers[i].getName());
+	}
+	
+	private ACLMessage msg;
+	
+	public void sendMessageToMany() {
+		send(msg);
 	}
 	
 	public void sendMessage() throws IOException {
@@ -47,8 +75,10 @@ public class Message extends Agent {
 	}
 	
 	public Object receiveMessage() throws UnreadableException {
-		ACLMessage msg = blockingReceive();
-		return msg.getContentObject();
+		ACLMessage msg = receive();
+		if(msg != null)
+			return msg.getContentObject();
+		else return null;
 	}
 	
 	/*******************************/
