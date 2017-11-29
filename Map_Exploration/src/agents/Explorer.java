@@ -11,6 +11,7 @@ import repast.simphony.space.grid.GridPoint;
 import sajas.core.Agent;
 import sajas.domain.DFService;
 import utils.Coordinates;
+import utils.Matrix;
 
 public class Explorer extends Agent {
 	
@@ -18,8 +19,9 @@ public class Explorer extends Agent {
 	private Grid<Object> grid;
 	private int radious;
 	private int communicationLimit;
+	private Matrix matrix;
 	
-	private int[][] matrix;
+
 	private int discoveredCells;
 	
 	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit) {
@@ -27,11 +29,11 @@ public class Explorer extends Agent {
 		this.grid = grid;
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
-		
-		matrix = new int[grid.getDimensions().getHeight()][grid.getDimensions().getWidth()];
+		matrix = new Matrix(grid.getDimensions().getWidth(), grid.getDimensions().getHeight());
+
 		for(int row = 0; row < grid.getDimensions().getHeight(); row++) {
 			for(int column = 0; column < grid.getDimensions().getWidth(); column++)
-				matrix[row][column] = 0;
+				matrix.setValue(row, column, 0);
 		}
 	}
 	
@@ -73,7 +75,7 @@ public class Explorer extends Agent {
 	}
 	
 	public boolean mapFullyExplored() {
-		return ((matrix.length * matrix[0].length) == discoveredCells);
+		return ((matrix.length() * matrix[0].length) == discoveredCells);
 	}
 	
 	public Grid<Object> getGrid() {
