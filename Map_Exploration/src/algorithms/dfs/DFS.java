@@ -66,7 +66,7 @@ public class DFS {
 		
 		if(destinationCell != null)
 			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
-		else if(agent.getMatrix().mapFullyExplored())
+		else if(!agent.getMatrix().hasUndiscoveredCells())
 			behaviour.changeState(ExplorerState.EXIT);
 		else behaviour.changeState(ExplorerState.A_STAR);
 	}

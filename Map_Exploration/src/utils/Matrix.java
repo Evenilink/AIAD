@@ -3,11 +3,11 @@ package utils;
 public class Matrix {
 	
     private int[][] matrix;
-    private int discoveredCells;
+    private int undiscoveredCells;
 
     public Matrix (int rows, int columns) {
         this.matrix = new int[columns][rows];
-        discoveredCells = 0;
+        undiscoveredCells = matrix.length * matrix[0].length;
         
 		for(int row = 0; row < rows; row++) {
 			for(int column = 0; column < columns; column++)
@@ -21,7 +21,7 @@ public class Matrix {
     
     public void setValue(int row, int column, int val) {
         if(matrix[row][column] == 0)
-        	discoveredCells++;
+        	undiscoveredCells--;
         this.matrix[row][column] = val;
     }
 
@@ -29,7 +29,7 @@ public class Matrix {
 
     public int length() { return  matrix.length; }
     
-	public boolean mapFullyExplored() {
-		return ((matrix.length * matrix[0].length) == discoveredCells);
+	public boolean hasUndiscoveredCells() {
+		return undiscoveredCells > 0;
 	}
 }
