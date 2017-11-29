@@ -1,5 +1,6 @@
 package algorithms.dfs;
 
+import java.util.Iterator;
 import java.util.List;
 
 import agents.Explorer;
@@ -26,16 +27,23 @@ public class DFS {
 		List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 		
 		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
-		GridCell<Object> cell = null;			
-		for(int i = 0; i < gridCells.size(); i++) {
-			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCells.get(i).getPoint().getY();
-			int column = gridCells.get(i).getPoint().getX();
+		GridCell<Object> destinationCell = null;
+		for (GridCell<Object> gridCell : gridCells) {
+			Iterator<Object> it = gridCell.items().iterator();
+			while(it.hasNext()) {
+				if(it.next() instanceof Explorer) {
+					
+				}
+			}
+			
+			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();
+			int column = gridCell.getPoint().getX();
 			
 			// If the point is inside the grid...
 			if(row >= 0 && row < agent.getGrid().getDimensions().getWidth() && column >= 0 && column < agent.getGrid().getDimensions().getHeight()) {
 				if(behaviour.getMatrixValue(column, row) != 1) {
 					behaviour.setMatrixValue(column, row, 1);
-					cell = gridCells.get(i);
+					destinationCell = gridCell;
 				}
 			}
 		}
@@ -44,9 +52,8 @@ public class DFS {
 		printMatrix(origin);
 		iteration++;*/
 		
-		if(cell != null)
-			// System.out.println("Moving to point => x: " + cell.getPoint().getX() + ", y: " + cell.getPoint().getY());
-			agent.moveAgent(cell.getPoint());
+		if(destinationCell != null)
+			agent.moveAgent(destinationCell.getPoint());
 		else if(behaviour.mapFullyExplored())
 			behaviour.changeState(ExplorerState.EXIT);
 		else behaviour.changeState(ExplorerState.A_STAR);

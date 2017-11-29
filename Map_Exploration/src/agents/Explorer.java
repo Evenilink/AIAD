@@ -1,35 +1,17 @@
 package agents;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.omg.CORBA.INTERNAL;
-
-import algorithms.astar.AStar;
-import algorithms.astar.Pathfinding;
-import algorithms.dfs.DFS;
 import behaviours.AleatoryDFS;
-import entities.Exit;
-import entities.Obstacle;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.UnreadableException;
-import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.SpatialMath;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
-import repast.simphony.util.SimUtilities;
-import sajas.core.AID;
 import sajas.core.Agent;
-import sajas.core.behaviours.CyclicBehaviour;
 import sajas.domain.DFService;
 import utils.Coordinates;
-import utils.Utils.ExplorerState;
 
 public class Explorer extends Agent {
 	

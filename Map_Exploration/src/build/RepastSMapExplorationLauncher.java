@@ -30,7 +30,7 @@ import sajas.core.Runtime;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
-	private static int NUM_AGENTS = 1;
+	private static int NUM_AGENTS = 2;
 	private static int NUM_SUPER_AGENTS = 2;
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
@@ -101,11 +101,18 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6));
 		
-		// Updates/Sets all the objects ition.
+		// Updates/Sets all the objects location.
+		int i = 0;
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
-				space.moveTo(obj, 7, 7);
-				grid.moveTo(obj, 7, 7);
+				if(i == 0) {
+					space.moveTo(obj, 7, 7);
+					grid.moveTo(obj, 7, 7);	
+					i++;
+				} else {
+					space.moveTo(obj, 6, 6);
+					grid.moveTo(obj, 6, 6);
+				}
 			} else if(obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 				grid.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
