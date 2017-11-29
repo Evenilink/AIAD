@@ -14,8 +14,10 @@ public class NeighbourPoints {
     private GridPoint backPoint;
     private GridPoint leftPoint;
     private GridPoint rightPoint;
+    private int offset;
 
     private void NeighbourPoints(GridPoint centralPoint, Direction direction, int offset) {
+        this.offset = offset;
         if (direction == Direction.RIGHT) {
             // Facing Right
             frontPoint = new GridPoint(centralPoint.getX() + offset, centralPoint.getY());
@@ -121,5 +123,13 @@ public class NeighbourPoints {
 
     public int rightY() {
         return rightPoint.getY();
+    }
+
+    public String toString() {
+        return  "Offset: " + this.offset + "\n" +
+                "Front Object: " + frontPoint + "\n" +
+                "Back Object: " + backPoint + "\n" +
+                "Left Object: " + leftPoint + "\n" +
+                "Right Object: " + rightPoint;
     }
 }

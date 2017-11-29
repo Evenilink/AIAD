@@ -11,27 +11,27 @@ public class Pledge {
     private GridPoint startingPoint;
     private GridPoint previousPoint;
 
-    private GridPoint getNextLocation(NeighbourPoints pts, NeighbourObjects objs, GridPoint defaultPoint) {
+    private GridPoint getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
         if (objs.right() == null) {
-            System.out.println("Pledge: Moving right");
+            if (displayMessages) System.out.println("PLEDGE: Moving right");
             return pts.right();
         } else if (objs.front() == null && objs.right() instanceof Obstacle) {
-            System.out.println("Pledge: Moving forward");
+            if (displayMessages) System.out.println("PLEDGE: Moving forward");
             return pts.front();
         } else if (objs.front() instanceof Obstacle && objs.right() instanceof Obstacle && objs.left() instanceof Obstacle) {
-            System.out.println("Pledge: Moving back");
+            if (displayMessages) System.out.println("PLEDGE: Moving back");
             return pts.back();
         } else if (objs.front() instanceof Obstacle && objs.right() instanceof Obstacle) {
-            System.out.println("Pledge: Moving left");
+            if (displayMessages) System.out.println("PLEDGE: Moving left");
             return pts.left();
         }
-        System.err.println("Pledge: Can't find a cell to move!");
-        return defaultPoint;
+        if (displayMessages) System.err.println("PLEDGE: Can't find a cell to move!");
+        return null;
     }
 
-    public Pledge (Grid grid, Explorer explorer) {
-        this.grid = grid;
-        this.agent = explorer;
+    public Pledge (Explorer agent) {
+        this.agent = agent;
+        this.grid = agent.getGrid();
     }
 
     public void start() {
@@ -43,50 +43,61 @@ public class Pledge {
         return this.previousPoint != this.startingPoint && this.grid.getLocation(this.agent) == this.startingPoint;
     }
 
-    public GridPoint nextLocation () {
-        if (this.hasFinished()) return null;
+    public void run () {
+        this.run(false);
+    }
+
+    public void run (boolean displayMessages) {
+        if (this.hasFinished()) {
+            if (displayMessages) System.out.println("PLEDGE: Algorithm already ended, skipping...");
+            return;
+        }
+        if (this.previousPoint == null) {
+            this.start();
+        }
 
         GridPoint pt = grid.getLocation(agent); // Current point
         GridPoint nextLocation;
-        NeighbourPoints pts;
 
         if (pt.getX() > this.previousPoint.getX()) {
             // Facing Right
-            System.out.println("Pledge: Detecting direction - RIGHT");
-            pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.RIGHT);
+            if (displayMessages) System.out.println("PLEDGE: Detecting direction - RIGHT");
+            NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.RIGHT);
             NeighbourObjects objs = new NeighbourObjects(this.grid, pts);
-            nextLocation = this.getNextLocation(pts, objs, pt);
+            nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getX() < this.previousPoint.getX()) {
             // Facing Left
-            System.out.println("Pledge: Detecting direction - LEFT");
-            pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.LEFT);
+            if (displayMessages) System.out.println("PLEDGE: Detecting direction - LEFT");
+            NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.LEFT);
             NeighbourObjects objs = new NeighbourObjects(this.grid, pts);
-            nextLocation = this.getNextLocation(pts, objs, pt);
+            nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getY() > this.previousPoint.getY()) {
             // Facing Upwards
-            System.out.println("Pledge: Detecting direction - Upwards");
-            pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.UPWARDS);
+            if (displayMessages) System.out.println("PLEDGE: Detecting direction - Upwards");
+            NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.UPWARDS);
             NeighbourObjects objs = new NeighbourObjects(this.grid, pts);
-            nextLocation = this.getNextLocation(pts, objs, pt);
+            nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getY() < this.previousPoint.getY()) {
             // Facing Downwards
-            System.out.println("Pledge: Detecting direction - DOWNWARDS");
-            pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.DOWNWARDS);
+            if (displayMessages) System.out.println("PLEDGE: Detecting direction - DOWNWARDS");
+            NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.DOWNWARDS);
             NeighbourObjects objs = new NeighbourObjects(this.grid, pts);
-            nextLocation = this.getNextLocation(pts, objs, pt);
+            nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else {
-            // First iteration assuming facing up
-            System.out.println("Pledge: Detecting first iteration");
+            // First iteration, assuming one direction
+            if (displayMessages) System.out.println("PLEDGE: Detecting first iteration");
+            NeighbourPoints pts;
+            NeighbourObjects objs;
             int offset = 1;
             do {
-                pts = new NeighbourPoints(this.grid.getLocation(agent), NeighbourPoints.Direction.UPWARDS, offset);
-                NeighbourObjects objs = new NeighbourObjects(this.grid, pts);
-                nextLocation = this.getNextLocation(pts, objs, pt);
-                if (nextLocation != pt) break;
+                pts = new NeighbourPoints(this.grid.getLocation(agent), NeighbourPoints.Direction.RIGHT, offset);
+                objs = new NeighbourObjects(this.grid, pts);
+                nextLocation = this.getNextLocation(pts, objs, displayMessages);
+                if (nextLocation != null) break;
             } while ( ++offset <= this.agent.getRadious());
         }
 
         this.previousPoint = pt;
-        return nextLocation;
+        this.agent.moveAgent(nextLocation != null ? nextLocation : pt);
     }
 }

@@ -16,10 +16,10 @@ public class NeighbourObjects {
     }
 
     public NeighbourObjects(Grid grid, NeighbourPoints pts) {
-        this.frontObject = grid.getObjectsAt(pts.frontX(), pts.frontY());
-        this.backObject = grid.getObjectsAt(pts.backX(), pts.backY());
-        this.rightObject = grid.getObjectsAt(pts.rightX(), pts.rightY());
-        this.leftObject = grid.getObjectsAt(pts.leftX(), pts.leftY());
+        this.frontObject = grid.getObjectAt(pts.frontX(), pts.frontY());
+        this.backObject = grid.getObjectAt(pts.backX(), pts.backY());
+        this.rightObject = grid.getObjectAt(pts.rightX(), pts.rightY());
+        this.leftObject = grid.getObjectAt(pts.leftX(), pts.leftY());
     }
 
     public Object front() {
@@ -52,5 +52,12 @@ public class NeighbourObjects {
 
     public void right(Object rightObject) {
         this.rightObject = rightObject;
+    }
+
+    public String toString() {
+        return  "Front Object: " + frontObject + "\n" +
+                "Back Object: " + backObject + "\n" +
+                "Left Object: " + leftObject + "\n" +
+                "Right Object: " + rightObject;
     }
 }
