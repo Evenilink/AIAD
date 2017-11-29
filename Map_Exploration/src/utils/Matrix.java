@@ -32,4 +32,26 @@ public class Matrix {
 	public boolean mapFullyExplored() {
 		return ((matrix.length * matrix[0].length) == discoveredCells);
 	}
+	
+	public int getNumRows() {
+		return matrix.length;
+	}
+	
+	public int getNumColumns() {
+		return matrix[0].length;
+	}
+	
+	/**
+	 * Merges the matrix of the receiving agent with the matrix received
+	 * from other agents inside the communication radius.
+	 * @param receivedMatrix
+	 */
+	public void mergeMatrix(Matrix otherMatrix) {
+		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
+			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
+				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
+					setValue(column, row, otherMatrix.getValue(row, column));
+			}
+		}
+	}
 }
