@@ -1,5 +1,6 @@
 package behaviours;
 
+import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import sajas.core.behaviours.CyclicBehaviour;
@@ -13,12 +14,12 @@ import communication.GroupMessage;
 import communication.IndividualMessage;
 import communication.Message;
 
-public class Messaging extends CyclicBehaviour {
+public class ReceivingMessages extends CyclicBehaviour {
 
 	private Explorer agent;
 	private IndividualMessage individualMessage;
 	
-	public Messaging(Explorer agent) {
+	public ReceivingMessages(Explorer agent) {
 		this.agent = agent;
 	}
 	
@@ -26,7 +27,11 @@ public class Messaging extends CyclicBehaviour {
 	public void action() {
 		ACLMessage acl = agent.receiveMessage();
 		if(acl != null) {
-			// String message = acl.getContent();
+			AID sender = acl.getSender();
+			
+			// If this agent is not sending messages to this sender, then we'll add it to this agent messages receivers.
+			agent.getSendingMessagesBehaviour().getMessage().checkReceiver(sender);
+			
 			GroupMessage message = null;
 			try {
 				message = (GroupMessage) acl.getContentObject();
@@ -34,10 +39,10 @@ public class Messaging extends CyclicBehaviour {
 					Matrix otherMatrix = (Matrix) message.getContent();
 					agent.getMatrix().mergeMatrix(otherMatrix);
 				}
+				// System.out.println(agent.getLocalName() + " received group message of type '" + message.getMessageType() + "'");
 			} catch (UnreadableException e) {
 				e.printStackTrace();
 			}
-			System.out.println(agent.getLocalName() + " received GroupMessage: " + message.getMessageType());
 		}
 	}
 }

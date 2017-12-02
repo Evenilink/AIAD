@@ -2,12 +2,16 @@ package agents;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import behaviours.Exploration;
-import behaviours.Messaging;
-import behaviours.SharingInfo;
+import behaviours.ReceivingMessages;
+import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
+import groovy.json.internal.ArrayUtils;
+import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -29,6 +33,7 @@ public class Explorer extends Agent {
 	private int communicationLimit;
 	private AgentType agentType;
 	private Matrix matrix;
+	private SendingMessages sendingMessages;
 			
 	/**
 	 * Super agent constructor.
@@ -82,7 +87,7 @@ public class Explorer extends Agent {
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
 		addBehaviour(new Exploration(this));
-		addBehaviour(new Messaging(this));
+		addBehaviour(new ReceivingMessages(this));
 		
 		if(agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
@@ -90,9 +95,17 @@ public class Explorer extends Agent {
 			sd.setType("Super Explorer");
 			template.addServices(sd);
 			try {
-				DFAgentDescription[] result = DFService.search(this, template);
-				System.out.println("result length: " + result.length);
-				addBehaviour(new SharingInfo(this, result));
+				DFAgentDescription[] results = DFService.search(this, template);
+				List<AID> resultsFiltered = new ArrayList<>();
+				
+				// Take himself out from of the results.
+				for(int i = 0; i < results.length; i++) {
+					if(results[i].getName() != getAID())
+						resultsFiltered.add(results[i].getName());
+				}
+				
+				sendingMessages = new SendingMessages(this, resultsFiltered);
+				addBehaviour(sendingMessages);
 			} catch (FIPAException e) {
 				e.printStackTrace();
 			}
@@ -164,5 +177,9 @@ public class Explorer extends Agent {
 	
 	public Matrix getMatrix() {
 		return matrix;
+	}
+	
+	public SendingMessages getSendingMessagesBehaviour() {
+		return sendingMessages;
 	}
 }

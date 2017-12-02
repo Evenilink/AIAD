@@ -10,7 +10,7 @@ import utils.Utils.ExplorerState;
 public class Exploration extends CyclicBehaviour {
 
 	private Explorer agent;
-	private ExplorerState state;
+	public ExplorerState state;
 		
 	private DFS dfs;
 	private AStar astar;
@@ -45,6 +45,8 @@ public class Exploration extends CyclicBehaviour {
 	
 	public void changeState(ExplorerState newState) {
 		switch(newState) {
+			case IDLE:
+				break;
 			case A_STAR:
 				astar.init();
 				break;
