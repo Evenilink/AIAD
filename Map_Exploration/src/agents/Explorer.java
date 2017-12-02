@@ -82,9 +82,9 @@ public class Explorer extends Agent {
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
 		addBehaviour(new Exploration(this));
-		// addBehaviour(new Messaging(this));
+		addBehaviour(new Messaging(this));
 		
-		/* if(agentType == AgentType.SUPER_AGENT) {
+		if(agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("Super Explorer");
@@ -96,7 +96,7 @@ public class Explorer extends Agent {
 			} catch (FIPAException e) {
 				e.printStackTrace();
 			}
-		} */
+		}
 	}
 	
 	@Override

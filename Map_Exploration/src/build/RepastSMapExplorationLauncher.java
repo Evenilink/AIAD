@@ -106,8 +106,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
 				if(i == 0) {
-					space.moveTo(obj, 7, 7);
-					grid.moveTo(obj, 7, 7);	
+					space.moveTo(obj, 14, 7);
+					grid.moveTo(obj, 14, 7);	
 					i++;
 				} else {
 					space.moveTo(obj, 1, 2);

@@ -26,9 +26,7 @@ public class Matrix implements Serializable {
 				setValue(row, column, 0);
 		}
 
-        undiscoveredCells = getNumColumns() * getNumRows();		
-		printMatrix();
-		
+        undiscoveredCells = getNumColumns() * getNumRows();				
 		this.name = name;
     }
 
@@ -43,8 +41,8 @@ public class Matrix implements Serializable {
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
-				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
-					setValue(column, row, otherMatrix.getValue(row, column));
+				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0)
+					setValue(row, column, otherMatrix.getValue(row, column));
 			}
 		}
 		
@@ -94,7 +92,6 @@ public class Matrix implements Serializable {
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
             }
         }
-        this.printMatrix();
     }
 
     /*public void printMatrix() {
