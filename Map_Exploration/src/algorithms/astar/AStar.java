@@ -27,6 +27,7 @@ public class AStar {
 	public void init() {
 		GridPoint pt = agent.getGrid().getLocation(agent);
 		Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
+		System.out.println("Current point => x: " + pt.getX() + ", y: " + pt.getY() + "\nNearest unde => x: " + nearestUndiscovered.getX() + ", y: " + nearestUndiscovered.getY());
 		if(nearestUndiscovered != null)
 			setPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
 		else {
@@ -100,7 +101,7 @@ public class AStar {
 					
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if(agent.getMatrix().getValue(column, row) == 0 && distance < nearestDistance) {
+					if(agent.getMatrix().getValue(row, column) == 0 && distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}

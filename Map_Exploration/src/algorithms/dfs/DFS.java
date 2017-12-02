@@ -33,8 +33,8 @@ public class DFS {
 			int column = gridCell.getPoint().getX();
 			
 			// If the point is inside the grid...
-			if(row >= 0 && row < agent.getGrid().getDimensions().getWidth() && column >= 0 && column < agent.getGrid().getDimensions().getHeight()) {
-				if(agent.getMatrix().getValue(column, row) != 1)
+			if(row >= 0 && row < agent.getGrid().getDimensions().getHeight() && column >= 0 && column < agent.getGrid().getDimensions().getWidth()) {
+				if(agent.getMatrix().getValue(row, column) != 1)
 					destinationCell = gridCell;
 			}
 		}
