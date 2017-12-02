@@ -38,6 +38,9 @@ public class Matrix implements Serializable {
 	 * @param receivedMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix) {
+		System.out.println("Before merging matrix");
+		printMatrix();
+
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
 				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
@@ -45,6 +48,7 @@ public class Matrix implements Serializable {
 			}
 		}
 		
+		System.out.println("After merging matrix");
 		printMatrix();
 	}
 	

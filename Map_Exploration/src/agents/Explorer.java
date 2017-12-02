@@ -1,5 +1,8 @@
 package agents;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 import behaviours.Exploration;
 import behaviours.Messaging;
 import behaviours.SharingInfo;
@@ -127,7 +130,12 @@ public class Explorer extends Agent {
 		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 		for(int i = 0; i < message.getReceivers().size(); i++)
 			msg.addReceiver(message.getReceivers().get(i));
-		msg.setContent("Ola mano!");
+		try {
+			msg.setContentObject((Serializable) message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		send(msg);
 	}
 	
