@@ -14,7 +14,7 @@ public class AStar {
 	private Exploration behaviour;
 	
 	private Pathfinding pathfinding;
-	private List<algorithms.astar.Node> path; 
+	private List<Node> path; 
 	private int pathNode;
 	
 	public AStar(Explorer agent, Exploration behaviour) {
@@ -35,8 +35,6 @@ public class AStar {
 	}
 	
 	public void run() {
-		System.out.println("4");
-
 		agent.moveAgent(new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY()));
 		pathNode++;
 		

@@ -33,14 +33,11 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int NUM_SUPER_AGENTS = 2;
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
-	
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
-	
 	private static int NUM_OBSTACLES = 0;
 	
 	private ContainerController mainContainer;
-	
 	private ArrayList<Explorer> explorers;
 	
 	@Override
@@ -53,7 +50,6 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		Runtime runtime = Runtime.instance();
 		Profile profile = new ProfileImpl();
 		mainContainer = runtime.createMainContainer(profile);
-		
 		launchAgents();
 	}
 	

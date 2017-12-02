@@ -34,10 +34,8 @@ public class DFS {
 			
 			// If the point is inside the grid...
 			if(row >= 0 && row < agent.getGrid().getDimensions().getWidth() && column >= 0 && column < agent.getGrid().getDimensions().getHeight()) {
-				if(agent.getMatrix().getValue(column, row) != 1) {
-					agent.getMatrix().setValue(column, row, 1);
+				if(agent.getMatrix().getValue(column, row) != 1)
 					destinationCell = gridCell;
-				}
 			}
 		}
 		

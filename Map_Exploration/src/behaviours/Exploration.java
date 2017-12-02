@@ -20,7 +20,6 @@ public class Exploration extends CyclicBehaviour {
 		super(agent);
 		this.agent = agent;
 		state = ExplorerState.DFS;
-		
 		dfs = new DFS(agent, this);
 		astar = new AStar(agent, this);
 		pledge = new Pledge(agent);

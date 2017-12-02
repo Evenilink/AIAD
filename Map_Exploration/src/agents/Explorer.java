@@ -82,9 +82,9 @@ public class Explorer extends Agent {
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
 		addBehaviour(new Exploration(this));
-		addBehaviour(new Messaging(this));
+		// addBehaviour(new Messaging(this));
 		
-		if(agentType == AgentType.SUPER_AGENT) {
+		/* if(agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("Super Explorer");
@@ -96,7 +96,7 @@ public class Explorer extends Agent {
 			} catch (FIPAException e) {
 				e.printStackTrace();
 			}
-		}
+		} */
 	}
 	
 	@Override
@@ -120,23 +120,26 @@ public class Explorer extends Agent {
 	/*******************************/
 	
 	public void sendMessage(IndividualMessage message) {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		msg.addReceiver(message.getReceiver());
-		msg.setContent("Ola mano!");
-		send(msg);
+		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
+		acl.addReceiver(message.getReceiver());
+		try {
+			acl.setContentObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		send(acl);
 	}
 	
 	public void sendMessage(GroupMessage message) {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
 		for(int i = 0; i < message.getReceivers().size(); i++)
-			msg.addReceiver(message.getReceivers().get(i));
+			acl.addReceiver(message.getReceivers().get(i));
 		try {
-			msg.setContentObject((Serializable) message);
+			acl.setContentObject((Serializable) message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		send(msg);
+		send(acl);
 	}
 	
 	public ACLMessage receiveMessage() {
