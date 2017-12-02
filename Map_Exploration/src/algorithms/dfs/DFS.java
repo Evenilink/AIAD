@@ -21,8 +21,6 @@ public class DFS {
 	}
 	
 	public void run() {
-		System.out.println("Running dfs");
-
 		GridPoint pt = agent.getGrid().getLocation(agent);
 		
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
@@ -31,21 +29,6 @@ public class DFS {
 		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : gridCells) {
-			
-			/*Iterator<Object> it = gridCell.items().iterator();
-			while(it.hasNext()) {
-				Object obj = it.next();
-				if(obj instanceof Explorer) {
-					Explorer otherExplorer = (Explorer) obj;
-					Message msgSend = new Message(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
-					try {
-						msgSend.sendMessage();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}*/
-			
 			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();
 			int column = gridCell.getPoint().getX();
 			
@@ -58,21 +41,10 @@ public class DFS {
 			}
 		}
 		
-		/*NdPoint origin = space.getLocation(agent);
-		printMatrix(origin);
-		iteration++;*/
-		
-		if(destinationCell != null) {
-			System.out.println("1");
+		if(destinationCell != null)
 			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
-		}
-		else if(!agent.getMatrix().hasUndiscoveredCells()) {
+		else if(!agent.getMatrix().hasUndiscoveredCells())
 			behaviour.changeState(ExplorerState.EXIT);
-			System.out.println("2");
-		}
-		else {
-			behaviour.changeState(ExplorerState.A_STAR);
-			System.out.println("3");
-		}
+		else behaviour.changeState(ExplorerState.A_STAR);
 	}
 }

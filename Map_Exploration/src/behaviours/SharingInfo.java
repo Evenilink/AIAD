@@ -1,12 +1,8 @@
 package behaviours;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import agents.Explorer;
+import communication.GroupMessage;
 import communication.Message;
-import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import sajas.core.behaviours.CyclicBehaviour;
 import utils.Utils.MessageType;
@@ -14,19 +10,16 @@ import utils.Utils.MessageType;
 public class SharingInfo extends CyclicBehaviour {
 
 	private Explorer agent;
-	private Message msgSend;
+	private GroupMessage groupMessage;
 	
-	public SharingInfo(Explorer explorer, DFAgentDescription[] receivers) {
-		this.agent = explorer;
-		try {
-			Message msgSend = new Message(MessageType.MATRIX, agent.getMatrix(), receivers);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}				
+	public SharingInfo(Explorer agent, DFAgentDescription[] receivers) {
+		this.agent = agent;
+		groupMessage = new GroupMessage(MessageType.MATRIX, agent.getMatrix(), receivers);			
 	}
 
 	@Override
 	public void action() {
-		msgSend.sendMessageToMany();
+		agent.sendMessage(groupMessage);
+		groupMessage.setContent(agent.getMatrix());
 	}
 }

@@ -15,8 +15,10 @@ public class Matrix implements Serializable {
 	
     private int[][] matrix;
     private int undiscoveredCells;
+    
+    private String name;
 
-    public Matrix (int rows, int columns) {
+    public Matrix (int rows, int columns, String name) {
         this.matrix = new int[columns][rows];
         
 		for(int row = 0; row < rows; row++) {
@@ -26,6 +28,8 @@ public class Matrix implements Serializable {
 
         undiscoveredCells = getNumColumns() * getNumRows();		
 		printMatrix();
+		
+		this.name = name;
     }
 
 	/**
@@ -44,7 +48,8 @@ public class Matrix implements Serializable {
 		printMatrix();
 	}
 	
-	private void printMatrix() {		
+	public void printMatrix() {
+		System.out.println("Name: " + name);
 		for(int row = 0; row < matrix.length; row++) {
 			for(int column = 0; column < matrix[row].length; column++)
 				System.out.print(matrix[row][column] + " | ");
