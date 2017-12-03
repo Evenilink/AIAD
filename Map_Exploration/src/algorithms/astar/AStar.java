@@ -25,58 +25,30 @@ public class AStar {
 		pathNode = 0;
 	}
 	
-	public void init() {
-		if(agent.getMatrix().hasUndiscoveredCells()) {
-			GridPoint pt = agent.getGrid().getLocation(agent);
-			Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
-			if(nearestUndiscovered != null)
-				setPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
-			else System.err.println("There should be an undiscovered cell.");
-		} else {
-			System.out.println("Map is fully explored.");
-			goToExit();
-		}
-	}
-	
-	public void run() {
-		agent.moveAgent(new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY()));
-		pathNode++;
-		
-		if(pathNode == path.size()) {
-			if(agent.getExplorerState() == ExplorerState.EXPLORING) {
-				GridPoint pt = agent.getGrid().getLocation(agent);
-				if(!agent.getMatrix().hasUndiscoveredCells() && agent.getMatrix().getExit().equals(new Coordinates(pt.getX(), pt.getY()))) {
-					// Agent has explored all the map and has reached the exit.
-					
-				} else behaviour.changeState(Algorithm.DFS);
-			}
-			path = null;
-			pathNode = 0;
-		}
-	}
-	
-	public void setPath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
-		path = pathfinding.FindPath(sourceWorldPosition, targetWorldPosition);
+	public List<Node> computePath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
+		return pathfinding.FindPath(sourceWorldPosition, targetWorldPosition);
 	}
 	
 	/**
 	 * Sets the current path to traverse for the exit.
 	 */
-	public void goToExit() {
+	public List<Node> getPathToExit() {
 		Coordinates exit = agent.getMatrix().getExit();
 		if(exit != null) {
-			System.out.println("Exit => x: " + exit.getX() + ", y: " + exit.getY());
+			// System.out.println("Exit => x: " + exit.getX() + ", y: " + exit.getY());
 			GridPoint pt = agent.getGrid().getLocation(agent);
-			setPath(new Coordinates(pt.getX(), pt.getY()), exit);
-		} else System.err.println("The exit should have been found already.");
+			return computePath(new Coordinates(pt.getX(), pt.getY()), exit);
+		} 
+		return null;
 	}
 	
+	// TODO: move this function to utils.
 	/**
 	 * Returns the nearest coordinate that has not yet been discovered based on the agent's position.
 	 * @param currentPosition
 	 * @return
 	 */
-	private Coordinates getNearestUndiscoveredPlace(GridPoint currentPosition) {
+	public Coordinates getNearestUndiscoveredPlace(GridPoint currentPosition) {
 		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition, agent.getGrid().getDimensions().getHeight());
 		Coordinates nearestUndiscovered = null;
 		

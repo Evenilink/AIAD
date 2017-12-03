@@ -18,10 +18,9 @@ public class DFS {
 	
 	public DFS(Explorer agent, Exploration behaviour) {
 		this.agent = agent;
-		this.behaviour = behaviour;
 	}
 	
-	public void run(List<GridCell<Object>> neighborhoodCells) {
+	public GridCell<Object> execute(List<GridCell<Object>> neighborhoodCells) {
 		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : neighborhoodCells) {
@@ -36,10 +35,6 @@ public class DFS {
 				}
 			}
 		}
-		
-		if(destinationCell != null)
-			agent.moveAgent(Coordinates.FromGridPoint(destinationCell.getPoint()));
-		else // if(!agent.getMatrix().hasUndiscoveredCells())
-			behaviour.changeState(Algorithm.A_STAR);		// A* is going to find optimal path to exit.
+		return destinationCell;		
 	}
 }

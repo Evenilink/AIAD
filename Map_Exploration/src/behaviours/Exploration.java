@@ -12,47 +12,60 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
+import states.Explore;
+import states.IAgentState;
+import utils.Coordinates;
 import utils.Utils.AgentType;
 import utils.Utils.Algorithm;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
 
-	private Explorer agent;
-	private Algorithm state;
-		
+	private Explorer agent;		
 	private DFS dfs;
 	private AStar astar;
 	private Pledge pledge;
+	private IAgentState currState;
 	
 	public Exploration(Explorer agent) {
 		super(agent);
 		this.agent = agent;
-		state = Algorithm.DFS;
 		dfs = new DFS(agent, this);
 		astar = new AStar(agent, this);
 		pledge = new Pledge(agent);
+		changeState(new Explore());
 	}
-
+	
 	@Override
 	public void action() {
+		currState.execute();
+		sendMessagesHandler(getNeighborhoodCells());
+	}
+	
+	public void changeState(IAgentState newState) {
+		if(currState != null)
+			currState.exit();
+		currState = newState;
+		currState.enter(this);
+	}
+	
+	public GridPoint getAgentPoint() {
+		return agent.getGrid().getLocation(agent);
+	}
+	
+	public Coordinates getAgentCoordinates() {
+		GridPoint pt = getAgentPoint();
+		return new Coordinates(pt.getX(), pt.getY());
+	}
+	
+	public List<GridCell<Object>> getNeighborhoodCells() {
 		GridPoint pt = agent.getGrid().getLocation(agent);
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
-		List<GridCell<Object>> neighborhoodCells = nghCreator.getNeighborhood(false);
-		
-		switch(state) {
-			case DFS:
-				dfs.run(neighborhoodCells);
-				break;
-			case A_STAR:
-				astar.run();
-				break;
-			case PLEDGE:
-				pledge.run();
-				break;
-			default: break;
-		}
-		sendMessagesHandler(neighborhoodCells);
+		return nghCreator.getNeighborhood(false);
+	}
+	
+	public void moveAgentToCoordinate(Coordinates targetCoordinates) {
+		agent.moveAgent(targetCoordinates);
 	}
 	
 	/**
@@ -81,16 +94,15 @@ public class Exploration extends CyclicBehaviour {
 		agent.sendMessage(message);
 	}
 	
-	public void changeState(Algorithm newState) {
-		switch(newState) {
-			case A_STAR:
-				astar.init();
-				break;
-			case PLEDGE:
-				pledge.init();
-				break;
-			default: break;
-		}
-		state = newState;
+	public DFS getDFS() {
+		return dfs;
+	}
+	
+	public AStar getAStar() {
+		return astar;
+	}
+	
+	public Explorer getAgent() {
+		return agent;
 	}
 }
