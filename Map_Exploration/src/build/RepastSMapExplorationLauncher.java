@@ -17,6 +17,8 @@ import repast.simphony.context.space.continuous.ContinuousSpaceFactoryFinder;
 import repast.simphony.context.space.graph.NetworkBuilder;
 import repast.simphony.context.space.grid.GridFactory;
 import repast.simphony.context.space.grid.GridFactoryFinder;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.continuous.RandomCartesianAdder;
@@ -33,14 +35,11 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int NUM_SUPER_AGENTS = 2;
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
-	
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
-	
 	private static int NUM_OBSTACLES = 0;
 	
 	private ContainerController mainContainer;
-	
 	private ArrayList<Explorer> explorers;
 	
 	@Override
@@ -53,7 +52,6 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		Runtime runtime = Runtime.instance();
 		Profile profile = new ProfileImpl();
 		mainContainer = runtime.createMainContainer(profile);
-		
 		launchAgents();
 	}
 	
@@ -67,7 +65,19 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	}
 	
 	@Override
-	public Context build(Context<Object> context) {
+	public Context build(Context<Object> context) 
+	{
+		//Get Parameters
+		Parameters params = RunEnvironment.getInstance().getParameters();
+		
+		NUM_AGENTS = params.getInteger("numberOfAgents");
+		NUM_SUPER_AGENTS = params.getInteger("numberSuperAgents");
+		MAX_GRID_X = params.getInteger("gridSizeX");
+		MAX_GRID_Y = params.getInteger("gridSizeY");
+		VISION_RADIOUS = params.getInteger("visionRadius");
+		COMMUNICATION_LIMIT = params.getInteger("communicationLimit");
+		NUM_OBSTACLES = params.getInteger("numObstacles");
+		
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Map Exploration Network", context, true);
 		netBuilder.buildNetwork();		
 		context.setId("Map Exploration");
@@ -110,8 +120,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
 				if(i == 0) {
-					space.moveTo(obj, 7, 7);
-					grid.moveTo(obj, 7, 7);	
+					space.moveTo(obj, 14, 7);
+					grid.moveTo(obj, 14, 7);	
 					i++;
 				} else {
 					space.moveTo(obj, 1, 2);

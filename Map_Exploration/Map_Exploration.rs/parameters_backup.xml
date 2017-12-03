@@ -36,12 +36,6 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="numObstacles" displayName="Number of Obstacles" type="int" 
-						defaultValue="0" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
 				<parameter name="numberOfAgents" displayName="Number of Agents" type="int" 
 						defaultValue="1" 
 						isReadOnly="false" 
