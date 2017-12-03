@@ -104,4 +104,8 @@ public class Exploration extends CyclicBehaviour {
 	public Explorer getAgent() {
 		return agent;
 	}
+
+	public Pledge getPledge() {
+		return pledge;
+	}
 }
