@@ -52,7 +52,6 @@ public class Exploration extends CyclicBehaviour {
 				break;
 			default: break;
 		}
-		
 		sendMessagesHandler(neighborhoodCells);
 	}
 	

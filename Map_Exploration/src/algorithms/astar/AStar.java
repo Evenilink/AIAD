@@ -43,9 +43,12 @@ public class AStar {
 		pathNode++;
 		
 		if(pathNode == path.size()) {
-			// GridPoint pt = agent.getGrid().getLocation(agent);
-			
-			if(agent.getExplorerState() == ExplorerState.EXPLORING)
+			if(agent.getExplorerState() == ExplorerState.EXPLORING) {
+				GridPoint pt = agent.getGrid().getLocation(agent);
+				if(!agent.getMatrix().hasUndiscoveredCells() && agent.getMatrix().getExit().equals(new Coordinates(pt.getX(), pt.getY())) {
+					// Agent has explored all the map and has reached the exit.
+				}
+			}
 				behaviour.changeState(Algorithm.DFS);
 			else if(agent.getExplorerState() == ExplorerState.GOING_EXIT) {
 				
