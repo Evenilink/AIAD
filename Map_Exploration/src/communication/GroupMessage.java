@@ -3,7 +3,6 @@ package communication;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.rtp.ReceiveStream;
 
 import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
