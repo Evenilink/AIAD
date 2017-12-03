@@ -8,11 +8,15 @@ public class Utils {
 	
 	public enum ExplorerState {
 		IDLE,
+		EXPLORING,
+		GOING_EXIT,
+		RECRUITING
+	}
+	
+	public enum Algorithm {
 		DFS,
 		A_STAR,
-		PLEDGE,
-		EXIT
-		// What if we have an IDLE state??????
+		PLEDGE
 	}
 	
 	public enum MessageType {
@@ -23,6 +27,12 @@ public class Utils {
 	public enum AgentType {
 		SUPER_AGENT,
 		NORMAL_AGENT
+	}
+	
+	// Not being used.
+	public enum EntityCode {
+		EXIT,
+		OBSTACLE
 	}
 	
 	public static float getDistance(Coordinates source, Coordinates target) {

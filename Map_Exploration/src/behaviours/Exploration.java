@@ -8,19 +8,18 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
-import jade.core.AID;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
 import utils.Utils.AgentType;
-import utils.Utils.ExplorerState;
+import utils.Utils.Algorithm;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
 
 	private Explorer agent;
-	private ExplorerState state;
+	private Algorithm state;
 		
 	private DFS dfs;
 	private AStar astar;
@@ -29,7 +28,7 @@ public class Exploration extends CyclicBehaviour {
 	public Exploration(Explorer agent) {
 		super(agent);
 		this.agent = agent;
-		state = ExplorerState.DFS;
+		state = Algorithm.DFS;
 		dfs = new DFS(agent, this);
 		astar = new AStar(agent, this);
 		pledge = new Pledge(agent);
@@ -51,11 +50,17 @@ public class Exploration extends CyclicBehaviour {
 			case PLEDGE:
 				pledge.run();
 				break;
-			case EXIT:
-				break;
 			default: break;
 		}
 		
+		sendMessagesHandler(neighborhoodCells);
+	}
+	
+	/**
+	 * Searches for other explorers in the neighborhood and sends them his matrix.
+	 * @param neighborhoodCells
+	 */
+	private void sendMessagesHandler(List<GridCell<Object>> neighborhoodCells) {
 		for (GridCell<Object> gridCell : neighborhoodCells) {
             Iterator<Object> it = gridCell.items().iterator();
             while(it.hasNext()) {
@@ -77,10 +82,8 @@ public class Exploration extends CyclicBehaviour {
 		agent.sendMessage(message);
 	}
 	
-	public void changeState(ExplorerState newState) {
+	public void changeState(Algorithm newState) {
 		switch(newState) {
-			case IDLE:
-				break;
 			case A_STAR:
 				astar.init();
 				break;
@@ -89,7 +92,6 @@ public class Exploration extends CyclicBehaviour {
 				break;
 			default: break;
 		}
-		
 		state = newState;
 	}
 }

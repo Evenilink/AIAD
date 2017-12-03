@@ -5,7 +5,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import algorithms.astar.AStar;
+import algorithms.dfs.DFS;
 import behaviours.Exploration;
+import behaviours.GoingExit;
 import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;
 import communication.GroupMessage;
@@ -24,6 +27,7 @@ import sajas.domain.DFService;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils.AgentType;
+import utils.Utils.ExplorerState;
 
 public class Explorer extends Agent {
 	
@@ -32,8 +36,14 @@ public class Explorer extends Agent {
 	private int radious;
 	private int communicationLimit;
 	private AgentType agentType;
+	private ExplorerState explorerState;
 	private Matrix matrix;
 	private SendingMessages sendingMessages;
+	
+	private Exploration explorationgBehaviour;
+	private GoingExit goingExitBehaviour;
+	private AStar astar;
+	private DFS dfs;
 			
 	/**
 	 * Super agent constructor.
@@ -46,6 +56,8 @@ public class Explorer extends Agent {
 		this.grid = grid;
 		this.radious = radious;
 		agentType = AgentType.SUPER_AGENT;
+		explorerState = ExplorerState.EXPLORING;
+		
 	}
 	
 	/**
@@ -61,6 +73,7 @@ public class Explorer extends Agent {
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
 		agentType = AgentType.NORMAL_AGENT;
+		explorerState = ExplorerState.EXPLORING;
 	}
 	
 	@Override
@@ -86,7 +99,8 @@ public class Explorer extends Agent {
 		GridPoint initLocation = grid.getLocation(this);
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
-		addBehaviour(new Exploration(this));
+		explorationgBehaviour = new Exploration(this);
+		addBehaviour(explorationgBehaviour);
 		addBehaviour(new ReceivingMessages(this));
 		
 		if(agentType == AgentType.SUPER_AGENT) {
@@ -126,6 +140,22 @@ public class Explorer extends Agent {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 			getMatrix().updateMatrix(getGrid(), targetCoordinates, getRadious());
 		}
+	}
+	
+	public void changeState(ExplorerState newState) {
+		switch(newState) {
+			case EXPLORING:
+				break;
+			case GOING_EXIT:
+				removeBehaviour(explorationgBehaviour);
+				goingExitBehaviour = new GoingExit(this);
+				addBehaviour(goingExitBehaviour);
+				break;
+			case RECRUITING:
+				break;
+			default: break;
+		}
+		explorerState = newState;
 	}
 	
 	/*******************************/
@@ -185,5 +215,13 @@ public class Explorer extends Agent {
 	
 	public AgentType getAgentType() {
 		return agentType;
+	}
+	
+	public ExplorerState getExplorerState() {
+		return explorerState;
+	}
+	
+	public AStar getAStar() {
+		return astar;
 	}
 }

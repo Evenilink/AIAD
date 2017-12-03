@@ -1,13 +1,12 @@
 package algorithms.astar;
 
-import java.util.Collections;
 import java.util.List;
 
 import agents.Explorer;
 import behaviours.Exploration;
-import jade.util.leap.Collection;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
+import utils.Utils.Algorithm;
 import utils.Utils.ExplorerState;
 
 public class AStar {
@@ -27,14 +26,15 @@ public class AStar {
 	}
 	
 	public void init() {
-		GridPoint pt = agent.getGrid().getLocation(agent);
-		Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
-		if(nearestUndiscovered != null)
-			setPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
-		else {
-			System.out.println("Already explored the whole map\nCurrent position => x: " + pt.getX() + ", y: " + pt.getY());
-			behaviour.changeState(ExplorerState.EXIT);
-			//TODO: Exit must be found, implement coop algorithm. We already know all the places.
+		if(agent.getMatrix().hasUndiscoveredCells()) {
+			GridPoint pt = agent.getGrid().getLocation(agent);
+			Coordinates nearestUndiscovered = getNearestUndiscoveredPlace(pt);
+			if(nearestUndiscovered != null)
+				setPath(new Coordinates(pt.getX(), pt.getY()), nearestUndiscovered);
+			else System.err.println("There should be an undiscovered cell.");
+		} else {
+			System.out.println("Map is fully explored.");
+			goToExit();
 		}
 	}
 	
@@ -43,7 +43,13 @@ public class AStar {
 		pathNode++;
 		
 		if(pathNode == path.size()) {
-			behaviour.changeState(ExplorerState.DFS);
+			// GridPoint pt = agent.getGrid().getLocation(agent);
+			
+			if(agent.getExplorerState() == ExplorerState.EXPLORING)
+				behaviour.changeState(Algorithm.DFS);
+			else if(agent.getExplorerState() == ExplorerState.GOING_EXIT) {
+				
+			}
 			path = null;
 			pathNode = 0;
 		}
@@ -51,6 +57,18 @@ public class AStar {
 	
 	public void setPath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
 		path = pathfinding.FindPath(sourceWorldPosition, targetWorldPosition);
+	}
+	
+	/**
+	 * Sets the current path to traverse for the exit.
+	 */
+	public void goToExit() {
+		Coordinates exit = agent.getMatrix().getExit();
+		if(exit != null) {
+			System.out.println("Exit => x: " + exit.getX() + ", y: " + exit.getY());
+			GridPoint pt = agent.getGrid().getLocation(agent);
+			setPath(new Coordinates(pt.getX(), pt.getY()), exit);
+		} else System.err.println("The exit should have been found already.");
 	}
 	
 	/**
