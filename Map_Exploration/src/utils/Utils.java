@@ -6,19 +6,6 @@ public class Utils {
 	
 	public static final double sqrt2 = Math.sqrt(2);
 	
-	public enum ExplorerState {
-		IDLE,
-		EXPLORING,
-		GOING_EXIT,
-		RECRUITING
-	}
-	
-	public enum Algorithm {
-		DFS,
-		A_STAR,
-		PLEDGE
-	}
-	
 	public enum MessageType {
 		MATRIX,
 		HELP
