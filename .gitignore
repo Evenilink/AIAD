@@ -9,3 +9,7 @@ Map_Exploration/.idea/libraries/jade.xml
 Map_Exploration/.idea/libraries/SAJaS.xml
 
 *.log
+Map_Exploration/Repast.bat
+Map_Exploration/.idea/uiDesigner.xml
+Map_Exploration/.idea/compiler.xml
+Map_Exploration/.idea/libraries/org_codehaus_groovy_eclipse_ant_2_9_2.xml
