@@ -182,4 +182,8 @@ public class Explorer extends Agent {
 	public SendingMessages getSendingMessagesBehaviour() {
 		return sendingMessages;
 	}
+	
+	public AgentType getAgentType() {
+		return agentType;
+	}
 }

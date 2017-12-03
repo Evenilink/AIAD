@@ -7,6 +7,7 @@ import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
 
 public class Pledge {
+	
     private final Grid grid;
     private final Explorer agent;
     private GridPoint startingPoint;

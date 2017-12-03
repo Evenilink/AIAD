@@ -20,15 +20,10 @@ public class DFS {
 		this.behaviour = behaviour;
 	}
 	
-	public void run() {
-		GridPoint pt = agent.getGrid().getLocation(agent);
-		
-		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
-		List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
-		
+	public void run(List<GridCell<Object>> neighborhoodCells) {
 		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
-		for (GridCell<Object> gridCell : gridCells) {
+		for (GridCell<Object> gridCell : neighborhoodCells) {
 			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();
 			int column = gridCell.getPoint().getX();
 			

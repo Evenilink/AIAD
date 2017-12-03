@@ -1,16 +1,26 @@
 package behaviours;
 
+import java.util.Iterator;
+import java.util.List;
+
 import agents.Explorer;
 import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
+import communication.IndividualMessage;
+import jade.core.AID;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
+import utils.Utils.AgentType;
 import utils.Utils.ExplorerState;
+import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
 
 	private Explorer agent;
-	public ExplorerState state;
+	private ExplorerState state;
 		
 	private DFS dfs;
 	private AStar astar;
@@ -27,9 +37,13 @@ public class Exploration extends CyclicBehaviour {
 
 	@Override
 	public void action() {
+		GridPoint pt = agent.getGrid().getLocation(agent);
+		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
+		List<GridCell<Object>> neighborhoodCells = nghCreator.getNeighborhood(false);
+		
 		switch(state) {
 			case DFS:
-				dfs.run();
+				dfs.run(neighborhoodCells);
 				break;
 			case A_STAR:
 				astar.run();
@@ -41,6 +55,26 @@ public class Exploration extends CyclicBehaviour {
 				break;
 			default: break;
 		}
+		
+		for (GridCell<Object> gridCell : neighborhoodCells) {
+            Iterator<Object> it = gridCell.items().iterator();
+            while(it.hasNext()) {
+            	Object obj = it.next();
+            	if(obj instanceof Explorer) {
+            		Explorer otherExplorer = (Explorer) obj;
+            		sendMessageToNeighbor(otherExplorer);
+            	}
+            }
+		}
+	}
+	
+	private void sendMessageToNeighbor(Explorer otherExplorer) {
+		// Super agents don't need to exchange matrix messages when they're close to each other.
+		if(agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
+			return;
+		
+		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
+		agent.sendMessage(message);
 	}
 	
 	public void changeState(ExplorerState newState) {

@@ -29,8 +29,8 @@ import sajas.core.Runtime;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
-	private static int NUM_AGENTS = 0;
-	private static int NUM_SUPER_AGENTS = 2;
+	private static int NUM_AGENTS = 2;
+	private static int NUM_SUPER_AGENTS = 0;
 	private static int COMMUNICATION_LIMIT = 10;
 	private static int VISION_RADIOUS = 1;
 	private static int MAX_GRID_X = 15;
