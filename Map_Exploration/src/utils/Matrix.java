@@ -26,9 +26,7 @@ public class Matrix implements Serializable {
 				setValue(row, column, 0);
 		}
 
-        undiscoveredCells = getNumColumns() * getNumRows();		
-		printMatrix();
-		
+        undiscoveredCells = getNumColumns() * getNumRows();				
 		this.name = name;
     }
 
@@ -43,8 +41,8 @@ public class Matrix implements Serializable {
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
-				if (otherMatrix.getValue(row, column) != 0 && getValue(column, row) == 0)
-					setValue(column, row, otherMatrix.getValue(row, column));
+				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0)
+					setValue(row, column, otherMatrix.getValue(row, column));
 			}
 		}
 		
@@ -83,6 +81,7 @@ public class Matrix implements Serializable {
                 Object obj = it.next();
 
                 // if Explorer is standing there, the cell must be empty (value = 1)
+                // TODO: false, it can also be 2 (exit).
                 if (obj == null || obj instanceof Explorer) value = 1;
                 else if (obj instanceof Entity) {
                     Entity entity = (Entity) obj;
@@ -94,18 +93,26 @@ public class Matrix implements Serializable {
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
             }
         }
-        this.printMatrix();
     }
-
-    /*public void printMatrix() {
-        //public static void printMatrix(int[][] matrix, Consumer<int[]> rowPrinter) {
-        Consumer<int[]> pipeDelimiter = (row) -> {
-            Arrays.stream(row).forEach((el) -> System.out.print("| " + el + " "));
-            System.out.println("|");
-        };
-            Arrays.stream(matrix)
-                    .forEach((row) -> pipeDelimiter.accept(row));
-    }*/
+	
+	public boolean hasUndiscoveredCells() {
+		return undiscoveredCells > 0;
+	}
+	
+	/**
+	 * Returns the exit coordinates.
+	 * @return Exit coordinates or null.
+	 */
+	public Coordinates getExit() {
+		for(int row = 0; row < getNumRows(); row++) {
+			for(int column = 0; column < getNumColumns(); column++) {
+				System.out.print(getValue(row, column));
+				if(getValue(row, column) == 2)
+					return utils.Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
+			}
+		}
+		return null;
+	}
 
 	/*******************************/
 	/***** Getters and setters *****/
@@ -124,10 +131,6 @@ public class Matrix implements Serializable {
     }
 
     public int length() { return  matrix.length; }
-    
-	public boolean hasUndiscoveredCells() {
-		return undiscoveredCells > 0;
-	}
 	
 	public int getNumRows() {
 		return matrix.length;

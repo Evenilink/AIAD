@@ -108,8 +108,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		}
 		
 		// Create the exit entity.
-		Exit exit = new Exit(3, 3);
-		context.add(exit);
+		context.add(new Exit(3, 3));
 		
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)

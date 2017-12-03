@@ -2,12 +2,15 @@ package agents;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import behaviours.Exploration;
-import behaviours.Messaging;
-import behaviours.SharingInfo;
+import behaviours.ReceivingMessages;
+import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
+import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -29,6 +32,7 @@ public class Explorer extends Agent {
 	private int communicationLimit;
 	private AgentType agentType;
 	private Matrix matrix;
+	private SendingMessages sendingMessages;
 			
 	/**
 	 * Super agent constructor.
@@ -82,7 +86,7 @@ public class Explorer extends Agent {
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
 		addBehaviour(new Exploration(this));
-		addBehaviour(new Messaging(this));
+		addBehaviour(new ReceivingMessages(this));
 		
 		if(agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
@@ -90,9 +94,17 @@ public class Explorer extends Agent {
 			sd.setType("Super Explorer");
 			template.addServices(sd);
 			try {
-				DFAgentDescription[] result = DFService.search(this, template);
-				System.out.println("result length: " + result.length);
-				addBehaviour(new SharingInfo(this, result));
+				DFAgentDescription[] results = DFService.search(this, template);
+				List<AID> resultsFiltered = new ArrayList<>();
+				
+				// Take himself out from of the results.
+				for(int i = 0; i < results.length; i++) {
+					if(results[i].getName() != getAID())
+						resultsFiltered.add(results[i].getName());
+				}
+				
+				sendingMessages = new SendingMessages(this, resultsFiltered);
+				addBehaviour(sendingMessages);
 			} catch (FIPAException e) {
 				e.printStackTrace();
 			}
@@ -120,23 +132,26 @@ public class Explorer extends Agent {
 	/*******************************/
 	
 	public void sendMessage(IndividualMessage message) {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-		msg.addReceiver(message.getReceiver());
-		msg.setContent("Ola mano!");
-		send(msg);
+		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
+		acl.addReceiver(message.getReceiver());
+		try {
+			acl.setContentObject(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		send(acl);
 	}
 	
 	public void sendMessage(GroupMessage message) {
-		ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
 		for(int i = 0; i < message.getReceivers().size(); i++)
-			msg.addReceiver(message.getReceivers().get(i));
+			acl.addReceiver(message.getReceivers().get(i));
 		try {
-			msg.setContentObject((Serializable) message);
+			acl.setContentObject((Serializable) message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		send(msg);
+		send(acl);
 	}
 	
 	public ACLMessage receiveMessage() {
@@ -161,5 +176,13 @@ public class Explorer extends Agent {
 	
 	public Matrix getMatrix() {
 		return matrix;
+	}
+	
+	public SendingMessages getSendingMessagesBehaviour() {
+		return sendingMessages;
+	}
+	
+	public AgentType getAgentType() {
+		return agentType;
 	}
 }
