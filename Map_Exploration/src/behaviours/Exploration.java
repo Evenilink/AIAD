@@ -16,7 +16,6 @@ import states.Explore;
 import states.IAgentState;
 import utils.Coordinates;
 import utils.Utils.AgentType;
-import utils.Utils.Algorithm;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {

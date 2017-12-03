@@ -6,8 +6,6 @@ import agents.Explorer;
 import behaviours.Exploration;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
-import utils.Utils.Algorithm;
-import utils.Utils.ExplorerState;
 
 public class AStar {
 
