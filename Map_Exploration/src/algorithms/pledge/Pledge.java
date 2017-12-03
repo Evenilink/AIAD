@@ -42,7 +42,7 @@ public class Pledge {
     }
 
     public boolean hasFinished() {
-        return this.previousPoint != this.startingPoint && this.grid.getLocation(this.agent) == this.startingPoint;
+        return (!this.previousPoint.equals(this.startingPoint)) && this.grid.getLocation(this.agent).equals(this.startingPoint);
     }
 
     public void run () {
