@@ -2,6 +2,7 @@ package utils;
 
 import agents.Explorer;
 import entities.Entity;
+import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
@@ -33,7 +34,7 @@ public class Matrix implements Serializable {
 	/**
 	 * Merges the matrix of the receiving agent with the matrix received
 	 * from other agents inside the communication radius.
-	 * @param receivedMatrix
+	 * @param otherMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix) {
 		System.out.println("Before merging matrix");
@@ -76,6 +77,15 @@ public class Matrix implements Serializable {
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
             }
 
+			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
+			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
+			if (obstacleHit != null) {
+				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
+				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
+				continue;
+
+			}
+
             while(it.hasNext()) {
                 int value = 0;
                 Object obj = it.next();
@@ -93,6 +103,7 @@ public class Matrix implements Serializable {
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
             }
         }
+        printMatrix();
     }
 	
 	public boolean hasUndiscoveredCells() {
@@ -104,6 +115,7 @@ public class Matrix implements Serializable {
 	 * @return Exit coordinates or null.
 	 */
 	public Coordinates getExit() {
+		// TODO Use the setValue to see when the exit is found and save it into a variable (no need to read the matrix)
 		for(int row = 0; row < getNumRows(); row++) {
 			for(int column = 0; column < getNumColumns(); column++) {
 				System.out.print(getValue(row, column));

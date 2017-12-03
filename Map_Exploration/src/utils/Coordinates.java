@@ -30,4 +30,12 @@ public class Coordinates {
 		Coordinates otherCoordinates = (Coordinates) other;
 		return (x == otherCoordinates.getX() && y == otherCoordinates.getY());
 	}
+
+	@Override
+	public String toString() {
+		return "Coordinates{" +
+				"x=" + x +
+				", y=" + y +
+				'}';
+	}
 }

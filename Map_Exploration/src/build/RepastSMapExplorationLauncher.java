@@ -31,10 +31,10 @@ import sajas.core.Runtime;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
-	private static int NUM_AGENTS = 0;
-	private static int NUM_SUPER_AGENTS = 2;
+	private static int NUM_AGENTS = 1;
+	private static int NUM_SUPER_AGENTS = 0;
 	private static int COMMUNICATION_LIMIT = 10;
-	private static int VISION_RADIOUS = 1;
+	private static int VISION_RADIOUS = 2;
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
 	private static int NUM_OBSTACLES = 0;
@@ -112,15 +112,27 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)
-			context.add(new Obstacle(5 + i, 6));
-		
+			context.add(new Obstacle(5 + i, 6, false));
+		context.add(new Obstacle(6, 6, false));
+		context.add(new Obstacle(7, 6, false));
+		context.add(new Obstacle(8, 6, false));
+		context.add(new Obstacle(9, 6, false));
+		context.add(new Obstacle(6, 7, false));
+		context.add(new Obstacle(7, 8, false));
+		context.add(new Obstacle(7, 9, false));
+		context.add(new Obstacle(8, 8, false));
+		context.add(new Obstacle(8, 9, false));
+		context.add(new Obstacle(9, 8, false));
+		context.add(new Obstacle(9, 9, false));
+
+
 		// Updates/Sets all the objects location.
 		int i = 0;
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
 				if(i == 0) {
-					space.moveTo(obj, 14, 7);
-					grid.moveTo(obj, 14, 7);	
+					space.moveTo(obj, 7, 7);
+					grid.moveTo(obj, 7, 7);
 					i++;
 				} else {
 					space.moveTo(obj, 1, 2);

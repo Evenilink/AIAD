@@ -12,6 +12,7 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
+import states.DiscoverObstacleBounds;
 import states.Explore;
 import states.IAgentState;
 import utils.Coordinates;
@@ -37,7 +38,7 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		currState.execute();
+		if (currState != null) currState.execute();
 		sendMessagesHandler(getNeighborhoodCells());
 	}
 	
