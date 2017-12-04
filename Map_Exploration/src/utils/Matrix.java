@@ -38,8 +38,8 @@ public class Matrix implements Serializable {
 	 * @param otherMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix) {
-		System.out.println("Before merging matrix");
-		printMatrix();
+		//System.out.println("Before merging matrix");
+		//printMatrix();
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
@@ -48,8 +48,8 @@ public class Matrix implements Serializable {
 			}
 		}
 		
-		System.out.println("After merging matrix");
-		printMatrix();
+		//System.out.println("After merging matrix");
+		//printMatrix();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Matrix implements Serializable {
 	}
 
 
-	public void updateMatrix(Grid<Object> grid, Coordinates center, int radius) {
+	public void updateMatrix(Exploration behaviour, Grid<Object> grid, Coordinates center, int radius) {
         GridPoint centerPoint = new GridPoint(center.getX(), center.getY());
         GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, centerPoint, Object.class, radius, radius);
         List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(true);
@@ -101,6 +101,10 @@ public class Matrix implements Serializable {
 					if(obj instanceof Entity) {
 						Entity entity = (Entity) obj;
 						value = entity.getCode();
+	                	if(entity instanceof Obstacle) {
+	                		Coordinates coordinates = new Coordinates(gridCell.getPoint().getX(), gridCell.getPoint().getY());
+	                		behaviour.getAStar().setNodeWalkable(coordinates, false);
+	                	}
 						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
 					}
 					// Else if the object found is an Explorer consider empty cell (value = 1)
@@ -113,7 +117,7 @@ public class Matrix implements Serializable {
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
 			}
         }
-        printMatrix();
+        //printMatrix();
     }
 	
 	public boolean hasUndiscoveredCells() {

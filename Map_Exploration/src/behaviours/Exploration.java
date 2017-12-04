@@ -14,13 +14,17 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
-import states.*;
+import states.Explore;
+import states.Guarding;
+import states.IAgentState;
+import states.Recruiting;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils.AgentType;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
+	
 	private static final long serialVersionUID = 7526472295622776147L;  // unique id
 
 	private Explorer agent;
@@ -64,9 +68,15 @@ public class Exploration extends CyclicBehaviour {
 							agent.getMatrix().mergeMatrix(otherMatrix);
 							break;
 						case OTHER_GUARDING:
-							int numAgentsOut = (int) message.getContent();
-							if(numAgentsOut < 1)
+							boolean isToExit = (boolean) message.getContent();
+							if(isToExit) {
+								System.out.println("Abandon map");
+								changeState(new Guarding());
+
+							} else {
+								System.out.println("Keep recruiting");
 								changeState(new Recruiting());
+							}
 							break;
 						case HELP:
 							//TODO not implemented yet

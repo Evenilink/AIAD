@@ -8,7 +8,8 @@ public class Utils {
 	public enum MessageType {
 		MATRIX,
 		HELP,
-		OTHER_GUARDING
+		OTHER_GUARDING,
+		REACHED_EXIT
 	}
 	
 	public enum AgentType {

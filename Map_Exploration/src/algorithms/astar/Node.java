@@ -63,6 +63,11 @@ public class Node {
 		hCost = value;
 	}
 	
+	public void setWalkable(boolean newWalkable) {
+		walkable = newWalkable;
+	}
+	
+	@Override
 	public boolean equals(Object other) {
 		if(!(other instanceof Node))
 			return false;

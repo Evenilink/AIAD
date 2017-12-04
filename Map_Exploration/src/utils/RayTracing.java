@@ -25,7 +25,7 @@ public class RayTracing {
         int x = origin.getX();
         int y = origin.getY();
         for (int n = 1 + dx + dy; n > 0; n--) {
-            if (x < 0 || x > grid.getDimensions().getWidth() || y < 0 || y > grid.getDimensions().getHeight())
+            if (x < 0 || x >= grid.getDimensions().getWidth() || y < 0 || y >= grid.getDimensions().getHeight())
                 continue;
             Iterable<Object> objs = grid.getObjectsAt(x, y);
             for (Object obj : objs) {
