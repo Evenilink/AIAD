@@ -12,9 +12,8 @@ import utils.Coordinates;
 public class DFS {
 
 	private Explorer agent;
-	private Exploration behaviour;
 	
-	public DFS(Explorer agent, Exploration behaviour) {
+	public DFS(Explorer agent) {
 		this.agent = agent;
 	}
 	

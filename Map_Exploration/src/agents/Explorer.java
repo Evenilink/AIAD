@@ -32,6 +32,8 @@ public class Explorer extends Agent {
 	private int communicationLimit;
 	private AgentType agentType;
 	private Matrix matrix;
+	
+	private Exploration exploration;
 	private SendingMessages sendingMessages;
 			
 	/**
@@ -85,8 +87,9 @@ public class Explorer extends Agent {
 		GridPoint initLocation = grid.getLocation(this);
 		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
 		
-		addBehaviour(new Exploration(this));
-		addBehaviour(new ReceivingMessages(this));
+		exploration = new Exploration(this);
+		addBehaviour(exploration);
+		// addBehaviour(new ReceivingMessages(this));
 		
 		if(agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
@@ -123,7 +126,7 @@ public class Explorer extends Agent {
 	public void moveAgent(Coordinates targetCoordinates) {
 		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
-			getMatrix().updateMatrix(getGrid(), targetCoordinates, getRadious());
+			getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
 		}
 	}
 	

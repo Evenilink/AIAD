@@ -8,6 +8,8 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
@@ -15,7 +17,9 @@ import sajas.core.behaviours.CyclicBehaviour;
 import states.DiscoverObstacleBounds;
 import states.Explore;
 import states.IAgentState;
+import states.Recruiting;
 import utils.Coordinates;
+import utils.Matrix;
 import utils.Utils.AgentType;
 import utils.Utils.MessageType;
 
@@ -30,8 +34,8 @@ public class Exploration extends CyclicBehaviour {
 	public Exploration(Explorer agent) {
 		super(agent);
 		this.agent = agent;
-		dfs = new DFS(agent, this);
-		astar = new AStar(agent, this);
+		dfs = new DFS(agent);
+		astar = new AStar(agent);
 		pledge = new Pledge(agent);
 		changeState(new Explore());
 	}
@@ -39,7 +43,33 @@ public class Exploration extends CyclicBehaviour {
 	@Override
 	public void action() {
 		if (currState != null) currState.execute();
+		receiveMessagesHandler();
 		sendMessagesHandler(getNeighborhoodCells());
+	}
+	
+	private void receiveMessagesHandler() {
+		ACLMessage acl = null;
+		while((acl = agent.receiveMessage()) != null) {
+			try {
+				Object obj = acl.getContentObject();
+				if(obj instanceof IndividualMessage) {
+					IndividualMessage message = (IndividualMessage) obj;
+					switch(message.getMessageType()) {
+						case MATRIX:
+							Matrix otherMatrix = (Matrix) message.getContent();
+							agent.getMatrix().mergeMatrix(otherMatrix);
+							break;
+						case OTHER_GUARDING:
+							int numAgentsOut = (int) message.getContent();
+							if(numAgentsOut < 1)
+								changeState(new Recruiting());
+							break;
+					}
+				}
+			} catch (UnreadableException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void changeState(IAgentState newState) {
@@ -59,8 +89,14 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public List<GridCell<Object>> getNeighborhoodCells() {
-		GridPoint pt = agent.getGrid().getLocation(agent);
+		GridPoint pt = getAgentPoint();
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
+		return nghCreator.getNeighborhood(false);
+	}
+	
+	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorers() {
+		GridPoint pt = getAgentPoint();
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
 		return nghCreator.getNeighborhood(false);
 	}
 	

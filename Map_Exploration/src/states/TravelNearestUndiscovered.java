@@ -38,10 +38,7 @@ public class TravelNearestUndiscovered implements IAgentState {
 		
 		if(pathNode == path.size()) {
 			Coordinates source = behaviour.getAgentCoordinates();
-			if(!behaviour.getAgent().getMatrix().hasUndiscoveredCells() && behaviour.getAgent().getMatrix().getExit().equals(source)) {
-				// TODO: agent has explored all the map and has reached the exit.
-				
-			} else behaviour.changeState(new Explore());			
+			behaviour.changeState(new Explore());			
 		}
 	}
 

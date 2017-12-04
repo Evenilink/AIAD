@@ -45,6 +45,8 @@ public class ReceivingMessages extends CyclicBehaviour {
 							break;
 						case HELP:
 							break;
+						case OTHER_GUARDING:
+							break;
 						default:
 							break;
 					}

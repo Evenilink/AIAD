@@ -1,10 +1,17 @@
 package states;
 
+import java.util.Iterator;
 import java.util.List;
 
+import agents.Explorer;
 import algorithms.astar.Node;
 import behaviours.Exploration;
+import communication.IndividualMessage;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import utils.Coordinates;
+import utils.Matrix;
+import utils.Utils.MessageType;
 
 public class TravelExit implements IAgentState {
 
@@ -17,19 +24,31 @@ public class TravelExit implements IAgentState {
 		this.behaviour = behaviour;
 		path = behaviour.getAStar().getPathToExit();
 		pathNode = 0;
-		if(path == null)
-			System.err.println("The exit should have been found already.");
+		if(path == null) System.err.println("The exit should have been found already.");
 	}
 
 	@Override
 	public void execute() {
-		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY());
-		behaviour.moveAgentToCoordinate(target);
+		behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
 		pathNode++;
 		
 		if(pathNode == path.size()) {
-			System.out.println("Agent has reached the exit and is idle.");
-			behaviour.changeState(new Idle());
+			/* boolean becameMasterAgent = true;
+			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
+			while(it.hasNext()) {
+				Object obj = it.next();
+				if(obj instanceof Explorer) {
+					IndividualMessage message = new IndividualMessage(MessageType.AUX, null, receiver);
+					becameMasterAgent = false;
+				}
+			} */
+			
+			// if(becameMasterAgent) {
+				System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
+				behaviour.changeState(new Guarding());
+			// }
+		} else {
+			
 		}
 	}
 
@@ -38,6 +57,4 @@ public class TravelExit implements IAgentState {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
 }

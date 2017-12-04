@@ -3,24 +3,17 @@ package algorithms.astar;
 import java.util.List;
 
 import agents.Explorer;
-import behaviours.Exploration;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
 
 public class AStar {
 
 	private Explorer agent;
-	private Exploration behaviour;
-	
 	private Pathfinding pathfinding;
-	private List<Node> path; 
-	private int pathNode;
 	
-	public AStar(Explorer agent, Exploration behaviour) {
+	public AStar(Explorer agent) {
 		this.agent = agent;
-		this.behaviour = behaviour;
 		pathfinding = new Pathfinding(agent.getGrid().getDimensions().getWidth(), agent.getGrid().getDimensions().getHeight());
-		pathNode = 0;
 	}
 	
 	public List<Node> computePath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {

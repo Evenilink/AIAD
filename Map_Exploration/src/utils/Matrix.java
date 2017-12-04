@@ -1,12 +1,15 @@
 package utils;
 
 import agents.Explorer;
+import behaviours.Exploration;
 import entities.Entity;
 import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import states.Guarding;
+import states.TravelExit;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -27,7 +30,7 @@ public class Matrix implements Serializable {
 				setValue(row, column, 0);
 		}
 
-        undiscoveredCells = getNumColumns() * getNumRows();				
+        undiscoveredCells = getNumColumns() * getNumRows();	
 		this.name = name;
     }
 
@@ -65,10 +68,10 @@ public class Matrix implements Serializable {
 		System.out.println("\n");
 	}
 	
-	public void updateMatrix(Grid<Object> grid, Coordinates center, int radius) {
+	public void updateMatrix(Exploration behaviour, Grid<Object> grid, Coordinates center, int radius) {
         GridPoint centerPoint = new GridPoint(center.getX(), center.getY());
         GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, centerPoint, Object.class, radius, radius);
-        List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(true);
+        List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
 
         for (GridCell<Object> gridCell : gridCells) {
             Iterator<Object> it = gridCell.items().iterator();
@@ -77,30 +80,35 @@ public class Matrix implements Serializable {
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
             }
 
-			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
+			/* Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				continue;
 
-			}
+			} */
 
             while(it.hasNext()) {
                 int value = 0;
                 Object obj = it.next();
 
+                if(obj instanceof Entity) {
+                	Entity entity = (Entity) obj;
+                	value = entity.getCode();
+                } else if (obj == null || obj instanceof Explorer) value = 1;
+                
                 // if Explorer is standing there, the cell must be empty (value = 1)
                 // TODO: false, it can also be 2 (exit).
-                if (obj == null || obj instanceof Explorer) value = 1;
+                /*if (obj == null || obj instanceof Explorer) value = 1;
                 else if (obj instanceof Entity) {
                     Entity entity = (Entity) obj;
                     value = entity.getCode();
-                } else {
-                    System.err.println("Matrix: Unidentified object, could't update matrix!");
-                }
+                }*/ else
+                	System.err.println("Matrix: Unidentified object, could't update matrix!");
                 Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+                if(value == 2) break;
             }
         }
         printMatrix();
