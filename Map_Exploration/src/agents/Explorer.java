@@ -5,6 +5,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import algorithms.astar.AStar;
+import algorithms.dfs.DFS;
+import algorithms.pledge.Pledge;
 import behaviours.Exploration;
 import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;

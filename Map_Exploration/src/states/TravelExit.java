@@ -29,32 +29,37 @@ public class TravelExit implements IAgentState {
 
 	@Override
 	public void execute() {
-		behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
-		pathNode++;
+		if(pathNode < path.size()) {
+			behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
+			pathNode++;	
+		}
 		
 		if(pathNode == path.size()) {
-			/* boolean becameMasterAgent = true;
+			boolean becameMasterAgent = true;
+			Coordinates target = path.get(pathNode - 1).getWorldPosition();
 			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
 			while(it.hasNext()) {
 				Object obj = it.next();
 				if(obj instanceof Explorer) {
-					IndividualMessage message = new IndividualMessage(MessageType.AUX, null, receiver);
-					becameMasterAgent = false;
+					Explorer otherExplorer = (Explorer) obj;
+					if(!behaviour.getAgent().getLocalName().equals(otherExplorer.getLocalName())) {
+						IndividualMessage message = new IndividualMessage(MessageType.REACHED_EXIT, behaviour.getAgent().getLocalName(), otherExplorer.getAID());
+						behaviour.getAgent().sendMessage(message);
+						becameMasterAgent = false;
+						break;	
+					}
 				}
-			} */
+			}
 			
-			// if(becameMasterAgent) {
+			if(becameMasterAgent) {
 				System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
 				behaviour.changeState(new Guarding());
-			// }
-		} else {
-			
+			}
 		}
 	}
 
 	@Override
 	public void exit() {
-		// TODO Auto-generated method stub
 		
 	}
 }

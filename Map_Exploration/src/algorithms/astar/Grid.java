@@ -52,4 +52,8 @@ public class Grid {
 	public Node nodeFromWorldPoint(Coordinates worldPosition) {
 		return grid[gridSizeY - 1 - worldPosition.getY()][worldPosition.getX()];
 	}
+	
+	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
+		grid[coordinates.getY()][coordinates.getX()].setWalkable(newWalkable);
+	}
 }

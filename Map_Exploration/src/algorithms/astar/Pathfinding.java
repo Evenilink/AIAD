@@ -95,4 +95,8 @@ public class Pathfinding {
 			return 14 * distY + 10 * (distX - distY);
 		return 14 * distX + 10 * (distY - distX);
 	}
+	
+	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
+		grid.setNodeWalkable(coordinates, newWalkable);
+	}
 }

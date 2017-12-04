@@ -3,6 +3,8 @@ package build;
 import sajas.sim.repasts.RepastSLauncher;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import agents.Explorer;
 import entities.Entity;
@@ -28,6 +30,7 @@ import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
 import sajas.wrapper.ContainerController;
 import sajas.core.Runtime;
+import utils.Coordinates;
 import utils.ObjectSetups;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
@@ -108,26 +111,29 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 			context.add(explorer);
 		}
 		
+		List<Coordinates> coordinates = new ArrayList<Coordinates>();
+		for(int row = 0; row < MAX_GRID_Y; row++) {
+			for(int column = 0; column < MAX_GRID_X; column++)
+				coordinates.add(new Coordinates(column, row));
+		}
+		
 		// Create the exit entity.
-		context.add(new Exit(3, 3));
+		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
+		context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
+		coordinates.remove(index);
 		
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6));
-		ObjectSetups.Setup2(context);
+		// ObjectSetups.Setup2(context);
 
 		// Updates/Sets all the objects location.
-		int i = 0;
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {
-				if(i == 0) {
-					space.moveTo(obj, 7, 7);
-					grid.moveTo(obj, 7, 7);
-					i++;
-				} else {
-					space.moveTo(obj, 1, 2);
-					grid.moveTo(obj, 1, 2);
-				}
+				index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);				
+				space.moveTo(obj, coordinates.get(index).getX(), coordinates.get(index).getY());
+				grid.moveTo(obj, coordinates.get(index).getX(), coordinates.get(index).getY());
+				coordinates.remove(index);
 			} else if(obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 				grid.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());

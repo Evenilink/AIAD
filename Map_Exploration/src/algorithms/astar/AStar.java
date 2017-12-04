@@ -33,6 +33,10 @@ public class AStar {
 		return null;
 	}
 	
+	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
+		pathfinding.setNodeWalkable(coordinates, newWalkable);
+	}
+	
 	// TODO: move this function to utils.
 	/**
 	 * Returns the nearest coordinate that has not yet been discovered based on the agent's position.
