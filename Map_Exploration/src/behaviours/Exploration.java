@@ -14,7 +14,6 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
-import states.DiscoverObstacleBounds;
 import states.Explore;
 import states.IAgentState;
 import states.Recruiting;
@@ -24,8 +23,9 @@ import utils.Utils.AgentType;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
+	private static final long serialVersionUID = 7526472295622776147L;  // unique id
 
-	private Explorer agent;		
+	private Explorer agent;
 	private DFS dfs;
 	private AStar astar;
 	private Pledge pledge;
@@ -48,7 +48,7 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	private void receiveMessagesHandler() {
-		ACLMessage acl = null;
+		ACLMessage acl;
 		while((acl = agent.receiveMessage()) != null) {
 			try {
 				Object obj = acl.getContentObject();
@@ -63,6 +63,9 @@ public class Exploration extends CyclicBehaviour {
 							int numAgentsOut = (int) message.getContent();
 							if(numAgentsOut < 1)
 								changeState(new Recruiting());
+							break;
+						case HELP:
+							//TODO not implemented yet
 							break;
 					}
 				}
