@@ -1,6 +1,7 @@
 package entities;
 
 public class Obstacle extends Entity {
+	
 	private final boolean seeThrough;
 	private final int neededAgentsForRemoving;
 

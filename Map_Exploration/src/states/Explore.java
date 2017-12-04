@@ -1,5 +1,6 @@
 package states;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,14 +22,21 @@ public class Explore implements IAgentState {
 	@Override
 	public void execute() {
 		List<GridCell<Object>> neighborhoodCells = behaviour.getNeighborhoodCells();
-		if(existsNearObstacle(neighborhoodCells))
-			behaviour.changeState(new DiscoverObstacleBounds());
-		else {
-			GridCell<Object> targetCell = behaviour.getDFS().execute(neighborhoodCells);
-			if(targetCell != null)
-				behaviour.moveAgentToCoordinate(Coordinates.FromGridPoint(targetCell.getPoint()));
-			else behaviour.changeState(new TravelNearestUndiscovered());	
+		
+		List<Coordinates> obstaclesCcoordinates = existsNearObstacle(neighborhoodCells);
+		if(!obstaclesCcoordinates.isEmpty()) {
+			for (Coordinates coordinates : obstaclesCcoordinates) {
+				if(!behaviour.getPledge().alreadyVisited(coordinates)) {
+					behaviour.changeState(new DiscoverObstacleBounds());
+					break;
+				}
+			}
 		}
+
+		GridCell<Object> targetCell = behaviour.getDFS().execute(neighborhoodCells);
+		if(targetCell != null)
+			behaviour.moveAgentToCoordinate(Coordinates.FromGridPoint(targetCell.getPoint()));
+		else behaviour.changeState(new TravelNearestUndiscovered());
 	}
 
 	@Override
@@ -36,16 +44,19 @@ public class Explore implements IAgentState {
 		
 	}
 	
-	private boolean existsNearObstacle(List<GridCell<Object>> neighborhoodCells) {
+	private List<Coordinates> existsNearObstacle(List<GridCell<Object>> neighborhoodCells) {
+		List<Coordinates> obstaclesCcoordinates = new ArrayList<>();
+		
 		for (GridCell<Object> gridCell : neighborhoodCells) {
 			Iterator it = gridCell.items().iterator();
 			while(it.hasNext()) {
 				Object obj = it.next();
 				if(obj instanceof Obstacle)
-					return true;
+					obstaclesCcoordinates.add(new Coordinates(gridCell.getPoint().getX(), gridCell.getPoint().getY()));
 			}
 		}
-		return false;
+		
+		return obstaclesCcoordinates;
 	}
 
 }

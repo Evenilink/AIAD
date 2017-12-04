@@ -1,5 +1,8 @@
 package algorithms.pledge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import agents.Explorer;
 import entities.Obstacle;
 import repast.simphony.space.grid.Grid;
@@ -12,7 +15,15 @@ public class Pledge {
     private final Explorer agent;
     private GridPoint startingPoint;
     private GridPoint previousPoint;
+    
+    private List<Coordinates> visitedCoordinates;
 
+    public Pledge (Explorer agent) {
+        this.agent = agent;
+        this.grid = agent.getGrid();
+        visitedCoordinates = new ArrayList<>();
+    }
+    
     private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
         if (objs.right() == null) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
@@ -29,11 +40,6 @@ public class Pledge {
         }
         if (displayMessages) System.err.println("PLEDGE: Can't find a cell to move!");
         return null;
-    }
-
-    public Pledge (Explorer agent) {
-        this.agent = agent;
-        this.grid = agent.getGrid();
     }
 
     public void init() {
@@ -100,6 +106,14 @@ public class Pledge {
         }
 
         this.previousPoint = pt;
+        
+        if(nextLocation != null)
+        	visitedCoordinates.add(nextLocation);
+        
         this.agent.moveAgent(nextLocation != null ? nextLocation : Coordinates.FromGridPoint(pt));
+    }
+    
+    public boolean alreadyVisited(Coordinates coordinates) {
+    	return visitedCoordinates.contains(coordinates);
     }
 }
