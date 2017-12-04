@@ -120,8 +120,9 @@ public class Exploration extends CyclicBehaviour {
 		return nghCreator.getNeighborhood(false);
 	}
 	
-	public void moveAgentToCoordinate(Coordinates targetCoordinates) {
-		agent.moveAgent(targetCoordinates);
+	public boolean moveAgentToCoordinate(Coordinates targetCoordinates) {
+		return agent.moveAgent(targetCoordinates);
+		// TODO: it's possible 2 agents stop moving if they want to go to each other's place.
 	}
 	
 	/**

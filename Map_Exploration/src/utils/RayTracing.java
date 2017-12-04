@@ -4,6 +4,7 @@ import entities.Obstacle;
 import repast.simphony.space.grid.Grid;
 
 public class RayTracing {
+	
     /**
      * Casts a ray against the first object it collides.
      * @param grid The grid to get the objects from

@@ -30,8 +30,8 @@ public class Recruiting implements IAgentState {
 
 	@Override
 	public void execute() {
-		behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
-		pathNode++;
+		if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
+			pathNode++;
 		if(pathNode == path.size())
 			behaviour.changeState(new TravelExit());		
 	}

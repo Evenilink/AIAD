@@ -33,8 +33,8 @@ public class TravelNearestUndiscovered implements IAgentState {
 	@Override
 	public void execute() {
 		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY());
-		behaviour.moveAgentToCoordinate(target);
-		pathNode++;
+		if(behaviour.moveAgentToCoordinate(target))
+			pathNode++;
 		
 		if(pathNode == path.size()) {
 			Coordinates source = behaviour.getAgentCoordinates();

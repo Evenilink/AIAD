@@ -3,6 +3,7 @@ package agents;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import algorithms.astar.AStar;
@@ -13,6 +14,8 @@ import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
+import entities.Entity;
+import entities.Obstacle;
 import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -126,11 +129,22 @@ public class Explorer extends Agent {
 		}
 	}
 	
-	public void moveAgent(Coordinates targetCoordinates) {
+	public boolean moveAgent(Coordinates targetCoordinates) {
+		// Can only move agent if target is free.
+		Iterator<Object> it = grid.getObjectsAt(targetCoordinates.getX(), targetCoordinates.getY()).iterator();
+		while(it.hasNext()) {
+			Object obj = it.next();
+			if(obj instanceof Explorer || obj instanceof Obstacle)
+				return false;
+		}
+		
 		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 			getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
+			return true;
 		}
+		
+		return false;
 	}
 	
 	/*******************************/

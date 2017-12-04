@@ -29,10 +29,9 @@ public class TravelExit implements IAgentState {
 
 	@Override
 	public void execute() {
-		if(pathNode < path.size()) {
-			behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
-			pathNode++;	
-		}
+		if(pathNode < path.size())
+			if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
+				pathNode++;	
 		
 		if(pathNode == path.size()) {
 			boolean becameMasterAgent = true;
