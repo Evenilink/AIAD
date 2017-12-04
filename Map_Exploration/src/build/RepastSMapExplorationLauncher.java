@@ -28,6 +28,7 @@ import repast.simphony.space.grid.SimpleGridAdder;
 import repast.simphony.space.grid.StrictBorders;
 import sajas.wrapper.ContainerController;
 import sajas.core.Runtime;
+import utils.ObjectSetups;
 
 public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
@@ -113,18 +114,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6, false));
-		context.add(new Obstacle(6, 6, false));
-		context.add(new Obstacle(7, 6, false));
-		context.add(new Obstacle(8, 6, false));
-		context.add(new Obstacle(9, 6, false));
-		context.add(new Obstacle(6, 7, false));
-		context.add(new Obstacle(7, 8, false));
-		context.add(new Obstacle(7, 9, false));
-		context.add(new Obstacle(8, 8, false));
-		context.add(new Obstacle(8, 9, false));
-		context.add(new Obstacle(9, 8, false));
-		context.add(new Obstacle(9, 9, false));
-
+		ObjectSetups.Setup2(context);
 
 		// Updates/Sets all the objects location.
 		int i = 0;
