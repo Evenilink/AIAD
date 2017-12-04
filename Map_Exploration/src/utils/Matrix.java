@@ -71,7 +71,7 @@ public class Matrix implements Serializable {
 	public void updateMatrix(Exploration behaviour, Grid<Object> grid, Coordinates center, int radius) {
         GridPoint centerPoint = new GridPoint(center.getX(), center.getY());
         GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, centerPoint, Object.class, radius, radius);
-        List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(false);
+        List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(true);
 
         for (GridCell<Object> gridCell : gridCells) {
             Iterator<Object> it = gridCell.items().iterator();
