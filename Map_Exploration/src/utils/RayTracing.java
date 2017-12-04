@@ -13,7 +13,6 @@ public class RayTracing {
      * @return Obstacle Returns the first obstacle it hits or null
      */
     public static Obstacle trace(Grid grid, Coordinates origin, Coordinates target, boolean onlyOpaque) {
-        System.out.println(origin + " - " + target);
         int dx = Math.abs(target.getX() - origin.getX());
         int dy = Math.abs(target.getY() - origin.getY());
 
@@ -26,6 +25,8 @@ public class RayTracing {
         int x = origin.getX();
         int y = origin.getY();
         for (int n = 1 + dx + dy; n > 0; n--) {
+            if (x < 0 || x > grid.getDimensions().getWidth() || y < 0 || y > grid.getDimensions().getHeight())
+                continue;
             Iterable<Object> objs = grid.getObjectsAt(x, y);
             for (Object obj : objs) {
                 if (obj != null && obj instanceof Obstacle) {

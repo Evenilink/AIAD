@@ -75,10 +75,6 @@ public class Matrix implements Serializable {
 
         for (GridCell<Object> gridCell : gridCells) {
             Iterator<Object> it = gridCell.items().iterator();
-            if (!it.hasNext()) {
-                Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-                this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
-            }
 
 			/* Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
@@ -88,6 +84,11 @@ public class Matrix implements Serializable {
 				continue;
 
 			} */
+
+            if (!it.hasNext()) {
+                Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+                this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
+            }
 
             while(it.hasNext()) {
                 int value = 0;
