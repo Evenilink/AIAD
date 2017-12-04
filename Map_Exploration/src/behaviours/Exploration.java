@@ -14,9 +14,7 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
-import states.Explore;
-import states.IAgentState;
-import states.Recruiting;
+import states.*;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils.AgentType;
@@ -30,6 +28,7 @@ public class Exploration extends CyclicBehaviour {
 	private AStar astar;
 	private Pledge pledge;
 	private IAgentState currState;
+	private IAgentState pausedState;
 	
 	public Exploration(Explorer agent) {
 		super(agent);
@@ -42,7 +41,12 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		if (currState != null) currState.execute();
+		if (currState != null) {
+			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
+				this.resumeState();
+			else
+				currState.execute();
+		}
 		receiveMessagesHandler();
 		sendMessagesHandler(getNeighborhoodCells());
 	}
@@ -76,7 +80,9 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public void changeState(IAgentState newState) {
-		if(currState != null)
+		if (newState instanceof IAgentTemporaryState) {
+			this.pauseState();
+		} else if(currState != null)
 			currState.exit();
 		currState = newState;
 		currState.enter(this);
@@ -131,6 +137,16 @@ public class Exploration extends CyclicBehaviour {
 		
 		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
 		agent.sendMessage(message);
+	}
+
+	private void pauseState() {
+		this.pausedState = this.currState;
+		this.currState = null;
+	}
+
+	private void resumeState() {
+		this.currState = this.pausedState;
+		this.pausedState = null;
 	}
 	
 	public DFS getDFS() {

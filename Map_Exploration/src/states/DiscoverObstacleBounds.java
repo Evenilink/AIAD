@@ -3,7 +3,7 @@ package states;
 import algorithms.pledge.Pledge;
 import behaviours.Exploration;
 
-public class DiscoverObstacleBounds implements IAgentState {
+public class DiscoverObstacleBounds implements IAgentTemporaryState {
     Exploration behaviour;
     Pledge pledge;
 
@@ -16,13 +16,16 @@ public class DiscoverObstacleBounds implements IAgentState {
 
     @Override
     public void execute() {
-        if (this.pledge.hasFinished())
-            this.exit();
-        else this.pledge.run();
+        this.pledge.run();
     }
 
     @Override
     public void exit() {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public boolean canResume() {
+        return this.pledge.hasFinished();
     }
 }
