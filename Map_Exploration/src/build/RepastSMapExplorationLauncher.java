@@ -113,7 +113,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)
-			context.add(new Obstacle(5 + i, 6, false));
+			context.add(new Obstacle(5 + i, 6));
 		ObjectSetups.Setup2(context);
 
 		// Updates/Sets all the objects location.
