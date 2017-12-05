@@ -1,6 +1,13 @@
 package utils;
 
+import entities.Obstacle;
+import repast.simphony.query.space.grid.GridCell;
+import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Utils {
 	public static final double sqrt2 = Math.sqrt(2);
@@ -72,5 +79,14 @@ public class Utils {
 	 */
 	public static Coordinates worldPointFromMatrix(Coordinates coordinates, int gridSizeY) {
 		return new Coordinates(coordinates.getX(), gridSizeY - 1 - coordinates.getY());
+	}
+
+	public static boolean hasObstacle(List<GridCell<Object>> cells) {
+		for (GridCell<Object> gridCell : cells) {
+			Iterator it = gridCell.items().iterator();
+			while (it.hasNext())
+				if (it.next() instanceof Obstacle) return true;
+		}
+		return false;
 	}
 }

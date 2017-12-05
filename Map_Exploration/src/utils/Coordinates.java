@@ -38,4 +38,8 @@ public class Coordinates {
 				", y=" + y +
 				'}';
 	}
+
+	public boolean equals(Coordinates c) {
+		return c.getX() == getX() && c.getY() == getY();
+	}
 }
