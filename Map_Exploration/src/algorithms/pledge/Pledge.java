@@ -42,9 +42,16 @@ public class Pledge {
         return null;
     }
 
+    private boolean addVisitedCoordinates(Coordinates coordinates) {
+        if (visitedCoordinates.contains(coordinates)) return false;
+        visitedCoordinates.add(coordinates);
+        return true;
+    }
+
     public void init() {
         this.startingPoint = this.grid.getLocation(this.agent);
         this.previousPoint = this.startingPoint;
+        this.addVisitedCoordinates(Coordinates.FromGridPoint(this.startingPoint));
     }
 
     public boolean hasFinished() {
@@ -106,14 +113,17 @@ public class Pledge {
         }
 
         this.previousPoint = pt;
-        
+
         if(nextLocation != null)
-        	visitedCoordinates.add(nextLocation);
-        
+        	addVisitedCoordinates(Coordinates.FromGridPoint(pt));
+
         this.agent.moveAgent(nextLocation != null ? nextLocation : Coordinates.FromGridPoint(pt));
     }
     
     public boolean alreadyVisited(Coordinates coordinates) {
-    	return visitedCoordinates.contains(coordinates);
+        for (Coordinates c : visitedCoordinates) {
+            if (c.equals(coordinates)) return true;
+        }
+    	return false;
     }
 }
