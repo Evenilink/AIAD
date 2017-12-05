@@ -16,10 +16,16 @@ public class NeighbourObjects {
     }
 
     public NeighbourObjects(Grid grid, NeighbourPoints pts) {
-        this.frontObject = grid.getObjectAt(pts.frontX(), pts.frontY());
-        this.backObject = grid.getObjectAt(pts.backX(), pts.backY());
-        this.rightObject = grid.getObjectAt(pts.rightX(), pts.rightY());
-        this.leftObject = grid.getObjectAt(pts.leftX(), pts.leftY());
+        int maxX = grid.getDimensions().getWidth();
+        int maxY = grid.getDimensions().getHeight();
+        if (pts.frontX() >= 0 && pts.frontX() < maxX && pts.frontY() >= 0 && pts.frontY() < maxY)
+            this.frontObject = grid.getObjectAt(pts.frontX(), pts.frontY());
+        if (pts.backX() >= 0 && pts.backX() < maxX && pts.backY() >= 0 && pts.backY() < maxY)
+            this.backObject = grid.getObjectAt(pts.backX(), pts.backY());
+        if (pts.rightX() >= 0 && pts.rightX() < maxX && pts.rightY() >= 0 && pts.rightY() < maxY)
+            this.rightObject = grid.getObjectAt(pts.rightX(), pts.rightY());
+        if (pts.leftX() >= 0 && pts.leftX() < maxX && pts.leftY() >= 0 && pts.leftY() < maxY)
+            this.leftObject = grid.getObjectAt(pts.leftX(), pts.leftY());
     }
 
     public Object front() {
