@@ -33,8 +33,19 @@ public class AStar {
 		return null;
 	}
 	
-	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
-		pathfinding.setNodeWalkable(coordinates, newWalkable);
+	/**
+	 * @brief Gets The path to the nearest obstacle, according to agent's position
+	 * @return List of Nodes which represent the path
+	 */
+	public List<Node> getPathToNearestObstacle() 
+	{
+		Coordinates agentPos = Coordinates.FromGridPoint(agent.getGrid().getLocation(agent));
+		Coordinates obstacle = agent.getMatrix().getNearestObstacle(agentPos);
+		
+		if(obstacle != null) 
+			return computePath(new Coordinates(agentPos.getX(), agentPos.getY()), obstacle);
+		
+		return null;
 	}
 	
 	// TODO: move this function to utils.

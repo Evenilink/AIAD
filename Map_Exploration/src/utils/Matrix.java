@@ -8,8 +8,11 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import states.Guarding;
+import states.TravelExit;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,8 +41,8 @@ public class Matrix implements Serializable {
 	 * @param otherMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix) {
-		//System.out.println("Before merging matrix");
-		//printMatrix();
+		System.out.println("Before merging matrix");
+		printMatrix();
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
@@ -48,13 +51,10 @@ public class Matrix implements Serializable {
 			}
 		}
 		
-		//System.out.println("After merging matrix");
-		//printMatrix();
+		System.out.println("After merging matrix");
+		printMatrix();
 	}
-
-	/**
-	 * Writes on the System.out a formatted view of the matrix
-	 */
+	
 	public void printMatrix() {
 		System.out.println("Name: " + name);
 		for(int row = 0; row < matrix.length; row++) {
@@ -68,8 +68,7 @@ public class Matrix implements Serializable {
 		
 		System.out.println("\n");
 	}
-
-
+	
 	public void updateMatrix(Exploration behaviour, Grid<Object> grid, Coordinates center, int radius) {
         GridPoint centerPoint = new GridPoint(center.getX(), center.getY());
         GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(grid, centerPoint, Object.class, radius, radius);
@@ -78,51 +77,91 @@ public class Matrix implements Serializable {
         for (GridCell<Object> gridCell : gridCells) {
             Iterator<Object> it = gridCell.items().iterator();
 
-			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
+			/* Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				continue;
-			}
 
-			// If it can't retrieve objects, the cell is empty (value = 0)
+			} */
+
             if (!it.hasNext()) {
                 Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
                 this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
-            } else {
-				int value = 0;
-				// If the cell has objects
-				while(it.hasNext()) {
-					value = 0;
-					Object obj = it.next();
+            }
 
-					// If the object found is an Entity use it's value
-					if(obj instanceof Entity) {
-						Entity entity = (Entity) obj;
-						value = entity.getCode();
-	                	if(entity instanceof Obstacle) {
-	                		Coordinates coordinates = new Coordinates(gridCell.getPoint().getX(), gridCell.getPoint().getY());
-	                		behaviour.getAStar().setNodeWalkable(coordinates, false);
-	                	}
-						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
-					}
-					// Else if the object found is an Explorer consider empty cell (value = 1)
-					else if (obj == null || obj instanceof Explorer) value = 1;
-					// Unidentified object retrieved from the grid
-					else System.err.println("Matrix: Unidentified object, could't update matrix!");
-				}
-				// Updates the matrix with the new value
-				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
-			}
+            while(it.hasNext()) {
+                int value = 0;
+                Object obj = it.next();
+
+                if(obj instanceof Entity) {
+                	Entity entity = (Entity) obj;
+                	value = entity.getCode();
+                } else if (obj == null || obj instanceof Explorer) value = 1;
+                
+                // if Explorer is standing there, the cell must be empty (value = 1)
+                // TODO: false, it can also be 2 (exit).
+                /*if (obj == null || obj instanceof Explorer) value = 1;
+                else if (obj instanceof Entity) {
+                    Entity entity = (Entity) obj;
+                    value = entity.getCode();
+                }*/ else
+                	System.err.println("Matrix: Unidentified object, could't update matrix!");
+                Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+                this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+                if(value == 2) break;
+            }
         }
-        //printMatrix();
+        printMatrix();
     }
 	
 	public boolean hasUndiscoveredCells() {
 		return undiscoveredCells > 0;
 	}
+	
+	/**
+	 * @param pt1 Coordinates of the first point
+	 * @param pt2 Coordinates of the second point
+	 * @return The distance of two points
+	 */
+	public double distanceTwoPoints(Coordinates pt1, Coordinates pt2)
+	{
+		return Math.sqrt(((pt2.getX() - pt1.getX())*(pt2.getX() - pt1.getX())) + ((pt2.getY()-pt1.getY())*(pt2.getY()-pt1.getY())));
+	}
+	
+	/**
+	 * @brief This function gets the coordinates of 
+	 * the closest obstacle from the agent's position
+	 * @param agentPosition The Coordinates of the agent
+	 * @return The coordinates of the closest obstacle
+	 */
+	public Coordinates getNearestObstacle(Coordinates agentPosition) 
+	{
+		ArrayList<Coordinates> obstacleCoords = new ArrayList<Coordinates>();
+		
+		for(int row = 0; row < getNumRows(); row++) 
+		{
+			for(int column = 0; column < getNumColumns(); column++) 
+			{
+				if(getValue(row, column) == 3)
+					obstacleCoords.add(utils.Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows()));
+			}
+		}
+		
+		Coordinates nearestObstacle = null;
+		double distance = 99999;
+		
+		for (int i = 0; i < obstacleCoords.size();i++)
+		{
+			if ( distanceTwoPoints(agentPosition, obstacleCoords.get(i)) < distance )
+			{
+				distance = distanceTwoPoints(agentPosition, obstacleCoords.get(i));
+				nearestObstacle = obstacleCoords.get(i);
+			}
+		}
+		return nearestObstacle;
+	}	
 	
 	/**
 	 * Returns the exit coordinates.
