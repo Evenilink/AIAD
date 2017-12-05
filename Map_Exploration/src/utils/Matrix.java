@@ -8,8 +8,6 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
-import states.Guarding;
-import states.TravelExit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -77,41 +75,39 @@ public class Matrix implements Serializable {
         for (GridCell<Object> gridCell : gridCells) {
             Iterator<Object> it = gridCell.items().iterator();
 
-			/* Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
+			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				continue;
+			}
 
-			} */
+			if (!it.hasNext()) {
+				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
+			} else {
+				int value = 0;
+				// If the cell has objects
+				while(it.hasNext()) {
+					value = 0;
+					Object obj = it.next();
 
-            if (!it.hasNext()) {
-                Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-                this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
-            }
-
-            while(it.hasNext()) {
-                int value = 0;
-                Object obj = it.next();
-
-                if(obj instanceof Entity) {
-                	Entity entity = (Entity) obj;
-                	value = entity.getCode();
-                } else if (obj == null || obj instanceof Explorer) value = 1;
-                
-                // if Explorer is standing there, the cell must be empty (value = 1)
-                // TODO: false, it can also be 2 (exit).
-                /*if (obj == null || obj instanceof Explorer) value = 1;
-                else if (obj instanceof Entity) {
-                    Entity entity = (Entity) obj;
-                    value = entity.getCode();
-                }*/ else
-                	System.err.println("Matrix: Unidentified object, could't update matrix!");
-                Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-                this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
-                if(value == 2) break;
-            }
+					// If the object found is an Entity use it's value
+					if(obj instanceof Entity) {
+						Entity entity = (Entity) obj;
+						value = entity.getCode();
+						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
+					}
+					// Else if the object found is an Explorer consider empty cell (value = 1)
+					else if (obj == null || obj instanceof Explorer) value = 1;
+						// Unidentified object retrieved from the grid
+					else System.err.println("Matrix: Unidentified object, could't update matrix!");
+				}
+				// Updates the matrix with the new value
+				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+			}
         }
         printMatrix();
     }
