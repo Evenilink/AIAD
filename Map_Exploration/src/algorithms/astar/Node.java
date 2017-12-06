@@ -6,26 +6,14 @@ public class Node {
 
 	private boolean walkable;	// Does this node contains objects that are not walkable?
 	private Coordinates worldPosition;	// World position in Repast's grid.
-	private Coordinates gridPosition;	// Grid position.
 	private Node parent;
 	
 	private int gCost;	// Distance from the source node.
 	private int hCost;	// Distance from the target node (heuristic).
 	
-	public Node(boolean walkable, Coordinates worldPosition, Coordinates gridPosition) {
-		this.walkable = walkable;
-		this.worldPosition = worldPosition;
-		this.gridPosition = gridPosition;
-	}
-	
 	public Node(boolean walkable, Coordinates worldPosition) {
 		this.walkable = walkable;
 		this.worldPosition = worldPosition;
-	}
-	
-	public Node(Coordinates worldPosition, Coordinates gridPosition) {
-		this.worldPosition = worldPosition;
-		this.gridPosition = gridPosition;
 	}
 	
 	public boolean getWalkable() {
@@ -35,10 +23,6 @@ public class Node {
 	public Coordinates getWorldPosition() {
 		return worldPosition;
 	}
-	
-	/* public Coordinates getGridPosition() {
-		return gridPosition;
-	} */
 
 	public Node getParent() {
 		return parent;
@@ -78,6 +62,6 @@ public class Node {
 			return false;
 		
 		Node otherNode = (Node) other;
-		return (worldPosition.equals(otherNode.getWorldPosition()) && gridPosition.equals(otherNode.getGridPosition()));
+		return worldPosition.equals(otherNode.getWorldPosition());
 	}
 }

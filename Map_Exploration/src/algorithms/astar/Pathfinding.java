@@ -21,8 +21,8 @@ public class Pathfinding {
 	 * @return shortest path between 2 nodes.
 	 */
 	public List<Node> FindPath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
-		Node sourceNode = grid.nodeFromWorldPoint(sourceWorldPosition);
-		Node targetNode = grid.nodeFromWorldPoint(targetWorldPosition);
+		Node sourceNode = grid.getNode(sourceWorldPosition); // grid.nodeFromWorldPoint(sourceWorldPosition);
+		Node targetNode = grid.getNode(targetWorldPosition); // grid.nodeFromWorldPoint(targetWorldPosition);
 		
 		List<Node> openSet = new ArrayList<Node>();
 		List<Node> closedSet = new ArrayList<Node>();
@@ -88,8 +88,8 @@ public class Pathfinding {
 	 * @return distance between source and target nodes.
 	 */
 	private int GetDistance(Node source, Node target) {
-		int distX = Math.abs(target.getGridPosition().getX() - source.getGridPosition().getX());
-		int distY = Math.abs(target.getGridPosition().getY() - source.getGridPosition().getY());
+		int distX = Math.abs(target.getWorldPosition().getX() - source.getWorldPosition().getX());
+		int distY = Math.abs(target.getWorldPosition().getY() - source.getWorldPosition().getY());
 		
 		if(distX > distY)
 			return 14 * distY + 10 * (distX - distY);
