@@ -19,6 +19,11 @@ public class Grid {
 		for(int y = gridSizeY - 1; y >= 0; y--)
 			for(int x = 0; x < gridSizeX; x++)
 				grid[y][x] = new Node(true, new Coordinates(x, gridSizeY - 1 - y), new Coordinates(x, y));
+		
+		for(int row = 0; row < gridSizeY; row++) {
+			for(int column = 0; column < gridSizeX; column++)
+				grid[row][column] = new Node(true, new Coordinates(column, row));
+		}
 	}
 	
 	/**
@@ -55,5 +60,15 @@ public class Grid {
 	
 	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
 		grid[coordinates.getY()][coordinates.getX()].setWalkable(newWalkable);
+	}
+	
+	public void printGrid() {
+		for(int row = 0; row < gridSizeY; row++) {
+			for(int column = 0; column < gridSizeX; column++) {
+				System.out.print((grid[row][column].getWalkable() ? "1" : "0") + " | ");
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 }

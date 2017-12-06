@@ -18,6 +18,11 @@ public class Node {
 		this.gridPosition = gridPosition;
 	}
 	
+	public Node(boolean walkable, Coordinates worldPosition) {
+		this.walkable = walkable;
+		this.worldPosition = worldPosition;
+	}
+	
 	public Node(Coordinates worldPosition, Coordinates gridPosition) {
 		this.worldPosition = worldPosition;
 		this.gridPosition = gridPosition;
@@ -31,9 +36,9 @@ public class Node {
 		return worldPosition;
 	}
 	
-	public Coordinates getGridPosition() {
+	/* public Coordinates getGridPosition() {
 		return gridPosition;
-	}
+	} */
 
 	public Node getParent() {
 		return parent;

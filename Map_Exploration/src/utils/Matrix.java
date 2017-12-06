@@ -73,16 +73,18 @@ public class Matrix implements Serializable {
         List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(true);
 
         for (GridCell<Object> gridCell : gridCells) {
-            Iterator<Object> it = gridCell.items().iterator();
-
 			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
+				System.out.println("Setting node not walkbale");
+				behaviour.getAStar().setNodeWalkable(Coordinates.FromGridPoint(gridCell.getPoint()), false);
+				behaviour.getAStar().printGrid();
 				continue;
 			}
 
+            Iterator<Object> it = gridCell.items().iterator();
 			if (!it.hasNext()) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
@@ -90,19 +92,18 @@ public class Matrix implements Serializable {
 				int value = 0;
 				// If the cell has objects
 				while(it.hasNext()) {
-					// value = 0;
 					Object obj = it.next();
 
 					// If the object found is an Entity use it's value
-					if(obj instanceof Entity) {
+					// TODO: if it crashes, this can be the reason.
+					/* if(obj instanceof Entity) {
 						Entity entity = (Entity) obj;
 						value = entity.getCode();
-						if(obj instanceof Obstacle)
-							behaviour.getAStar().setNodeWalkable(new Coordinates(gridCell.getPoint().getX(), gridCell.getPoint().getY()), false);
+						System.out.println("Passou aqui!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
-					}
+					} */
 					// Else if the object found is an Explorer consider empty cell (value = 1)
-					else if (obj == null || obj instanceof Explorer) value = 1;
+					if (obj == null || obj instanceof Explorer) value = 1;
 						// Unidentified object retrieved from the grid
 					else System.err.println("Matrix: Unidentified object, could't update matrix!");
 				}

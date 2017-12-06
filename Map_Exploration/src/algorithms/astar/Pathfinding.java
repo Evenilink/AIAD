@@ -99,4 +99,8 @@ public class Pathfinding {
 	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
 		grid.setNodeWalkable(coordinates, newWalkable);
 	}
+	
+	public void printGrid() {
+		grid.printGrid();
+	}
 }

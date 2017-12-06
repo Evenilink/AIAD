@@ -1,5 +1,6 @@
 package algorithms.astar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import agents.Explorer;
@@ -54,7 +55,7 @@ public class AStar {
 	 * @param currentPosition
 	 * @return
 	 */
-	public Coordinates getNearestUndiscoveredPlace(GridPoint currentPosition) {
+	public List<Node> getNearestUndiscoveredPlace(GridPoint currentPosition) {
 		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition, agent.getGrid().getDimensions().getHeight());
 		Coordinates nearestUndiscovered = null;
 		
@@ -70,13 +71,14 @@ public class AStar {
 
 		for(int radious = 2; radious <= maxDistance; radious++) {
 			nearestUndiscovered = getUndiscoveredInRadious(currCoordinates, radious);
-			if(nearestUndiscovered != null)
-				break;
+			if(nearestUndiscovered != null) {
+				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
+				if(path != null)
+					return path;
+			}
 		}
 		
-		if(nearestUndiscovered == null)
-			return null;
-		return utils.Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight());
+		return null;
 	}
 	
 	/**
@@ -112,5 +114,9 @@ public class AStar {
 	
 	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
 		pathfinding.setNodeWalkable(coordinates, newWalkable);
+	}
+	
+	public void printGrid() {
+		pathfinding.printGrid();
 	}
 }

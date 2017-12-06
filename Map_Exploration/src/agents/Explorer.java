@@ -134,10 +134,10 @@ public class Explorer extends Agent {
 		Iterator<Object> it = grid.getObjectsAt(targetCoordinates.getX(), targetCoordinates.getY()).iterator();
 		while(it.hasNext()) {
 			Object obj = it.next();
-			if(obj instanceof Explorer || obj instanceof Obstacle)
+			if(obj instanceof Explorer)// || obj instanceof Obstacle)
 				return false;
 		}
-		
+
 		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
 			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 			getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
