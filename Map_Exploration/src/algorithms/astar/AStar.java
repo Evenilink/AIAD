@@ -109,4 +109,8 @@ public class AStar {
 		
 		return nearestCoordinate;
 	}
+	
+	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
+		pathfinding.setNodeWalkable(coordinates, newWalkable);
+	}
 }

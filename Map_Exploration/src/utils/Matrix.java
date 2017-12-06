@@ -90,13 +90,15 @@ public class Matrix implements Serializable {
 				int value = 0;
 				// If the cell has objects
 				while(it.hasNext()) {
-					value = 0;
+					// value = 0;
 					Object obj = it.next();
 
 					// If the object found is an Entity use it's value
 					if(obj instanceof Entity) {
 						Entity entity = (Entity) obj;
 						value = entity.getCode();
+						if(obj instanceof Obstacle)
+							behaviour.getAStar().setNodeWalkable(new Coordinates(gridCell.getPoint().getX(), gridCell.getPoint().getY()), false);
 						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
 					}
 					// Else if the object found is an Explorer consider empty cell (value = 1)

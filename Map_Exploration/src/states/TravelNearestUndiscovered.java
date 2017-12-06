@@ -7,33 +7,32 @@ import behaviours.Exploration;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
 
-public class TravelNearestUndiscovered implements IAgentState
-{
+public class TravelNearestUndiscovered implements IAgentState {
 
 	private Exploration behaviour;
 	private List<Node> path;
 	private int pathNode;
 
 	@Override
-	public void enter(Exploration behaviour)
-	{
+	public void enter(Exploration behaviour) {
 		this.behaviour = behaviour;
 
-		if (behaviour.getAgent().getMatrix().hasUndiscoveredCells())
-		{
+		if (behaviour.getAgent().getMatrix().hasUndiscoveredCells()) {
 			GridPoint sourcePoint = behaviour.getAgentPoint();
 			Coordinates nearestUndiscovered = behaviour.getAStar().getNearestUndiscoveredPlace(sourcePoint);
-			if (nearestUndiscovered != null)
-			{
+			if (nearestUndiscovered != null) {
 				path = behaviour.getAStar().computePath(new Coordinates(sourcePoint.getX(), sourcePoint.getY()),
 						nearestUndiscovered);
-				pathNode = 0;
-			} else {
-				behaviour.changeState(new TravelToObstacle());
-				//System.err.println("There should be an undiscovered cell.");
+				if(path != null) {
+					pathNode = 0;
+					System.out.println("Going here");
+					// printPath();
+				} else {
+					System.err.println("Going to travel obstacle");
+					behaviour.changeState(new TravelToObstacle());
+				}
 			}
-		} else
-		{
+		} else {
 			System.out.println("Map is fully explored.");
 			behaviour.changeState(new TravelExit());
 		}
@@ -41,21 +40,20 @@ public class TravelNearestUndiscovered implements IAgentState
 
 	@Override
 	public void execute() {
-		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY());
-		if(behaviour.moveAgentToCoordinate(target))
+		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(),
+				path.get(pathNode).getWorldPosition().getY());
+		if (behaviour.moveAgentToCoordinate(target))
 			pathNode++;
-		
-		if(pathNode == path.size()) {
+
+		if (pathNode == path.size()) {
 			Coordinates source = behaviour.getAgentCoordinates();
 			behaviour.changeState(new Explore());
 		}
 	}
 
 	@Override
-	public void exit()
-	{
+	public void exit() {
 		// TODO Auto-generated method stub
 
 	}
-
 }
