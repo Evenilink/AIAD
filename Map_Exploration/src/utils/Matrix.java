@@ -3,6 +3,7 @@ package utils;
 import agents.Explorer;
 import behaviours.Exploration;
 import entities.Entity;
+import entities.Exit;
 import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
@@ -96,6 +97,10 @@ public class Matrix implements Serializable {
 
 					// If the object found is an Entity use it's value
 					// TODO: if it crashes, this can be the reason.
+					if(obj instanceof Exit) {
+						Exit exit = (Exit) obj;
+						value = exit.getCode();
+					}
 					/* if(obj instanceof Entity) {
 						Entity entity = (Entity) obj;
 						value = entity.getCode();
