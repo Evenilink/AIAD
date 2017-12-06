@@ -16,21 +16,28 @@ public class TravelToObstacle implements IAgentState
 	@Override
 	public void enter(Exploration behaviour)
 	{
-		System.out.println("Hello from travelling to obstacle");
 		this.behaviour = behaviour;
-		path = behaviour.getAStar().getPathToNearestObstacle();
+		path = behaviour.getAStar().getPathToNearestObstacle(behaviour.getAgentPoint());
+		
+		if (path == null) {
+			System.err.println("Path was null...travelling to exit");
+			behaviour.changeState(new TravelExit());
+		}
+		
+		//System.out.println(path);
 		pathNode = 0;
 	}
 
 	@Override
 	public void execute()
 	{
-		behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition());
-		pathNode++;
+		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY());
+		if (behaviour.moveAgentToCoordinate(target))
+			pathNode++;
 		
 		if(pathNode == path.size()) 
 		{
-			//TODO
+			behaviour.changeState(new HelpDestroyObstacle());
 		} 
 	}
 

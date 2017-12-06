@@ -8,8 +8,7 @@ public class HelpDestroyObstacle implements IAgentState
 	@Override
 	public void enter(Exploration behaviour)
 	{
-		// TODO Auto-generated method stub
-		
+		System.out.println("Hello From HelpDestroyObstacle");
 	}
 
 	@Override
