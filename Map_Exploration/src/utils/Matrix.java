@@ -193,6 +193,50 @@ public class Matrix implements Serializable {
     	return matrix[row][column];
     }
     
+    public int getValueIfPossRow(int row, int column, int value) 
+    {
+    	if (value >= 0)
+    	{
+    		if ( row+value < 0 || row+value > matrix.length-1)
+        		return -1;
+    		else 
+    			return matrix[row+value][column];
+    	} else if ( row-value < 0 || row-value > matrix.length-1)
+        		return -1;
+    	else 
+    		return matrix[row-value][column];
+    }
+    
+    public int getValueIfPossCol(int row, int column, int value) 
+    {
+    	if (value >= 0) {
+    		if ( column+value < 0 || column+value > matrix[0].length-1)
+        		return -1;
+    		else
+    			return matrix[row][column+value];
+    	} else if ( column-value < 0 || column-value > matrix[0].length-1)
+    		return -1;
+    	else
+    		return matrix[row][column-value];
+    }
+    
+    public int getValueIfPossBoth(int row, int column, int valueRow, int valueCol) 
+    {
+    	if ( getValueIfPossRow(row,column,valueRow) == -1 || getValueIfPossCol(row,column,valueCol) == -1)
+    		return -1;
+    	
+    	if (valueRow > 0 && valueCol > 0)
+    		return matrix[row+valueRow][column+valueCol];
+    	else if (valueRow < 0 && valueCol < 0)
+    		return matrix[row-valueRow][column-valueCol];
+    	else if (valueRow < 0 && valueCol > 0)
+    		return matrix[row-valueRow][column+valueCol];
+    	else if (valueRow > 0 && valueCol < 0)
+    		return matrix[row+valueRow][column-valueCol];
+    	
+    	return -1;
+    }
+    
     public void setValue(int row, int column, int val) {
         if(matrix[row][column] == 0)
         	undiscoveredCells--;

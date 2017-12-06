@@ -39,5 +39,15 @@ public class ObjectSetups {
         context.add(new Obstacle(5, 3));
         context.add(new Obstacle(6, 3));
         context.add(new Obstacle(7, 3));
+        
+        //ADDED FOR TESTING
+        context.add(new Obstacle(13, 13));
+        context.add(new Obstacle(12, 13));
+        context.add(new Obstacle(13, 12));
+        context.add(new Obstacle(13, 11));
+        context.add(new Obstacle(12, 11));
+        context.add(new Obstacle(11, 11));
+        context.add(new Obstacle(11, 12));
+        context.add(new Obstacle(11, 13));
     }
 }

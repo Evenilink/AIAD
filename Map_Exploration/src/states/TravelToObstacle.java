@@ -17,7 +17,7 @@ public class TravelToObstacle implements IAgentState
 	public void enter(Exploration behaviour)
 	{
 		this.behaviour = behaviour;
-		path = behaviour.getAStar().getPathToNearestObstacle(behaviour.getAgentPoint());
+		path = behaviour.getAStar().getNearestObstacle(behaviour.getAgentPoint());
 		
 		if (path == null) {
 			System.err.println("Path was null...travelling to exit");

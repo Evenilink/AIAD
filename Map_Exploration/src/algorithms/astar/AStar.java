@@ -14,7 +14,8 @@ public class AStar {
 
 	public AStar(Explorer agent) {
 		this.agent = agent;
-		pathfinding = new Pathfinding(agent.getGrid().getDimensions().getWidth(), agent.getGrid().getDimensions().getHeight());
+		pathfinding = new Pathfinding(agent.getGrid().getDimensions().getWidth(),
+				agent.getGrid().getDimensions().getHeight());
 	}
 
 	public List<Node> computePath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
@@ -36,13 +37,16 @@ public class AStar {
 	}
 
 	/**
-	 * @brief Gets The path to the nearest obstacle, according to agent's
-	 *        position
-	 * @return List of Nodes which represent the path
+	 * Returns the nearest coordinate that has not yet been discovered based on the
+	 * agent's position.
+	 * 
+	 * @param currentPosition
+	 * @return
 	 */
-	public List<Node> getPathToNearestObstacle(GridPoint currentPosition) {
-		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition, agent.getGrid().getDimensions().getHeight());
-		Coordinates nearestObstacle = null;
+	public List<Node> getNearestObstacle(GridPoint currentPosition) {
+		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition,
+				agent.getGrid().getDimensions().getHeight());
+		Coordinates nearestUndiscovered = null;
 
 		int matrixMaxIndexX = agent.getGrid().getDimensions().getWidth() - 1;
 		int leftCellsAmount = matrixMaxIndexX - currCoordinates.getX();
@@ -58,39 +62,50 @@ public class AStar {
 														// the matrix.
 
 		for (int radious = 2; radious <= maxDistance; radious++) {
-			nearestObstacle = getUndiscoveredObstacleInRadious(currCoordinates, radious);
-			if (nearestObstacle != null) {
-				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils.worldPointFromMatrix(nearestObstacle, agent.getGrid().getDimensions().getHeight()));
+			nearestUndiscovered = getObstacleInRadious(currCoordinates, radious);
+			if (nearestUndiscovered != null) {
+				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils
+						.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
 				if (path != null)
 					return path;
 			}
 		}
+
 		return null;
 	}
 
 	/**
-	 * Returns the first coordinate that has a 3 on the matrix (is an obstacle)
+	 * Returns the first coordinate that has a zero on the matrix (is undiscovered)
 	 * distancing 'radious' from the agent.
 	 * 
 	 * @param currCoordinates
 	 * @param radious
 	 * @return
 	 */
-	private Coordinates getUndiscoveredObstacleInRadious(Coordinates currCoordinates, int radious) {
+	private Coordinates getObstacleInRadious(Coordinates currCoordinates, int radious) {
 		Coordinates nearestCoordinate = null;
 		float nearestDistance = Float.MAX_VALUE;
 
 		for (int column = currCoordinates.getX() - radious; column <= currCoordinates.getX() + radious; column++) {
 			for (int row = currCoordinates.getY() - radious; row <= currCoordinates.getY() + radious; row++) {
 				// Are the points on the grid?
-				if (column >= 0 && column < agent.getGrid().getDimensions().getWidth() && row >= 0 && row < agent.getGrid().getDimensions().getHeight()) {
+				if (column >= 0 && column < agent.getGrid().getDimensions().getWidth() && row >= 0
+						&& row < agent.getGrid().getDimensions().getHeight()) {
 					// Do the points not belong in the radious?
-					if (column != currCoordinates.getX() - radious && column != currCoordinates.getX() + radious && row != currCoordinates.getY() - radious && row != currCoordinates.getY() + radious)
+					if (column != currCoordinates.getX() - radious && column != currCoordinates.getX() + radious
+							&& row != currCoordinates.getY() - radious && row != currCoordinates.getY() + radious)
 						continue;
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if (agent.getMatrix().getValue(row, column) == 3 && distance < nearestDistance) {
+					if (   ((agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossRow(row, column,+1) == 3) || 
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossRow(row, column,-1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossCol(row, column, -1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossCol(row, column, +1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row, column, +1, +1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row, column, -1, +1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row,column,-1,-1) == 3) ||
+							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row,column,+1,-1) == 3)) && distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
@@ -100,17 +115,20 @@ public class AStar {
 
 		return nearestCoordinate;
 	}
+	
+	
 
 	// TODO: move this function to utils.
 	/**
-	 * Returns the nearest coordinate that has not yet been discovered based on
-	 * the agent's position.
+	 * Returns the nearest coordinate that has not yet been discovered based on the
+	 * agent's position.
 	 * 
 	 * @param currentPosition
 	 * @return
 	 */
 	public List<Node> getNearestUndiscoveredPlace(GridPoint currentPosition) {
-		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition, agent.getGrid().getDimensions().getHeight());
+		Coordinates currCoordinates = utils.Utils.matrixFromWorldPoint(currentPosition,
+				agent.getGrid().getDimensions().getHeight());
 		Coordinates nearestUndiscovered = null;
 
 		int matrixMaxIndexX = agent.getGrid().getDimensions().getWidth() - 1;
@@ -129,7 +147,8 @@ public class AStar {
 		for (int radious = 2; radious <= maxDistance; radious++) {
 			nearestUndiscovered = getUndiscoveredInRadious(currCoordinates, radious);
 			if (nearestUndiscovered != null) {
-				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
+				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils
+						.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
 				if (path != null)
 					return path;
 			}
@@ -139,8 +158,8 @@ public class AStar {
 	}
 
 	/**
-	 * Returns the first coordinate that has a zero on the matrix (is
-	 * undiscovered) distancing 'radious' from the agent.
+	 * Returns the first coordinate that has a zero on the matrix (is undiscovered)
+	 * distancing 'radious' from the agent.
 	 * 
 	 * @param currCoordinates
 	 * @param radious
@@ -153,9 +172,11 @@ public class AStar {
 		for (int column = currCoordinates.getX() - radious; column <= currCoordinates.getX() + radious; column++) {
 			for (int row = currCoordinates.getY() - radious; row <= currCoordinates.getY() + radious; row++) {
 				// Are the points on the grid?
-				if (column >= 0 && column < agent.getGrid().getDimensions().getWidth() && row >= 0 && row < agent.getGrid().getDimensions().getHeight()) {
+				if (column >= 0 && column < agent.getGrid().getDimensions().getWidth() && row >= 0
+						&& row < agent.getGrid().getDimensions().getHeight()) {
 					// Do the points not belong in the radious?
-					if (column != currCoordinates.getX() - radious && column != currCoordinates.getX() + radious && row != currCoordinates.getY() - radious && row != currCoordinates.getY() + radious)
+					if (column != currCoordinates.getX() - radious && column != currCoordinates.getX() + radious
+							&& row != currCoordinates.getY() - radious && row != currCoordinates.getY() + radious)
 						continue;
 
 					Coordinates coordinates = new Coordinates(column, row);
