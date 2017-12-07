@@ -62,7 +62,7 @@ public class AStar {
 														// the matrix.
 
 		for (int radious = 2; radious <= maxDistance; radious++) {
-			nearestUndiscovered = getObstacleInRadious(currCoordinates, radious);
+			nearestUndiscovered = getObstacleInRadius(currCoordinates, radious);
 			if (nearestUndiscovered != null) {
 				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils
 						.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
@@ -82,7 +82,7 @@ public class AStar {
 	 * @param radious
 	 * @return
 	 */
-	private Coordinates getObstacleInRadious(Coordinates currCoordinates, int radious) {
+	private Coordinates getObstacleInRadius(Coordinates currCoordinates, int radious) {
 		Coordinates nearestCoordinate = null;
 		float nearestDistance = Float.MAX_VALUE;
 
@@ -98,14 +98,24 @@ public class AStar {
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if (   ((agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossRow(row, column,+1) == 3) || 
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossRow(row, column,-1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossCol(row, column, -1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossCol(row, column, +1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row, column, +1, +1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row, column, -1, +1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row,column,-1,-1) == 3) ||
-							(agent.getMatrix().getValue(row, column) == 1 && agent.getMatrix().getValueIfPossBoth(row,column,+1,-1) == 3)) && distance < nearestDistance) {
+					// Gets the cell which has an obstacle nearby (+/- 1 cell distance)
+					if (((agent.getMatrix().getValue(row, column) == 1
+							&& agent.getMatrix().getValueIfPossRow(row, column, +1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossRow(row, column, -1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossCol(row, column, -1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossCol(row, column, +1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, +1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, +1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, -1) == 3)
+							|| (agent.getMatrix().getValue(row, column) == 1
+									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, -1) == 3))
+							&& distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
@@ -115,8 +125,6 @@ public class AStar {
 
 		return nearestCoordinate;
 	}
-	
-	
 
 	// TODO: move this function to utils.
 	/**
@@ -145,7 +153,7 @@ public class AStar {
 														// the matrix.
 
 		for (int radious = 2; radious <= maxDistance; radious++) {
-			nearestUndiscovered = getUndiscoveredInRadious(currCoordinates, radious);
+			nearestUndiscovered = getEntityInRadius(currCoordinates, radious, 0);
 			if (nearestUndiscovered != null) {
 				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), utils.Utils
 						.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
@@ -163,9 +171,10 @@ public class AStar {
 	 * 
 	 * @param currCoordinates
 	 * @param radious
+	 * @param cellValue 
 	 * @return
 	 */
-	private Coordinates getUndiscoveredInRadious(Coordinates currCoordinates, int radious) {
+	private Coordinates getEntityInRadius(Coordinates currCoordinates, int radious, int cellValue) {
 		Coordinates nearestCoordinate = null;
 		float nearestDistance = Float.MAX_VALUE;
 
@@ -181,14 +190,13 @@ public class AStar {
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					if (agent.getMatrix().getValue(row, column) == 0 && distance < nearestDistance) {
+					if (agent.getMatrix().getValue(row, column) == cellValue && distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
 				}
 			}
 		}
-
 		return nearestCoordinate;
 	}
 
