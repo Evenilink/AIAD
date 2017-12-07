@@ -45,7 +45,7 @@ public class TravelExit implements IAgentState {
 						IndividualMessage message = new IndividualMessage(MessageType.REACHED_EXIT, behaviour.getAgent().getLocalName(), otherExplorer.getAID());
 						behaviour.getAgent().sendMessage(message);
 						becameMasterAgent = false;
-						break;	
+						break;
 					}
 				}
 			}
