@@ -3,6 +3,7 @@ package utils;
 import agents.Explorer;
 import behaviours.Exploration;
 import entities.Entity;
+import entities.Exit;
 import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
@@ -73,16 +74,18 @@ public class Matrix implements Serializable {
         List<GridCell<Object>> gridCells = nghCreator.getNeighborhood(true);
 
         for (GridCell<Object> gridCell : gridCells) {
-            Iterator<Object> it = gridCell.items().iterator();
-
 			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
+				System.out.println("Setting node not walkbale");
+				behaviour.getAStar().setNodeWalkable(Coordinates.FromGridPoint(gridCell.getPoint()), false);
+				behaviour.getAStar().printGrid();
 				continue;
 			}
 
+            Iterator<Object> it = gridCell.items().iterator();
 			if (!it.hasNext()) {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
@@ -90,17 +93,22 @@ public class Matrix implements Serializable {
 				int value = 0;
 				// If the cell has objects
 				while(it.hasNext()) {
-					value = 0;
 					Object obj = it.next();
 
 					// If the object found is an Entity use it's value
-					if(obj instanceof Entity) {
+					// TODO: if it crashes, this can be the reason.
+					if(obj instanceof Exit) {
+						Exit exit = (Exit) obj;
+						value = exit.getCode();
+					}
+					/* if(obj instanceof Entity) {
 						Entity entity = (Entity) obj;
 						value = entity.getCode();
+						System.out.println("Passou aqui!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
-					}
+					} */
 					// Else if the object found is an Explorer consider empty cell (value = 1)
-					else if (obj == null || obj instanceof Explorer) value = 1;
+					if (obj == null || obj instanceof Explorer) value = 1;
 						// Unidentified object retrieved from the grid
 					else System.err.println("Matrix: Unidentified object, could't update matrix!");
 				}
@@ -183,6 +191,50 @@ public class Matrix implements Serializable {
 	
     public int getValue(int row, int column) {
     	return matrix[row][column];
+    }
+    
+    public int getValueIfPossRow(int row, int column, int value) 
+    {
+    	if (value >= 0)
+    	{
+    		if ( row+value < 0 || row+value > matrix.length-1)
+        		return -1;
+    		else 
+    			return matrix[row+value][column];
+    	} else if ( row-value < 0 || row-value > matrix.length-1)
+        		return -1;
+    	else 
+    		return matrix[row-value][column];
+    }
+    
+    public int getValueIfPossCol(int row, int column, int value) 
+    {
+    	if (value >= 0) {
+    		if ( column+value < 0 || column+value > matrix[0].length-1)
+        		return -1;
+    		else
+    			return matrix[row][column+value];
+    	} else if ( column-value < 0 || column-value > matrix[0].length-1)
+    		return -1;
+    	else
+    		return matrix[row][column-value];
+    }
+    
+    public int getValueIfPossBoth(int row, int column, int valueRow, int valueCol) 
+    {
+    	if ( getValueIfPossRow(row,column,valueRow) == -1 || getValueIfPossCol(row,column,valueCol) == -1)
+    		return -1;
+    	
+    	if (valueRow > 0 && valueCol > 0)
+    		return matrix[row+valueRow][column+valueCol];
+    	else if (valueRow < 0 && valueCol < 0)
+    		return matrix[row-valueRow][column-valueCol];
+    	else if (valueRow < 0 && valueCol > 0)
+    		return matrix[row-valueRow][column+valueCol];
+    	else if (valueRow > 0 && valueCol < 0)
+    		return matrix[row+valueRow][column-valueCol];
+    	
+    	return -1;
     }
     
     public void setValue(int row, int column, int val) {

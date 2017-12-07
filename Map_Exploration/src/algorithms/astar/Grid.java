@@ -16,9 +16,10 @@ public class Grid {
 		this.gridSizeX = gridSizeX;
 		this.gridSizeY = gridSizeY;
 		
-		for(int y = gridSizeY - 1; y >= 0; y--)
-			for(int x = 0; x < gridSizeX; x++)
-				grid[y][x] = new Node(true, new Coordinates(x, gridSizeY - 1 - y), new Coordinates(x, y));
+		for(int row = 0; row < gridSizeY; row++) {
+			for(int column = 0; column < gridSizeX; column++)
+				grid[row][column] = new Node(true, new Coordinates(column, row));
+		}
 	}
 	
 	/**
@@ -34,14 +35,18 @@ public class Grid {
 				if(x == 0 && y == 0)
 					continue;
 				
-				int checkX = node.getGridPosition().getX() + x;
-				int checkY = node.getGridPosition().getY() + y;
+				int checkX = node.getWorldPosition().getX() + x;
+				int checkY = node.getWorldPosition().getY() + y;
 				if(checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
 					neighbours.add(grid[checkY][checkX]);
 			}
 		}
 		
 		return neighbours;
+	}
+	
+	public Node getNode(Coordinates coordinates) {
+		return grid[coordinates.getY()][coordinates.getX()];
 	}
 	
 	/**
@@ -55,5 +60,15 @@ public class Grid {
 	
 	public void setNodeWalkable(Coordinates coordinates, boolean newWalkable) {
 		grid[coordinates.getY()][coordinates.getX()].setWalkable(newWalkable);
+	}
+	
+	public void printGrid() {
+		for(int row = 0; row < gridSizeY; row++) {
+			for(int column = 0; column < gridSizeX; column++) {
+				System.out.print((grid[row][column].getWalkable() ? "1" : "0") + " | ");
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 }

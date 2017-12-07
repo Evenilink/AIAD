@@ -43,7 +43,7 @@
 									
 		/>
 				<parameter name="numberOfAgents" displayName="Number of Agents" type="int" 
-						defaultValue="2" 
+						defaultValue="1" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
