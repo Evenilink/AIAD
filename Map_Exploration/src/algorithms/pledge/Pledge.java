@@ -25,10 +25,10 @@ public class Pledge {
     }
     
     private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
-        if (objs.right() == null) {
+        if (objs.right() == null || !(objs.right() instanceof Obstacle)) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
             return pts.right();
-        } else if (objs.front() == null && objs.right() instanceof Obstacle) {
+        } else if ((objs.front() == null || !(objs.front() instanceof  Obstacle)) && objs.right() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving forward");
             return pts.front();
         } else if (objs.front() instanceof Obstacle && objs.right() instanceof Obstacle && objs.left() instanceof Obstacle) {
