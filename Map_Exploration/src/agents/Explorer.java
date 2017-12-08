@@ -16,6 +16,7 @@ import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
+import entities.CommunicationRadious;
 import entities.DiscoveredCell;
 import entities.Entity;
 import entities.Exit;
@@ -45,6 +46,7 @@ public class Explorer extends Agent {
 	private int totalNumAgents;
 	private AgentType agentType;
 	private Context<Object> context;
+	private List<CommunicationRadious> visualRadious;
 	private Matrix matrix;
 	
 	private Exploration exploration;
@@ -168,7 +170,6 @@ public class Explorer extends Agent {
 	}
 	
 	public void discoverCell(UndiscoveredCell cell) {
-		System.out.println("Discovered => x: " + cell.getCoordinates().getX() + ", y: " + cell.getCoordinates().getY());
 		DiscoveredCell discoveredCell = new DiscoveredCell(cell.getCoordinates().getX(), cell.getCoordinates().getY());
 		context.add(discoveredCell);
 		space.moveTo(discoveredCell, discoveredCell.getCoordinates().getX(), discoveredCell.getCoordinates().getY());

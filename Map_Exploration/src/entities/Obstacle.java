@@ -6,13 +6,13 @@ public class Obstacle extends Entity {
 	private final int neededAgentsForRemoving;
 
 	public Obstacle(int posX, int posY) {
-		super(posX, posY, 3);
+		super(posX, posY, utils.Utils.CODE_OBSTACLE_CELL);
 		this.seeThrough = false;
 		this.neededAgentsForRemoving = 1;
 	}
 
 	public Obstacle(int posX, int posY, int entityCode, boolean seeThrough, int neededAgentsForRemoving) {
-		super(posX, posY, entityCode);
+		super(posX, posY, utils.Utils.CODE_OBSTACLE_CELL);
 		this.seeThrough = seeThrough;
 		this.neededAgentsForRemoving = neededAgentsForRemoving;
 	}

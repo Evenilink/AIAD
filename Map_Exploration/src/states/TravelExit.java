@@ -7,10 +7,7 @@ import agents.Explorer;
 import algorithms.astar.Node;
 import behaviours.Exploration;
 import communication.IndividualMessage;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.UnreadableException;
 import utils.Coordinates;
-import utils.Matrix;
 import utils.Utils.MessageType;
 
 public class TravelExit implements IAgentState {
