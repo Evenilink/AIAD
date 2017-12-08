@@ -14,6 +14,10 @@ public class Coordinates {
 		this.x = x;
 		this.y = y;
 	}
+
+	public GridPoint toGridPoint() {
+		return new GridPoint(x, y);
+	}
 	
 	public int getX() {
 		return x;
@@ -22,7 +26,7 @@ public class Coordinates {
 	public int getY() {
 		return y;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if(other == null) return false;

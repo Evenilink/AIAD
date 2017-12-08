@@ -3,11 +3,7 @@ package algorithms.dfs;
 import java.util.List;
 
 import agents.Explorer;
-import behaviours.Exploration;
 import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
-import repast.simphony.space.grid.GridPoint;
-import utils.Coordinates;
 
 public class DFS {
 

@@ -133,6 +133,10 @@ public class Exploration extends CyclicBehaviour {
 	public void discoverCell(UndiscoveredCell cell) {
 	    agent.discoverCell(cell);
 	  }
+
+	public void printStates() {
+		System.out.println("State: " + currState + "; Paused State: " + pausedState);
+	}
 	
 	/**
 	 * Searches for other explorers in the neighborhood and sends them his matrix.

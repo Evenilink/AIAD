@@ -128,9 +128,9 @@ public class NeighbourPoints {
 
     public String toString() {
         return  "Offset: " + this.offset + "\n" +
-                "Front Object: " + frontPoint + "\n" +
-                "Back Object: " + backPoint + "\n" +
-                "Left Object: " + leftPoint + "\n" +
-                "Right Object: " + rightPoint;
+                "Front Point: " + frontPoint + "\n" +
+                "Back Point: " + backPoint + "\n" +
+                "Left Point: " + leftPoint + "\n" +
+                "Right Point: " + rightPoint;
     }
 }
