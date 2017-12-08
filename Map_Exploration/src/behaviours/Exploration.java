@@ -57,9 +57,9 @@ public class Exploration extends CyclicBehaviour {
 		}
 		if(agent != null) {
 			receiveMessagesHandler();
-			List<GridCell<Object>> a = getNeighborhoodCells();
-			if(a != null)
-				sendMessagesHandler(a);	
+			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCells();
+			if(neighborhoodCells != null)
+				sendMessagesHandler(neighborhoodCells);	
 		}
 	}
 	
@@ -118,11 +118,10 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public List<GridCell<Object>> getNeighborhoodCells() {
-		System.out.println("Comecando");
-		System.out.println(agent);
-		System.out.println(agent.getGrid());
-		System.out.println(agent.getRadious());
 		GridPoint pt = getAgentPoint();
+		// This can happen when the agent has already left and the behaviour is finishing executing.
+		if(pt == null)
+			return null;
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
 		return nghCreator.getNeighborhood(false);
 	}
