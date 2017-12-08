@@ -54,6 +54,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 
 	@Override
 	protected void launchJADE() {
+		System.out.println("Force push");
 		Runtime runtime = Runtime.instance();
 		Profile profile = new ProfileImpl();
 		mainContainer = runtime.createMainContainer(profile);
