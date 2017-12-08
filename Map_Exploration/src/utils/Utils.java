@@ -29,6 +29,12 @@ public class Utils {
 		EXIT,
 		OBSTACLE
 	}
+	
+	public static final int CODE_UNDISCOVERED = 0;
+	public static final int CODE_DISCOVERED = 1;
+	public static final int CODE_OBSTACLE_CELL = 2;
+	public static final int CODE_OBSTACLE_DOOR = 3;	
+	public static final int CODE_EXIT = 3;
 
 	/**
 	 * Calculates the distance between two 2D points
