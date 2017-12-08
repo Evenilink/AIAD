@@ -21,7 +21,6 @@ public class TravelToObstacle implements IAgentState {
 			System.err.println("Path was null...travelling to exit");
 			behaviour.changeState(new TravelExit());
 		}
-
 		pathNode = 0;
 	}
 

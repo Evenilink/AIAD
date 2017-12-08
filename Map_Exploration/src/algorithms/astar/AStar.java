@@ -6,6 +6,7 @@ import java.util.List;
 import agents.Explorer;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
+import utils.Utils;
 
 public class AStar {
 
@@ -97,23 +98,15 @@ public class AStar {
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					// Gets the cell which has an obstacle nearby (+/- 1 cell distance)
-					if (((agent.getMatrix().getValue(row, column) == 1
-							&& agent.getMatrix().getValueIfPossRow(row, column, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossRow(row, column, -1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossCol(row, column, -1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossCol(row, column, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, -1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, -1) == 3))
+					// Gets the cell which has an obstacle nearby (+/- 1 cell distance N/S/E/W )
+					if (((agent.getMatrix().getValue(row, column) == Utils.CODE_DISCOVERED
+							&& agent.getMatrix().getValueIfPossRow(row, column, +1) == 4)
+							|| (agent.getMatrix().getValue(row, column) == Utils.CODE_DISCOVERED
+									&& agent.getMatrix().getValueIfPossRow(row, column, -1) == Utils.CODE_OBSTACLE_DOOR)
+							|| (agent.getMatrix().getValue(row, column) == Utils.CODE_DISCOVERED
+									&& agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR)
+							|| (agent.getMatrix().getValue(row, column) == Utils.CODE_DISCOVERED
+									&& agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR))
 							&& distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;

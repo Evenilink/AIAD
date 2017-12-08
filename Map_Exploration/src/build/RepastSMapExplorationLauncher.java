@@ -128,10 +128,10 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6));
 		// ObjectSetups.Setup2(context);
-		
+
 		for(int i = 0; i < coordinates.size(); i++)
 			context.add(new UndiscoveredCell(coordinates.get(i).getX(), coordinates.get(i).getY()));
-
+	 
 		// Updates/Sets all the objects location.
 		for(Object obj : context) {
 			if(obj instanceof Explorer) {

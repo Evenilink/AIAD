@@ -19,7 +19,7 @@ public class ObjectSetups {
     }
 
     public static void Setup2(Context<Object> context) {
-        context.add(new Obstacle(6, 3));
+        context.add(new Obstacle(6, 3,false,2));
         context.add(new Obstacle(6, 4));
         context.add(new Obstacle(6, 5));
         context.add(new Obstacle(6, 6));
