@@ -32,7 +32,7 @@ public class TravelToObstacle implements IAgentState {
 			pathNode++;
 
 		if (pathNode == path.size()) {
-			behaviour.changeState(new HelpDestroyObstacle());
+			behaviour.changeState(new ObstacleGuardian());
 		}
 	}
 
