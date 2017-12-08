@@ -24,7 +24,7 @@ public class Pledge {
         visitedCoordinates = new ArrayList<>();
     }
     
-    private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObjects objs, boolean displayMessages) {
+    private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObstacles objs, boolean displayMessages) {
         if (objs.right() == null || !(objs.right() instanceof Obstacle)) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
             return pts.right();
