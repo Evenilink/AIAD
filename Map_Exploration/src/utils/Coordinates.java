@@ -1,8 +1,9 @@
 package utils;
 
+import jade.util.leap.Serializable;
 import repast.simphony.space.grid.GridPoint;
 
-public class Coordinates {
+public class Coordinates implements Serializable {
 	public static Coordinates FromGridPoint(GridPoint point) {
 		return new Coordinates(point.getX(), point.getY());
 	}

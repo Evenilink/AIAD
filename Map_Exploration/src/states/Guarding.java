@@ -50,7 +50,7 @@ public class Guarding implements IAgentState {
 					switch (message.getMessageType()) {
 					case MATRIX:
 						Matrix otherMatrix = (Matrix) message.getContent();
-						behaviour.getAgent().getMatrix().mergeMatrix(otherMatrix);
+						behaviour.getAgent().getMatrix().mergeMatrix(otherMatrix, behaviour);
 						break;
 					case REACHED_EXIT:
 						String agentName = (String) message.getContent();

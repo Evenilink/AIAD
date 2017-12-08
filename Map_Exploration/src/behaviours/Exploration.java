@@ -73,7 +73,7 @@ public class Exploration extends CyclicBehaviour {
 					switch(message.getMessageType()) {
 						case MATRIX:
 							Matrix otherMatrix = (Matrix) message.getContent();
-							agent.getMatrix().mergeMatrix(otherMatrix);
+							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
 							this.changeState(new WaitingForObstacleDestroy());
