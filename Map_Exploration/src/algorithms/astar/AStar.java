@@ -23,13 +23,12 @@ public class AStar {
 	}
 
 	/**
-	 * Sets the current path to traverse for the exit.
+	 * Returns the path to traverse in order to reach the exit.
+	 * @return Path to exit or null if there is none.
 	 */
 	public List<Node> getPathToExit() {
 		Coordinates exit = agent.getMatrix().getExit();
 		if (exit != null) {
-			// System.out.println("Exit => x: " + exit.getX() + ", y: " +
-			// exit.getY());
 			GridPoint pt = agent.getGrid().getLocation(agent);
 			return computePath(new Coordinates(pt.getX(), pt.getY()), exit);
 		}

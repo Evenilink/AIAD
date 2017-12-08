@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.corba.se.impl.io.IIOPInputStream;
+
 import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
@@ -15,12 +17,14 @@ import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
 import entities.Entity;
+import entities.Exit;
 import entities.Obstacle;
 import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
+import repast.simphony.context.Context;
 import repast.simphony.space.continuous.ContinuousSpace;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
@@ -36,7 +40,9 @@ public class Explorer extends Agent {
 	private Grid<Object> grid;
 	private int radious;
 	private int communicationLimit;
+	private int totalNumAgents;
 	private AgentType agentType;
+	private Context<Object> context;
 	private Matrix matrix;
 	
 	private Exploration exploration;
@@ -48,10 +54,12 @@ public class Explorer extends Agent {
 	 * @param grid
 	 * @param radious
 	 */
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int totalNumAgents, Context<Object> context) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
+		this.totalNumAgents = totalNumAgents;
+		this.context = context;
 		agentType = AgentType.SUPER_AGENT;
 	}
 	
@@ -62,11 +70,13 @@ public class Explorer extends Agent {
 	 * @param radious
 	 * @param communicationLimit
 	 */
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit, int totalNumAgents, Context<Object> context) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
 		this.communicationLimit = communicationLimit;
+		this.totalNumAgents = totalNumAgents;
+		this.context = context;
 		agentType = AgentType.NORMAL_AGENT;
 	}
 	
@@ -130,21 +140,34 @@ public class Explorer extends Agent {
 	}
 	
 	public boolean moveAgent(Coordinates targetCoordinates) {
-		// Can only move agent if target is free.
+		if(canMove(targetCoordinates)) {
+			if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
+				grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
+				getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * If the target coordinates has an obstacle, it returns false. Otherwise, it returns true;
+	 * @param targetCoordinates
+	 * @return Returns if the agent can move to the specified coordinates.
+	 */
+	private boolean canMove(Coordinates targetCoordinates) {
 		Iterator<Object> it = grid.getObjectsAt(targetCoordinates.getX(), targetCoordinates.getY()).iterator();
 		while(it.hasNext()) {
 			Object obj = it.next();
-			if(obj instanceof Explorer)// || obj instanceof Obstacle)
+			if(obj instanceof Obstacle)//  || obj instanceof Explorer)
 				return false;
 		}
-
-		if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
-			grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
-			getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
-			return true;
-		}
-		
-		return false;
+		return true;
+	}
+	
+	public void exitFromSimulation() {
+		takeDown();
+		context.remove(this);
 	}
 	
 	/*******************************/
@@ -204,5 +227,9 @@ public class Explorer extends Agent {
 	
 	public AgentType getAgentType() {
 		return agentType;
+	}
+	
+	public int getTotalNumAgents() {
+		return totalNumAgents;
 	}
 }

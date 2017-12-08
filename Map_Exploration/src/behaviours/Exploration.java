@@ -68,8 +68,16 @@ public class Exploration extends CyclicBehaviour {
 							Matrix otherMatrix = (Matrix) message.getContent();
 							agent.getMatrix().mergeMatrix(otherMatrix);
 							break;
-						case HELP: 
-							
+						case OTHER_GUARDING:
+							boolean isToExit = (boolean) message.getContent();
+							if(isToExit)
+								agent.exitFromSimulation();
+							else {
+								System.out.println(agent.getLocalName() + " keeps recuiting.");
+								changeState(new Recruiting());
+							}
+							break;
+						default: break;
 					}
 				}
 			} catch (UnreadableException e) {

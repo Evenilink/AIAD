@@ -40,8 +40,8 @@ public class Matrix implements Serializable {
 	 * @param otherMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix) {
-		System.out.println("Before merging matrix");
-		printMatrix();
+		// System.out.println("Before merging matrix");
+		// printMatrix();
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
@@ -55,7 +55,7 @@ public class Matrix implements Serializable {
 	}
 	
 	public void printMatrix() {
-		System.out.println("Name: " + name);
+		System.out.println("Agent name: " + name);
 		for(int row = 0; row < matrix.length; row++) {
 			for(int column = 0; column < matrix[row].length; column++)
 				System.out.print(matrix[row][column] + " | ");
@@ -94,22 +94,13 @@ public class Matrix implements Serializable {
 				// If the cell has objects
 				while(it.hasNext()) {
 					Object obj = it.next();
-
 					// If the object found is an Entity use it's value
-					// TODO: if it crashes, this can be the reason.
 					if(obj instanceof Exit) {
 						Exit exit = (Exit) obj;
 						value = exit.getCode();
-					}
-					/* if(obj instanceof Entity) {
-						Entity entity = (Entity) obj;
-						value = entity.getCode();
-						System.out.println("Passou aqui!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-						break; // Doesn't need to continue since if there is an entity, it can't be another on the same spot
-					} */
-					// Else if the object found is an Explorer consider empty cell (value = 1)
-					if (obj == null || obj instanceof Explorer) value = 1;
-						// Unidentified object retrieved from the grid
+						break;
+					} else if (obj == null || obj instanceof Explorer)
+						value = 1;
 					else System.err.println("Matrix: Unidentified object, could't update matrix!");
 				}
 				// Updates the matrix with the new value

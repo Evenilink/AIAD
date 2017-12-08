@@ -17,14 +17,11 @@ public class TravelNearestUndiscovered implements IAgentState {
 		this.behaviour = behaviour;
 
 		if (behaviour.getAgent().getMatrix().hasUndiscoveredCells()) {
-			path = behaviour.getAStar()
-					.getNearestUndiscoveredPlace(behaviour.getAgentPoint());
+			path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
 			if (path != null) {
 				pathNode = 0;
-				System.out.println("Going to nearest zero: "
-						+ path.get(path.size() - 1).getWorldPosition().getX()
-						+ " and "
-						+ path.get(path.size() - 1).getWorldPosition().getY());
+				System.out.println("Going to nearest zero: " + path.get(path.size() - 1).getWorldPosition().getX()
+						+ " and " + path.get(path.size() - 1).getWorldPosition().getY());
 				printPath();
 			} else {
 				System.err.println("Going to travel obstacle");
@@ -38,8 +35,7 @@ public class TravelNearestUndiscovered implements IAgentState {
 
 	@Override
 	public void execute() {
-		Coordinates target = new Coordinates(
-				path.get(pathNode).getWorldPosition().getX(),
+		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(),
 				path.get(pathNode).getWorldPosition().getY());
 		if (behaviour.moveAgentToCoordinate(target))
 			pathNode++;
@@ -57,8 +53,7 @@ public class TravelNearestUndiscovered implements IAgentState {
 	private void printPath() {
 		System.out.println("Printing path");
 		for (Node node : path) {
-			System.out.println("x: " + node.getWorldPosition().getX() + ", y: "
-					+ node.getWorldPosition().getY());
+			System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
 		}
 		System.out.println("End");
 	}
