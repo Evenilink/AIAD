@@ -23,12 +23,13 @@ public class TravelExit implements IAgentState {
 	public void enter(Exploration behaviour) {
 		this.behaviour = behaviour;
 		path = behaviour.getAStar().getPathToExit();
-		pathNode = 0;
 		if(path == null) System.err.println("The exit should have been found already.");
+		pathNode = 0;
 	}
 
 	@Override
 	public void execute() {
+		System.out.println(behaviour.getAgent().getLocalName() + " is traveling to exit.");
 		if(pathNode < path.size())
 			if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
 				pathNode++;	

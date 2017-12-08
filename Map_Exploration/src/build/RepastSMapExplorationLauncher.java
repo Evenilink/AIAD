@@ -100,13 +100,13 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		// Create instances of agents.
 		explorers = new ArrayList<Explorer>();
 		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT, NUM_AGENTS + NUM_SUPER_AGENTS, context);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
-		
+				
 		for(int i = 0; i < NUM_SUPER_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS);
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, NUM_AGENTS + NUM_SUPER_AGENTS, context);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
@@ -125,7 +125,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		// Create obstacles.
 		for(int i = 0; i < NUM_OBSTACLES; i++)
 			context.add(new Obstacle(5 + i, 6));
-		ObjectSetups.Setup2(context);
+		// ObjectSetups.Setup2(context);
 
 		// Updates/Sets all the objects location.
 		for(Object obj : context) {
