@@ -6,7 +6,9 @@ import agents.Explorer;
 import behaviours.Exploration;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
+import repast.simphony.random.RandomHelper;
 import repast.simphony.space.grid.GridPoint;
+import repast.simphony.util.SimUtilities;
 import utils.Coordinates;
 
 public class DFS {
@@ -18,7 +20,7 @@ public class DFS {
 	}
 	
 	public GridCell<Object> execute(List<GridCell<Object>> neighborhoodCells) {
-		// SimUtilities.shuffle(gridCells, RandomHelper.getUniform());
+		SimUtilities.shuffle(neighborhoodCells, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : neighborhoodCells) {
 			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();

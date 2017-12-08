@@ -114,6 +114,8 @@ public class Exploration extends CyclicBehaviour {
 	
 	public Coordinates getAgentCoordinates() {
 		GridPoint pt = getAgentPoint();
+		if(pt == null)
+			return null;
 		return new Coordinates(pt.getX(), pt.getY());
 	}
 	

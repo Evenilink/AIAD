@@ -10,6 +10,7 @@ import communication.IndividualMessage;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
+import sun.management.resources.agent;
 import utils.Matrix;
 import utils.Utils.MessageType;
 
@@ -17,13 +18,14 @@ public class Guarding implements IAgentState {
 
 	private Exploration behaviour;
 	private int totalNumAgents;
+	private boolean everyAgentInstructed;
 	private List<String> agentsReachedExit;
 
 	@Override
 	public void enter(Exploration behaviour) {
 		this.behaviour = behaviour;
 		totalNumAgents = behaviour.getAgent().getTotalNumAgents();
-		System.out.println("Total number of agents: " + totalNumAgents);
+		everyAgentInstructed = false;
 		agentsReachedExit = new ArrayList<>();
 		agentsReachedExit.add(behaviour.getAgent().getLocalName());
 	}
@@ -52,15 +54,21 @@ public class Guarding implements IAgentState {
 						break;
 					case REACHED_EXIT:
 						String agentName = (String) message.getContent();
-						if (!agentsReachedExit.contains(agentName))
+						if (!agentsReachedExit.contains(agentName)) {
 							agentsReachedExit.add(agentName);
-						if (agentsReachedExit.size() == totalNumAgents) {
+							if (agentsReachedExit.size() == totalNumAgents)
+								everyAgentInstructed = true;
+						}
+
+						if (everyAgentInstructed) {
 							System.out.println(behaviour.getAgent().getLocalName() + ": you're free to exit!");
 							message = new IndividualMessage(MessageType.OTHER_GUARDING, true, acl.getSender());
 							behaviour.getAgent().sendMessage(message);
 							totalNumAgents--;
-							if(totalNumAgents == 1) {
-								System.out.println(behaviour.getAgent().getLocalName() + ": I'm alone in the simulation, and since I'm the guarding, I will also leave. Bye!");
+							// If this agent is the only one left.
+							if (totalNumAgents == 1) {
+								System.out.println(behaviour.getAgent().getLocalName()
+										+ ": I'm alone in the simulation, and since I'm the guarding, I will also leave. Bye!");
 								behaviour.getAgent().exitFromSimulation();
 							}
 						} else {

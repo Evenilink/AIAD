@@ -24,8 +24,11 @@ public class Recruiting implements IAgentState {
 			row = ThreadLocalRandom.current().nextInt(0, behaviour.getAgent().getGrid().getDimensions().getHeight() - 1);
 		} while(exit.getX() == column && exit.getY() == row);
 		
-		path = behaviour.getAStar().computePath(behaviour.getAgentCoordinates(), new Coordinates(column, row));
-		pathNode = 0;
+		Coordinates source = behaviour.getAgentCoordinates();
+		if(source != null) {
+			path = behaviour.getAStar().computePath(source, new Coordinates(column, row));
+			pathNode = 0;	
+		}
 	}
 
 	@Override
