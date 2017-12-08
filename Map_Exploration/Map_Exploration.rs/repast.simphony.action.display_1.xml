@@ -3,11 +3,19 @@
   <type>2D</type>
   <styles>
     <entry>
+      <string>entities.UndiscoveredCell</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
       <string>entities.Exit</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
       <string>agents.Explorer</string>
+      <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
+    </entry>
+    <entry>
+      <string>entities.DiscoveredCell</string>
       <string>repast.simphony.visualization.editedStyle.EditedStyle2D</string>
     </entry>
     <entry>
@@ -17,12 +25,20 @@
   </styles>
   <editedStyles>
     <entry>
+      <string>entities.UndiscoveredCell</string>
+      <string>entities.UndiscoveredCell.style_2.xml</string>
+    </entry>
+    <entry>
       <string>entities.Exit</string>
       <string>entities.Exit.style_3.xml</string>
     </entry>
     <entry>
       <string>agents.Explorer</string>
       <string>agents.Explorer.style_4.xml</string>
+    </entry>
+    <entry>
+      <string>entities.DiscoveredCell</string>
+      <string>entities.DiscoveredCell.style_3.xml</string>
     </entry>
     <entry>
       <string>entities.Obstacle</string>
@@ -39,23 +55,31 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>-399833312</hashCode>
+    <hashCode>1757798516</hashCode>
   </schedParams>
   <layoutClassName>foo.bar.baz</layoutClassName>
   <layoutProjection>space</layoutProjection>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
+      <string>entities.UndiscoveredCell</string>
+      <int>0</int>
+    </entry>
+    <entry>
       <string>entities.Exit</string>
-      <int>1</int>
+      <int>3</int>
     </entry>
     <entry>
       <string>agents.Explorer</string>
-      <int>2</int>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>entities.DiscoveredCell</string>
+      <int>1</int>
     </entry>
     <entry>
       <string>entities.Obstacle</string>
-      <int>0</int>
+      <int>2</int>
     </entry>
   </layerOrder>
   <projections>
@@ -87,7 +111,7 @@
               </entry>
               <entry>
                 <string>SHOW</string>
-                <boolean>true</boolean>
+                <boolean>false</boolean>
               </entry>
             </map>
           </entry>

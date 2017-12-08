@@ -16,9 +16,11 @@ import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
+import entities.DiscoveredCell;
 import entities.Entity;
 import entities.Exit;
 import entities.Obstacle;
+import entities.UndiscoveredCell;
 import jade.core.AID;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -163,6 +165,15 @@ public class Explorer extends Agent {
 				return false;
 		}
 		return true;
+	}
+	
+	public void discoverCell(UndiscoveredCell cell) {
+		System.out.println("Discovered => x: " + cell.getCoordinates().getX() + ", y: " + cell.getCoordinates().getY());
+		DiscoveredCell discoveredCell = new DiscoveredCell(cell.getCoordinates().getX(), cell.getCoordinates().getY());
+		context.add(discoveredCell);
+		space.moveTo(discoveredCell, discoveredCell.getCoordinates().getX(), discoveredCell.getCoordinates().getY());
+		grid.moveTo(discoveredCell, discoveredCell.getCoordinates().getX(), discoveredCell.getCoordinates().getY());
+		context.remove(cell);
 	}
 	
 	public void exitFromSimulation() {

@@ -8,6 +8,7 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
+import entities.UndiscoveredCell;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
@@ -145,6 +146,10 @@ public class Exploration extends CyclicBehaviour {
 		
 		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
 		agent.sendMessage(message);
+	}
+	
+	public void discoverCell(UndiscoveredCell cell) {
+		agent.discoverCell(cell);
 	}
 
 	private void pauseState() {

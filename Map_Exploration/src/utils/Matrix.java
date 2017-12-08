@@ -5,6 +5,7 @@ import behaviours.Exploration;
 import entities.Entity;
 import entities.Exit;
 import entities.Obstacle;
+import entities.UndiscoveredCell;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
@@ -99,7 +100,11 @@ public class Matrix implements Serializable {
 						Exit exit = (Exit) obj;
 						value = exit.getCode();
 						break;
-					} else if (obj == null || obj instanceof Explorer)
+					} else if (obj instanceof UndiscoveredCell) {
+						value = 1;
+						UndiscoveredCell cell = (UndiscoveredCell) obj;
+						behaviour.discoverCell(cell);
+					} else if(obj instanceof Explorer)
 						value = 1;
 					else System.err.println("Matrix: Unidentified object, could't update matrix!");
 				}
