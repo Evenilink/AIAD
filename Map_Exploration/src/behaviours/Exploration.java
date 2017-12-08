@@ -8,7 +8,6 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
-import entities.UndiscoveredCell;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
@@ -20,6 +19,8 @@ import states.Guarding;
 import states.IAgentState;
 import states.IAgentTemporaryState;
 import states.Recruiting;
+import states.TravelNearestUndiscovered;
+import states.WaitingForObstacleDestroy;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils.AgentType;
@@ -68,6 +69,12 @@ public class Exploration extends CyclicBehaviour {
 						case MATRIX:
 							Matrix otherMatrix = (Matrix) message.getContent();
 							agent.getMatrix().mergeMatrix(otherMatrix);
+							break;
+						case HELP:
+							this.changeState(new WaitingForObstacleDestroy());
+							break;
+						case OBSTACLEDOOR_DESTROYED:
+							this.changeState(new TravelNearestUndiscovered());
 							break;
 						case OTHER_GUARDING:
 							boolean isToExit = (boolean) message.getContent();
@@ -146,10 +153,6 @@ public class Exploration extends CyclicBehaviour {
 		
 		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
 		agent.sendMessage(message);
-	}
-	
-	public void discoverCell(UndiscoveredCell cell) {
-		agent.discoverCell(cell);
 	}
 
 	private void pauseState() {

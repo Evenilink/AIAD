@@ -97,23 +97,15 @@ public class AStar {
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					// Gets the cell which has an obstacle nearby (+/- 1 cell distance)
+					// Gets the cell which has an obstacle nearby (+/- 1 cell distance N/S/E/W )
 					if (((agent.getMatrix().getValue(row, column) == 1
-							&& agent.getMatrix().getValueIfPossRow(row, column, +1) == 3)
+							&& agent.getMatrix().getValueIfPossRow(row, column, +1) == 4)
 							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossRow(row, column, -1) == 3)
+									&& agent.getMatrix().getValueIfPossRow(row, column, -1) == 4)
 							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossCol(row, column, -1) == 3)
+									&& agent.getMatrix().getValueIfPossCol(row, column, -1) == 4)
 							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossCol(row, column, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, +1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, -1, -1) == 3)
-							|| (agent.getMatrix().getValue(row, column) == 1
-									&& agent.getMatrix().getValueIfPossBoth(row, column, +1, -1) == 3))
+									&& agent.getMatrix().getValueIfPossCol(row, column, +1) == 4))
 							&& distance < nearestDistance) {
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
