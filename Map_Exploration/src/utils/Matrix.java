@@ -11,6 +11,7 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import states.TravelExit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -121,6 +122,9 @@ public class Matrix implements Serializable {
 				// Updates the matrix with the new value
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+				
+				if(value == Utils.CODE_EXIT)
+					behaviour.changeState(new TravelExit());
 			}
 		}
 		printMatrix();
@@ -183,7 +187,7 @@ public class Matrix implements Serializable {
 			for (int column = 0; column < getNumColumns(); column++) {
 				System.out.print(getValue(row, column));
 				if (getValue(row, column) == utils.Utils.CODE_EXIT)
-					return utils.Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
+					return Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
 			}
 		}
 		return null;
@@ -242,10 +246,8 @@ public class Matrix implements Serializable {
 	}
 
 	public void setValue(int row, int column, int val) {
-		if (matrix[row][column] == 0) {
+		if (matrix[row][column] == 0)
 			undiscoveredCells--;
-			System.out.println(name + ": took out one undiscovered. Left: " + undiscoveredCells + ", value to write: " + val);
-		}
 		this.matrix[row][column] = val;
 	}
 

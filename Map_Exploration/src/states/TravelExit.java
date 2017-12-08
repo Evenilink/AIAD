@@ -26,19 +26,20 @@ public class TravelExit implements IAgentState {
 
 	@Override
 	public void execute() {
-		System.out.println(behaviour.getAgent().getLocalName() + " is traveling to exit.");
 		if(pathNode < path.size())
 			if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
 				pathNode++;	
 		
 		if(pathNode == path.size()) {
 			boolean becameMasterAgent = true;
-			Coordinates target = path.get(pathNode - 1).getWorldPosition();
+			System.out.println("tamanho: " + path.size());
+			Coordinates target = behaviour.getAgentCoordinates();
 			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
 			while(it.hasNext()) {
 				Object obj = it.next();
 				if(obj instanceof Explorer) {
 					Explorer otherExplorer = (Explorer) obj;
+					// Check for Explorer that is not himself.
 					if(!behaviour.getAgent().getLocalName().equals(otherExplorer.getLocalName())) {
 						IndividualMessage message = new IndividualMessage(MessageType.REACHED_EXIT, behaviour.getAgent().getLocalName(), otherExplorer.getAID());
 						behaviour.getAgent().sendMessage(message);

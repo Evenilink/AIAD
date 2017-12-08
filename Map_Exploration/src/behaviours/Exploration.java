@@ -55,8 +55,12 @@ public class Exploration extends CyclicBehaviour {
 			else
 				currState.execute();
 		}
-		receiveMessagesHandler();
-		sendMessagesHandler(getNeighborhoodCells());
+		if(agent != null) {
+			receiveMessagesHandler();
+			List<GridCell<Object>> a = getNeighborhoodCells();
+			if(a != null)
+				sendMessagesHandler(a);	
+		}
 	}
 	
 	private void receiveMessagesHandler() {
@@ -114,6 +118,10 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public List<GridCell<Object>> getNeighborhoodCells() {
+		System.out.println("Comecando");
+		System.out.println(agent);
+		System.out.println(agent.getGrid());
+		System.out.println(agent.getRadious());
 		GridPoint pt = getAgentPoint();
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
 		return nghCreator.getNeighborhood(false);

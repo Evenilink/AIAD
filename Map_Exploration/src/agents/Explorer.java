@@ -186,6 +186,8 @@ public class Explorer extends Agent {
 	}
 	
 	public void exitFromSimulation() {
+		removeBehaviour(exploration);
+		removeBehaviour(sendingMessages);
 		takeDown();
 		context.remove(this);
 	}
