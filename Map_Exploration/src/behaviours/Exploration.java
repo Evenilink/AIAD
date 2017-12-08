@@ -55,8 +55,12 @@ public class Exploration extends CyclicBehaviour {
 			else
 				currState.execute();
 		}
-		receiveMessagesHandler();
-		sendMessagesHandler(getNeighborhoodCells());
+		if(agent != null) {
+			receiveMessagesHandler();
+			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCells();
+			if(neighborhoodCells != null)
+				sendMessagesHandler(neighborhoodCells);	
+		}
 	}
 	
 	private void receiveMessagesHandler() {
@@ -69,7 +73,7 @@ public class Exploration extends CyclicBehaviour {
 					switch(message.getMessageType()) {
 						case MATRIX:
 							Matrix otherMatrix = (Matrix) message.getContent();
-							agent.getMatrix().mergeMatrix(otherMatrix);
+							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
 							this.changeState(new WaitingForObstacleDestroy());
@@ -110,11 +114,16 @@ public class Exploration extends CyclicBehaviour {
 	
 	public Coordinates getAgentCoordinates() {
 		GridPoint pt = getAgentPoint();
+		if(pt == null)
+			return null;
 		return new Coordinates(pt.getX(), pt.getY());
 	}
 	
 	public List<GridCell<Object>> getNeighborhoodCells() {
 		GridPoint pt = getAgentPoint();
+		// This can happen when the agent has already left and the behaviour is finishing executing.
+		if(pt == null)
+			return null;
 		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
 		return nghCreator.getNeighborhood(false);
 	}

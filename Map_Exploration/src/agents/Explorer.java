@@ -6,20 +6,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.sun.corba.se.impl.io.IIOPInputStream;
-
-import algorithms.astar.AStar;
-import algorithms.dfs.DFS;
-import algorithms.pledge.Pledge;
 import behaviours.Exploration;
-import behaviours.ReceivingMessages;
 import behaviours.SendingMessages;
 import communication.GroupMessage;
 import communication.IndividualMessage;
 import entities.CommunicationRadious;
 import entities.DiscoveredCell;
-import entities.Entity;
-import entities.Exit;
 import entities.Obstacle;
 import entities.UndiscoveredCell;
 import jade.core.AID;
@@ -186,6 +178,8 @@ public class Explorer extends Agent {
 	}
 	
 	public void exitFromSimulation() {
+		removeBehaviour(exploration);
+		removeBehaviour(sendingMessages);
 		takeDown();
 		context.remove(this);
 	}

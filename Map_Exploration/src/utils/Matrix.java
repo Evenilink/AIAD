@@ -11,6 +11,7 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
+import states.TravelExit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Matrix implements Serializable {
 	private int undiscoveredCells;
 
 	private String name;
+	private Coordinates exitWorldLocation;
 
 	public Matrix(int rows, int columns, String name) {
 		this.matrix = new int[columns][rows];
@@ -39,17 +41,20 @@ public class Matrix implements Serializable {
 	/**
 	 * Merges the matrix of the receiving agent with the matrix received from
 	 * other agents inside the communication radius.
-	 * 
 	 * @param otherMatrix
 	 */
-	public void mergeMatrix(Matrix otherMatrix) {
+	public void mergeMatrix(Matrix otherMatrix, Exploration behaviour) {
 		// System.out.println("Before merging matrix");
 		// printMatrix();
 
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
-				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0)
+				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0) {
 					setValue(row, column, otherMatrix.getValue(row, column));
+					// If this agent knows about the exit through a matrix merge, go to the exit immediately.
+					if(otherMatrix.getValue(row, column) == Utils.CODE_EXIT)
+						behaviour.changeState(new TravelExit());
+				}
 			}
 		}
 
@@ -121,9 +126,13 @@ public class Matrix implements Serializable {
 				// Updates the matrix with the new value
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+				
+				// If we're near the exit, go to exit, to see if this agent is going to be a guardian or a recruiter.
+				if(value == Utils.CODE_EXIT)
+					behaviour.changeState(new TravelExit());
 			}
 		}
-		printMatrix();
+		// printMatrix();
 	}
 
 	public boolean hasUndiscoveredCells() {
@@ -160,7 +169,7 @@ public class Matrix implements Serializable {
 		}
 
 		Coordinates nearestObstacle = null;
-		double distance = 99999;
+		double distance = Double.MAX_VALUE;
 
 		for (int i = 0; i < obstacleCoords.size(); i++) {
 			if (distanceTwoPoints(agentPosition, obstacleCoords.get(i)) < distance) {
@@ -177,16 +186,17 @@ public class Matrix implements Serializable {
 	 * @return Exit coordinates or null.
 	 */
 	public Coordinates getExit() {
+		return exitWorldLocation;
 		// TODO Use the setValue to see when the exit is found and save it into
 		// a variable (no need to read the matrix)
-		for (int row = 0; row < getNumRows(); row++) {
+		/* for (int row = 0; row < getNumRows(); row++) {
 			for (int column = 0; column < getNumColumns(); column++) {
 				System.out.print(getValue(row, column));
 				if (getValue(row, column) == utils.Utils.CODE_EXIT)
-					return utils.Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
+					return Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
 			}
 		}
-		return null;
+		return null; */
 	}
 
 	/*******************************/
@@ -242,11 +252,11 @@ public class Matrix implements Serializable {
 	}
 
 	public void setValue(int row, int column, int val) {
-		if (matrix[row][column] == 0) {
+		if (matrix[row][column] == 0)
 			undiscoveredCells--;
-			System.out.println(name + ": took out one undiscovered. Left: " + undiscoveredCells + ", value to write: " + val);
-		}
 		this.matrix[row][column] = val;
+		if(val == Utils.CODE_EXIT)
+			exitWorldLocation = Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
 	}
 
 	public int length() {
