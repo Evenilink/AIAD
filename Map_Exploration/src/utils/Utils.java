@@ -16,7 +16,8 @@ public class Utils {
 		MATRIX,
 		HELP,
 		OTHER_GUARDING,
-		REACHED_EXIT
+		REACHED_EXIT,
+		OBSTACLEDOOR_DESTROYED
 	}
 	
 	public enum AgentType {
@@ -34,7 +35,7 @@ public class Utils {
 	public static final int CODE_DISCOVERED = 1;
 	public static final int CODE_OBSTACLE_CELL = 2;
 	public static final int CODE_OBSTACLE_DOOR = 3;	
-	public static final int CODE_EXIT = 3;
+	public static final int CODE_EXIT = 4;
 
 	/**
 	 * Calculates the distance between two 2D points

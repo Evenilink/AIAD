@@ -82,6 +82,14 @@ public class Explorer extends Agent {
 		agentType = AgentType.NORMAL_AGENT;
 	}
 	
+	/**
+	 * Clears a cell from the space, representing a door to an obstacle
+	 * @param obj the obstacle door object
+	 */
+	public void removeObstacleCell(Object obj) {
+		context.remove(obj);
+	}
+	
 	@Override
 	public void setup() {
 		DFAgentDescription dfAgentDescription = new DFAgentDescription();

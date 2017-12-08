@@ -8,6 +8,7 @@ import behaviours.Exploration;
 import communication.IndividualMessage;
 import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
+import utils.Utils;
 import utils.Utils.MessageType;
 
 public class ObstacleGuardian implements IAgentState {
@@ -18,6 +19,7 @@ public class ObstacleGuardian implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
+		System.out.println("ENTERED GUARDIAN OBSTACLE");
 		this.behaviour = behaviour;
 		this.numberAgentsReached = 1;
 
@@ -47,7 +49,7 @@ public class ObstacleGuardian implements IAgentState {
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.getAgent().removeObstacleCell(obstacle);
 			this.behaviour.changeState(new TravelNearestUndiscovered());
-		} else if (this.behaviour.getAgent().getMatrix().getValue(obstacle.getCoordinates().getY(), obstacle.getCoordinates().getX()) != 4) {
+		} else if (this.behaviour.getAgent().getMatrix().getValue(obstacle.getCoordinates().getY(), obstacle.getCoordinates().getX()) != Utils.CODE_OBSTACLE_DOOR) {
 			// Another agent has broken the wall
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.changeState(new TravelNearestUndiscovered());
@@ -62,7 +64,8 @@ public class ObstacleGuardian implements IAgentState {
 				Explorer otherExplorer = it.next();
 				IndividualMessage message = new IndividualMessage(msgType, obstacle, otherExplorer.getAID());
 				behaviour.getAgent().sendMessage(message);
-				numberAgentsReached++;
+				if (msgType == MessageType.HELP)
+					numberAgentsReached++;
 			}
 		}
 	}

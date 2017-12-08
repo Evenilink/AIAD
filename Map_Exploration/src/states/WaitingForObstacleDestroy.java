@@ -6,7 +6,7 @@ public class WaitingForObstacleDestroy implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
-		// TODO Auto-generated method stub
+		System.out.println("ENTERED WAITING OBSTACLE BREAKING.");
 		
 	}
 

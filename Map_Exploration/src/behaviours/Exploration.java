@@ -8,6 +8,7 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
+import entities.UndiscoveredCell;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
@@ -128,6 +129,10 @@ public class Exploration extends CyclicBehaviour {
 		return agent.moveAgent(targetCoordinates);
 		// TODO: it's possible 2 agents stop moving if they want to go to each other's place.
 	}
+	
+	public void discoverCell(UndiscoveredCell cell) {
+	    agent.discoverCell(cell);
+	  }
 	
 	/**
 	 * Searches for other explorers in the neighborhood and sends them his matrix.
