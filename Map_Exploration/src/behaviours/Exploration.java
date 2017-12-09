@@ -66,7 +66,6 @@ public class Exploration extends CyclicBehaviour {
 		}
 		
 		resetDynamicNotWalkable();
-		printStates();
 	}
 	
 	private void updateDynamicEnvironment() {

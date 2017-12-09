@@ -67,7 +67,7 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
                 }
             }
         } else {
-            this.pledge.run(true);
+            this.pledge.run();
         }
     }
 

@@ -131,7 +131,7 @@ public class Matrix implements Serializable {
 					behaviour.changeState(new TravelExit());
 			}
 		}
-		printMatrix();
+		//printMatrix();
 	}
 
 	public boolean hasUndiscoveredCells() {
