@@ -68,7 +68,8 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
 
     @Override
     public boolean canResume() {
-        return this.pledge.hasFinished();
+        if (this.pledging) return this.pledge.hasFinished();
+        else return false;
     }
 
     public void setObstacle(GridCell<Object> obstacle) {
