@@ -48,7 +48,7 @@ public class Utils {
 		
 		if(distX > distY)
 			return (float)sqrt2 * distY + 1 * (distX - distY);
-		return (float)sqrt2 + 1 * (distY - distX);
+		return (float)sqrt2 * distX + 1 * (distY - distX);
 	}
 
 	/**
