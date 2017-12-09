@@ -166,7 +166,7 @@ public class Explorer extends Agent {
 	 * @param targetCoordinates
 	 * @return Returns if the agent can move to the specified coordinates.
 	 */
-	private boolean canMove(Coordinates targetCoordinates) {
+	public boolean canMove(Coordinates targetCoordinates) {
 		Iterator<Object> it = grid.getObjectsAt(targetCoordinates.getX(), targetCoordinates.getY()).iterator();
 		while(it.hasNext()) {
 			Object obj = it.next();
