@@ -113,7 +113,7 @@ public class Pledge {
             NeighbourObstacles objs;
             int offset = 1;
             do {
-                pts = new NeighbourPoints(this.grid.getLocation(agent), NeighbourPoints.Direction.RIGHT, offset);
+                pts = new NeighbourPoints(this.grid.getLocation(agent), NeighbourPoints.Direction.UPWARDS, offset);
                 System.out.println(pts.toString());
                 objs = new NeighbourObstacles(this.grid, pts);
                 System.out.println(objs.toString());
