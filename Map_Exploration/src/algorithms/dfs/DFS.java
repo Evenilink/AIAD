@@ -5,11 +5,8 @@ import java.util.List;
 
 import agents.Explorer;
 import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.random.RandomHelper;
-import repast.simphony.space.grid.GridPoint;
 import repast.simphony.util.SimUtilities;
-import utils.Coordinates;
 
 public class DFS {
 

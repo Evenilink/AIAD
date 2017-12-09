@@ -22,7 +22,9 @@ public class Explore implements IAgentState {
 		List<GridCell<Object>> neighborhoodCells = behaviour.getNeighborhoodCells();
 		if (Utils.hasObstacle(neighborhoodCells)) {
 			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates())) {
-				behaviour.changeState(new DiscoverObstacleBounds());
+				DiscoverObstacleBounds state = new DiscoverObstacleBounds();
+				state.setObstacle(Utils.getFirstObstacleCell(neighborhoodCells));
+				behaviour.changeState(state);
 				return;
 			}
 		}
