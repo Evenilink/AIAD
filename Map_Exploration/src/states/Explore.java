@@ -18,7 +18,6 @@ public class Explore implements IAgentState {
 
 	@Override
 	public void execute() {
-		// TODO: If vision radius bigger than 1, the pledge will be activated without being near an obstacle.
 		List<GridCell<Object>> neighborhoodCells = behaviour.getNeighborhoodCells();
 		if (Utils.hasObstacle(neighborhoodCells)) {
 			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates())) {

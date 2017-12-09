@@ -33,30 +33,42 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
 
     @Override
     public void execute() {
-        NeighbourPoints pts = new NeighbourPoints(grid.getLocation(agent), NeighbourPoints.Direction.UPWARDS);
-        NeighbourObstacles objs = new NeighbourObstacles(grid, pts);
-        if (objs.hasObstacle()) {
-            pledge.init();
-            pledging = true;
-        } else {
-            GridPoint agentLoc = grid.getLocation(agent);
-            GridCellNgh<Object> nghCreator = new GridCellNgh<>(grid, agentLoc, Object.class, agent.getRadious(), agent.getRadious());
-            List<GridCell<Object>> neighborhood = nghCreator.getNeighborhood(false);
-            GridCell<Object> cell = Utils.getFirstObstacleCell(neighborhood);
-            Coordinates obstacleCoords = Coordinates.FromGridPoint(cell.getPoint());
-            int newX = agentLoc.getX(), newY = agentLoc.getY();
-            if (obstacleCoords.getX() > agentLoc.getX())
-                newX++;
-            if (obstacleCoords.getX() < agentLoc.getX())
-                newX--;
-            if (obstacleCoords.getY() > agentLoc.getY())
-                newY++;
-            if (obstacleCoords.getY() < agentLoc.getY())
-                newY--;
-            agent.moveAgent(new Coordinates(newX, newY));
-        }
+        if (!pledging) {
+            NeighbourPoints pts = new NeighbourPoints(grid.getLocation(agent), NeighbourPoints.Direction.UPWARDS);
+            NeighbourObstacles objs = new NeighbourObstacles(grid, pts);
+            pts.toString();
+            objs.toString();
+            if (objs.hasObstacle()) {
+                pledge.init();
+                pledging = true;
+            } else {
+                GridPoint agentLoc = grid.getLocation(agent);
+                GridCellNgh<Object> nghCreator = new GridCellNgh<>(grid, agentLoc, Object.class, agent.getRadious(), agent.getRadious());
+                List<GridCell<Object>> neighborhood = nghCreator.getNeighborhood(false);
+                GridCell<Object> cell = Utils.getFirstObstacleCell(neighborhood);
 
-        if (pledging) {
+                Coordinates obstacleCoords = Coordinates.FromGridPoint(cell.getPoint());
+                int newX = agentLoc.getX(), newY = agentLoc.getY();
+
+                if (obstacleCoords.getX() > agentLoc.getX())
+                    newX++;
+                else if (obstacleCoords.getX() < agentLoc.getX())
+                    newX--;
+
+                pts = new NeighbourPoints(new GridPoint(newX, newY), NeighbourPoints.Direction.UPWARDS);
+                objs = new NeighbourObstacles(grid, pts);
+                if (objs.hasObstacle()) {
+                    agent.moveAgent(new Coordinates(newX, newY));
+                    pledge.init();
+                    pledging = true;
+                } else {
+                    if (obstacleCoords.getY() > agentLoc.getY())
+                        newY++;
+                    else if (obstacleCoords.getY() < agentLoc.getY())
+                        newY--;
+                }
+            }
+        } else {
             this.pledge.run(true);
         }
     }

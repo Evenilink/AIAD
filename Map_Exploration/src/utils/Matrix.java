@@ -89,7 +89,6 @@ public class Matrix implements Serializable {
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				// Setting the nodes to not walkable for A*.
 				behaviour.getAStar().setNodeWalkable(Coordinates.FromGridPoint(gridCell.getPoint()), false);
-				behaviour.getAStar().printGrid();
 				continue;
 			}
 

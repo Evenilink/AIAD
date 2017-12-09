@@ -42,8 +42,26 @@ public class Pledge {
         return null;
     }
 
+    private Coordinates getFirstLocation(NeighbourPoints pts, NeighbourObstacles objs, boolean displayMessages) {
+        if (objs.right() != null && objs.right() instanceof Obstacle) {
+            if (displayMessages) System.out.println("PLEDGE: Moving forward");
+            return pts.front();
+        } else if (objs.front() != null && objs.front() instanceof Obstacle) {
+            if (displayMessages) System.out.println("PLEDGE: Moving left");
+            return pts.left();
+        } else if (objs.left() != null && objs.left() instanceof Obstacle) {
+            if (displayMessages) System.out.println("PLEDGE: Moving back");
+            return pts.back();
+        } else if (objs.back() != null && objs.back() instanceof Obstacle) {
+            if (displayMessages) System.out.println("PLEDGE: Moving right");
+            return pts.right();
+        }
+        if (displayMessages) System.err.println("PLEDGE: Can't find a cell to move!");
+        return null;
+    }
+
     private boolean addVisitedCoordinates(Coordinates coordinates) {
-        if (visitedCoordinates.contains(coordinates)) return false;
+        if (alreadyVisited(coordinates)) return false;
         visitedCoordinates.add(coordinates);
         return true;
     }
@@ -51,11 +69,10 @@ public class Pledge {
     public void init() {
         this.startingPoint = this.grid.getLocation(this.agent);
         this.previousPoint = this.startingPoint;
-        this.addVisitedCoordinates(Coordinates.FromGridPoint(this.startingPoint));
     }
 
     public boolean hasFinished() {
-        return (!this.previousPoint.equals(this.startingPoint)) && this.grid.getLocation(this.agent).equals(this.startingPoint);
+        return this.alreadyVisited(Coordinates.FromGridPoint(grid.getLocation(agent)));
     }
 
     public void run () {
@@ -114,20 +131,16 @@ public class Pledge {
             int offset = 1;
             do {
                 pts = new NeighbourPoints(this.grid.getLocation(agent), NeighbourPoints.Direction.UPWARDS, offset);
-                System.out.println(pts.toString());
                 objs = new NeighbourObstacles(this.grid, pts);
-                System.out.println(objs.toString());
-                nextLocation = this.getNextLocation(pts, objs, displayMessages);
+                nextLocation = this.getFirstLocation(pts, objs, displayMessages);
                 if (nextLocation != null) break;
             } while ( ++offset <= this.agent.getRadious());
         }
 
-        addVisitedCoordinates(Coordinates.FromGridPoint(pt));
-
-        if(nextLocation != null && this.agent.moveAgent(nextLocation))
-            this.previousPoint = pt;
-        else
-            this.agent.moveAgent(Coordinates.FromGridPoint(pt));
+        if(nextLocation != null && agent.canMove(nextLocation))
+            addVisitedCoordinates(Coordinates.FromGridPoint(pt));
+            previousPoint = pt;
+            agent.moveAgent(nextLocation);
     }
     
     public boolean alreadyVisited(Coordinates coordinates) {
