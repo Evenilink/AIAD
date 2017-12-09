@@ -4,6 +4,8 @@ import java.util.List;
 
 import algorithms.astar.Node;
 import behaviours.Exploration;
+import repast.simphony.query.space.grid.GridCell;
+import utils.Utils;
 
 public class TravelNearestUndiscovered implements IAgentState {
 
@@ -22,6 +24,16 @@ public class TravelNearestUndiscovered implements IAgentState {
 
 	@Override
 	public void execute() {
+		List<GridCell<Object>> neighborhoodCells = behaviour.getNeighborhoodCells();
+		if (Utils.hasObstacle(neighborhoodCells)) {
+			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates())) {
+				DiscoverObstacleBounds state = new DiscoverObstacleBounds();
+				state.setObstacle(Utils.getFirstObstacleCell(neighborhoodCells));
+				behaviour.changeState(state);
+				return;
+			}
+		}
+		
 		path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
 
 		if (path != null) {

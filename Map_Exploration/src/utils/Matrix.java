@@ -180,29 +180,18 @@ public class Matrix implements Serializable {
 		return nearestObstacle;
 	}
 
-	/**
-	 * Returns the exit coordinates.
-	 * 
-	 * @return Exit coordinates or null.
-	 */
-	public Coordinates getExit() {
-		return exitWorldLocation;
-		// TODO Use the setValue to see when the exit is found and save it into
-		// a variable (no need to read the matrix)
-		/* for (int row = 0; row < getNumRows(); row++) {
-			for (int column = 0; column < getNumColumns(); column++) {
-				System.out.print(getValue(row, column));
-				if (getValue(row, column) == utils.Utils.CODE_EXIT)
-					return Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
-			}
-		}
-		return null; */
-	}
-
 	/*******************************/
 	/***** Getters and setters *****/
 	/*******************************/
 
+	/**
+	 * Returns the exit coordinates.
+	 * @return Exit coordinates or null.
+	 */
+	public Coordinates getExit() {
+		return exitWorldLocation;
+	}
+	
 	public final int[][] getMatrix() {
 		return matrix;
 	}

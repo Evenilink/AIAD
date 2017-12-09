@@ -65,7 +65,8 @@ public class Exploration extends CyclicBehaviour {
 				sendMessagesHandler(neighborhoodCells);	
 		}
 		
-		astar.resetDynamicNotWalkable();
+		resetDynamicNotWalkable();
+		printStates();
 	}
 	
 	private void updateDynamicEnvironment() {
@@ -85,6 +86,10 @@ public class Exploration extends CyclicBehaviour {
 					astar.addDynamicNotWalkable(new Coordinates(column, row));
 			}
 		}
+	}
+	
+	private void resetDynamicNotWalkable() {
+		astar.resetDynamicNotWalkable();
 	}
 	
 	private void receiveMessagesHandler() {
