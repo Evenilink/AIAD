@@ -93,7 +93,6 @@ public class AStar {
 	/**
 	 * Returns the first coordinate that has a zero on the matrix (is undiscovered)
 	 * distancing 'radious' from the agent.
-	 * 
 	 * @param currCoordinates
 	 * @param radious
 	 * @return
@@ -115,11 +114,10 @@ public class AStar {
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
 					// Gets the cell which has an obstacle nearby (+/- 1 cell distance N/S/E/W )
-					if ((	 (agent.getMatrix().getValue(row, column) != Utils.CODE_OBSTACLE_DOOR  && agent.getMatrix().getValueIfPossRow(row, column, +1) == Utils.CODE_OBSTACLE_DOOR) ||
-							 (agent.getMatrix().getValue(row, column) != Utils.CODE_OBSTACLE_DOOR  && agent.getMatrix().getValueIfPossRow(row, column, -1) == Utils.CODE_OBSTACLE_DOOR) || 
-							 (agent.getMatrix().getValue(row, column) != Utils.CODE_OBSTACLE_DOOR  && agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR) ||
-							 (agent.getMatrix().getValue(row, column) != Utils.CODE_OBSTACLE_DOOR  && agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR)) 
+					if (	(agent.getMatrix().getValueIfPossRow(row, column, +1) == Utils.CODE_OBSTACLE_DOOR || agent.getMatrix().getValueIfPossRow(row, column, -1) == Utils.CODE_OBSTACLE_DOOR || 
+							agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR || agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR)
 							&& distance < nearestDistance) {
+						System.out.println("door:" + nearestCoordinate);
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}

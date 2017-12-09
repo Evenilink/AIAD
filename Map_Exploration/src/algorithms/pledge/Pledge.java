@@ -87,7 +87,7 @@ public class Pledge {
         return null;
     }
 
-    private boolean addVisitedCoordinates(Coordinates coordinates) {
+    public boolean addVisitedCoordinates(Coordinates coordinates) {
         if (alreadyVisited(coordinates)) return false;
         visitedCoordinates.add(coordinates);
         return true;

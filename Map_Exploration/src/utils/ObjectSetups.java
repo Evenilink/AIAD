@@ -53,6 +53,7 @@ public class ObjectSetups {
     	tempCoordinates.add(new Coordinates(6, 3));
     	tempCoordinates.add(new Coordinates(7, 3));
     	tempCoordinates.add(new Coordinates(2, 8));
+    	
     	tempCoordinates.add(new Coordinates(12, 12));
     	tempCoordinates.add(new Coordinates(12, 11));
     	tempCoordinates.add(new Coordinates(11, 11));
@@ -64,8 +65,8 @@ public class ObjectSetups {
     			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
     			continue;
     		}
-    		if(coordinates2.equals(new Coordinates(2, 5))) 
-    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 1));
+    		if(coordinates2.equals(new Coordinates(2, 4))) 
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 2));
     		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
 			coordinates.remove(coordinates2);
     	}

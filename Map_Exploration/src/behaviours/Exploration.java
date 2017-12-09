@@ -19,6 +19,7 @@ import sajas.core.behaviours.CyclicBehaviour;
 import states.Explore;
 import states.IAgentState;
 import states.IAgentTemporaryState;
+import states.ObstacleGuardian;
 import states.Recruiting;
 import states.TravelNearestUndiscovered;
 import states.WaitingForObstacleDestroy;
@@ -51,6 +52,8 @@ public class Exploration extends CyclicBehaviour {
 	@Override
 	public void action() {
 		updateDynamicEnvironment();
+		
+		System.out.println(this.currState);
 		
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
@@ -104,8 +107,9 @@ public class Exploration extends CyclicBehaviour {
 							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
-							sendMessagesHandlerBreakObstacle(getNeighborhoodCellsWithExplorers());
-							this.changeState(new WaitingForObstacleDestroy());
+							System.err.println("HELP MESSAGE HERE");
+							if (!(this.currState instanceof ObstacleGuardian))
+								this.changeState(new WaitingForObstacleDestroy());
 							break;
 						case OBSTACLEDOOR_DESTROYED:
 							this.changeState(new TravelNearestUndiscovered());

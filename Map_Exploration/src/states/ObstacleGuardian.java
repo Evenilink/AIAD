@@ -41,7 +41,7 @@ public class ObstacleGuardian implements IAgentState {
 				}
 			}
 		}
-		//AGENTS THAAT SPAWN INSIDE OBSTACLE MAY GET STUCK, CHECK LATER
+		//AGENTS THAT SPAWN INSIDE OBSTACLE MAY GET STUCK, CHECK LATER
 	}
 
 	@Override
@@ -51,16 +51,16 @@ public class ObstacleGuardian implements IAgentState {
 		communicateAroundMe(MessageType.HELP);
 
 		//Tries to receive WAITING_TO_BREAK messages
-		//receiveMessagesHandler();
 		 getNumberAgentsAroundMe();
-		 //System.out.println(this.numberAgentsReached);
+		 System.out.println("Agents reached: " + this.numberAgentsReached);
 		
 		// When we have enough agents, break wall and search the inside
 		if (this.numberAgentsNeeded == this.numberAgentsReached) {
-			System.out.println("Entrou if 1");
+			//System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.getAgent().removeObstacleCell(obstacle,behaviour);
 			this.behaviour.getAgent().getMatrix().printMatrix();
+			this.behaviour.getAgent().moveAgent(obstacle.getCoordinates());
 			this.behaviour.changeState(new TravelNearestUndiscovered());
 		}
 	}
@@ -72,52 +72,12 @@ public class ObstacleGuardian implements IAgentState {
 		for (GridCell<Explorer> gridCell : explorers) {
 			Iterator<Explorer> it = gridCell.items().iterator();
 			while (it.hasNext()) {
+				it.next();
 				count++;
 			}
 		}
 		this.numberAgentsReached = count;
 	}
-	
-	/*private void receiveMessagesHandler() {
-		ACLMessage acl;
-		while ((acl = behaviour.getAgent().receiveMessage()) != null) {
-			try {
-				Object obj = acl.getContentObject();
-				if (obj instanceof IndividualMessage) {
-					IndividualMessage message = (IndividualMessage) obj;
-					switch (message.getMessageType()) {
-					case MATRIX:
-						Matrix otherMatrix = (Matrix) message.getContent();
-						behaviour.getAgent().getMatrix().mergeMatrix(otherMatrix, behaviour);
-						break;
-					case HELP:
-						behaviour.changeState(new WaitingForObstacleDestroy());
-						break;
-					case OBSTACLEDOOR_DESTROYED:
-						behaviour.changeState(new TravelNearestUndiscovered());
-						break;
-					case WAITING_TO_BREAK:
-						System.out.println("one more agent");
-						this.numberAgentsReached++;
-						break;
-					case OTHER_GUARDING:
-						boolean isToExit = (boolean) message.getContent();
-						if (isToExit)
-							behaviour.getAgent().exitFromSimulation();
-						else {
-							System.out.println(behaviour.getAgent().getLocalName() + " keeps recuiting.");
-							behaviour.changeState(new Recruiting());
-						}
-						break;
-					default:
-						break;
-					}
-				}
-			} catch (UnreadableException e) {
-				e.printStackTrace();
-			}
-		}
-	}*/
 
 	public void communicateAroundMe(MessageType msgType) {
 		List<GridCell<Explorer>> explorers = behaviour.getNeighborhoodCellsWithExplorersCommunicationLimit();
@@ -125,7 +85,7 @@ public class ObstacleGuardian implements IAgentState {
 			Iterator<Explorer> it = gridCell.items().iterator();
 			while (it.hasNext()) {
 				Explorer otherExplorer = it.next();
-				IndividualMessage message = new IndividualMessage(msgType, 2, otherExplorer.getAID());
+				IndividualMessage message = new IndividualMessage(msgType, null, otherExplorer.getAID());
 				behaviour.getAgent().sendMessage(message);
 			}
 		}

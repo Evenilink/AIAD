@@ -86,9 +86,13 @@ public class Explorer extends Agent {
 		
 		if (obj instanceof Obstacle){
 			context.remove(obj);
-			matrix.updateMatrix(beh, grid, ((Obstacle) obj).getCoordinates(), this.radious);
-			System.out.println("AAAAAAAAAAAAAAAAAAAA");
-			matrix.printMatrix();
+			DiscoveredCell dc = new DiscoveredCell(((Obstacle) obj).getCoordinates().getX(),((Obstacle) obj).getCoordinates().getY());
+			context.add(dc);
+			matrix.setValue( ((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY(), Utils.CODE_UNDISCOVERED);
+			matrix.updateMatrix(beh,grid,((Obstacle) obj).getCoordinates(), this.radious);
+			space.moveTo(dc, dc.getCoordinates().getX(), dc.getCoordinates().getY());
+	        grid.moveTo(dc, dc.getCoordinates().getX(), dc.getCoordinates().getY());
+			beh.getPledge().addVisitedCoordinates(((Obstacle) obj).getCoordinates());
 		}
 	}
 	
