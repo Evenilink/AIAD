@@ -10,13 +10,13 @@ public class Obstacle extends Entity {
 	public Obstacle(int posX, int posY) {
 		super(posX, posY, Utils.CODE_OBSTACLE_CELL);
 		this.seeThrough = false;
-		this.neededAgentsForRemoving = 99999;
+		this.neededAgentsForRemoving = Integer.MAX_VALUE;
 	}
 
 	public Obstacle(int posX, int posY, boolean seeThrough) {
 		super(posX, posY, Utils.CODE_OBSTACLE_CELL);
 		this.seeThrough = seeThrough;
-		this.neededAgentsForRemoving = 99999;
+		this.neededAgentsForRemoving = Integer.MAX_VALUE;
 	}
 	
 	public Obstacle(int posX, int posY, boolean seeThrough, int neededAgentsForRemoving) {

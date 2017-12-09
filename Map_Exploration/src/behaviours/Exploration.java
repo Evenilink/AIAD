@@ -19,6 +19,7 @@ import states.Explore;
 import states.Guarding;
 import states.IAgentState;
 import states.IAgentTemporaryState;
+import states.ObstacleGuardian;
 import states.Recruiting;
 import states.TravelNearestUndiscovered;
 import states.WaitingForObstacleDestroy;
@@ -77,11 +78,11 @@ public class Exploration extends CyclicBehaviour {
 							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
-							sendMessagesHandlerBreakObstacle(getNeighborhoodCells());
+							sendMessagesHandlerBreakObstacle(getNeighborhoodCellsWithExplorers());
 							this.changeState(new WaitingForObstacleDestroy());
 							break;
 						case OBSTACLEDOOR_DESTROYED:
-							this.changeState(new TravelNearestUndiscovered());
+							this.changeState(new Explore());
 							break;
 						case OTHER_GUARDING:
 							boolean isToExit = (boolean) message.getContent();
@@ -102,12 +103,12 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	/**
-	 * Searches for other explorers in the neighborhood and sends them his matrix.
+	 * Searches for other explorers in the neighborhood and sends them WAITING_TO_BREAK
 	 * @param neighborhoodCells
 	 */
-	private void sendMessagesHandlerBreakObstacle(List<GridCell<Object>> neighborhoodCells) {
-		for (GridCell<Object> gridCell : neighborhoodCells) {
-            Iterator<Object> it = gridCell.items().iterator();
+	private void sendMessagesHandlerBreakObstacle(List<GridCell<Explorer>> neighborhoodCells) {
+		for (GridCell<Explorer> gridCell : neighborhoodCells) {
+            Iterator<Explorer> it = gridCell.items().iterator();
             while(it.hasNext()) {
             	Object obj = it.next();
             	if(obj instanceof Explorer) {
@@ -159,6 +160,12 @@ public class Exploration extends CyclicBehaviour {
 	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorers() {
 		GridPoint pt = getAgentPoint();
 		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
+		return nghCreator.getNeighborhood(false);
+	}
+	
+	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorersCommunicationLimit(){
+		GridPoint pt = getAgentPoint();
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getCommLimit(), agent.getCommLimit());
 		return nghCreator.getNeighborhood(false);
 	}
 	

@@ -27,6 +27,7 @@ import sajas.core.Agent;
 import sajas.domain.DFService;
 import utils.Coordinates;
 import utils.Matrix;
+import utils.Utils;
 import utils.Utils.AgentType;
 
 public class Explorer extends Agent {
@@ -81,7 +82,13 @@ public class Explorer extends Agent {
 	 * @param obj the obstacle door object
 	 */
 	public void removeObstacleCell(Object obj) {
-		context.remove(obj);
+		
+		if (obj instanceof Obstacle){
+			context.remove(obj);
+			matrix.setValue(((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY(), Utils.CODE_UNDISCOVERED);
+			System.out.println("AAAAAAAAAAAAAAAAAAAA");
+			System.out.println(matrix.getValue(((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY()));
+		}
 	}
 	
 	@Override
@@ -245,5 +252,9 @@ public class Explorer extends Agent {
 	
 	public int getTotalNumAgents() {
 		return totalNumAgents;
+	}
+	
+	public int getCommLimit() {
+		return communicationLimit;
 	}
 }

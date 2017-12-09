@@ -31,7 +31,7 @@ public class ObjectSetups {
         context.add(new Obstacle(2, 8));
         context.add(new Obstacle(2, 3));
         context.add(new Obstacle(2, 4));
-        context.add(new Obstacle(2, 5,false,2));
+        context.add(new Obstacle(2, 5,false,1));
         context.add(new Obstacle(2, 6));
         context.add(new Obstacle(2, 7));
         context.add(new Obstacle(3, 3));

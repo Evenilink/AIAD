@@ -124,8 +124,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		coordinates.remove(index);
 		
 		// Create obstacles.
-		for(int i = 0; i < NUM_OBSTACLES; i++)
-			context.add(new Obstacle(5 + i, 6));
+		//for(int i = 0; i < NUM_OBSTACLES; i++)
+			//context.add(new Obstacle(5 + i, 6));
 		 ObjectSetups.Setup2(context);
 
 		for(int i = 0; i < coordinates.size(); i++)

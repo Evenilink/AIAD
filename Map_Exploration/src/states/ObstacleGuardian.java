@@ -23,6 +23,7 @@ public class ObstacleGuardian implements IAgentState {
 	@Override
 	public void enter(Exploration behaviour) {
 		System.out.println("ENTERED GUARDIAN OBSTACLE");
+		
 		this.behaviour = behaviour;
 		this.numberAgentsReached = 1;
 
@@ -36,9 +37,11 @@ public class ObstacleGuardian implements IAgentState {
 				if (oneCell instanceof Obstacle && ((Obstacle) oneCell).getCode() == Utils.CODE_OBSTACLE_DOOR) {
 					this.numberAgentsNeeded = ((Obstacle) oneCell).getNeededAgentsForRemoving();
 					this.obstacle = ((Obstacle) oneCell);
+					break;
 				}
 			}
 		}
+		//AGENTS THAAT SPAWN INSIDE OBSTACLE MAY GET STUCK, CHECK LATER
 	}
 
 	@Override
@@ -48,26 +51,33 @@ public class ObstacleGuardian implements IAgentState {
 		communicateAroundMe(MessageType.HELP);
 
 		//Tries to receive WAITING_TO_BREAK messages
-		receiveMessagesHandler();
+		//receiveMessagesHandler();
+		 getNumberAgentsAroundMe();
+		 System.out.println(this.numberAgentsReached);
 		
 		// When we have enough agents, break wall and search the inside
 		if (this.numberAgentsNeeded == this.numberAgentsReached) {
 			System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.getAgent().removeObstacleCell(obstacle);
-			this.behaviour.changeState(new TravelNearestUndiscovered());
-			
-		}if (this.behaviour.getAgent().getMatrix().getValue(obstacle.getCoordinates().getY(),
-				obstacle.getCoordinates().getX()) != Utils.CODE_OBSTACLE_DOOR) {
-			System.out.println("Entrou if 2");
-			// Another agent has broken the wall
-			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
-			this.behaviour.changeState(new TravelNearestUndiscovered());
+			this.behaviour.changeState(new Explore());
 		}
-		
 	}
 
-	private void receiveMessagesHandler() {
+	private void getNumberAgentsAroundMe()
+	{
+		int count = 1;
+		List<GridCell<Explorer>> explorers = behaviour.getNeighborhoodCellsWithExplorersCommunicationLimit();
+		for (GridCell<Explorer> gridCell : explorers) {
+			Iterator<Explorer> it = gridCell.items().iterator();
+			while (it.hasNext()) {
+				count++;
+			}
+		}
+		this.numberAgentsReached = count;
+	}
+	
+	/*private void receiveMessagesHandler() {
 		ACLMessage acl;
 		while ((acl = behaviour.getAgent().receiveMessage()) != null) {
 			try {
@@ -86,8 +96,8 @@ public class ObstacleGuardian implements IAgentState {
 						behaviour.changeState(new TravelNearestUndiscovered());
 						break;
 					case WAITING_TO_BREAK:
-						this.numberAgentsReached++;
 						System.out.println("one more agent");
+						this.numberAgentsReached++;
 						break;
 					case OTHER_GUARDING:
 						boolean isToExit = (boolean) message.getContent();
@@ -106,15 +116,15 @@ public class ObstacleGuardian implements IAgentState {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 
 	public void communicateAroundMe(MessageType msgType) {
-		List<GridCell<Explorer>> explorers = behaviour.getNeighborhoodCellsWithExplorers();
+		List<GridCell<Explorer>> explorers = behaviour.getNeighborhoodCellsWithExplorersCommunicationLimit();
 		for (GridCell<Explorer> gridCell : explorers) {
 			Iterator<Explorer> it = gridCell.items().iterator();
 			while (it.hasNext()) {
 				Explorer otherExplorer = it.next();
-				IndividualMessage message = new IndividualMessage(msgType, obstacle, otherExplorer.getAID());
+				IndividualMessage message = new IndividualMessage(msgType, 2, otherExplorer.getAID());
 				behaviour.getAgent().sendMessage(message);
 			}
 		}
