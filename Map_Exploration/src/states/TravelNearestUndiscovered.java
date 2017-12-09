@@ -35,6 +35,7 @@ public class TravelNearestUndiscovered implements IAgentState {
 		
 		path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
 		if (path != null) {
+			printPath();
 			behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition());
 			if(path.size() == 1)
 				behaviour.changeState(new Explore());
@@ -47,5 +48,14 @@ public class TravelNearestUndiscovered implements IAgentState {
 	@Override
 	public void exit() {
 		
+	}
+	
+	private void printPath() {
+		System.out.println("Path");
+		for(int i = 0; i < path.size(); i++) {
+			System.out.println("   " + (i + 1) + ": " + path.get(i).getWorldPosition().toString());
+		}
+		System.out.println("End path");
+		System.out.println();
 	}
 }
