@@ -67,13 +67,13 @@ public class Matrix implements Serializable {
 		for (int row = 0; row < matrix.length; row++) {
 			for (int column = 0; column < matrix[row].length; column++)
 				System.out.print(matrix[row][column] + " | ");
-			//System.out.println(" " + (getNumRows() - 1 - row));
+			System.out.println(" " + (getNumRows() - 1 - row));
 		}
 
-		//for (int column = 0; column < matrix[0].length; column++)
-			//System.out.print(column + "   ");
+		for (int column = 0; column < matrix[0].length; column++)
+			System.out.print(column + "   ");
 
-		//System.out.println("\n");
+		System.out.println("\n");
 	}
 
 	public void updateMatrix(Exploration behaviour, Grid<Object> grid, Coordinates center, int radius) {
@@ -131,7 +131,7 @@ public class Matrix implements Serializable {
 					behaviour.changeState(new TravelExit());
 			}
 		}
-		// printMatrix();
+		printMatrix();
 	}
 
 	public boolean hasUndiscoveredCells() {

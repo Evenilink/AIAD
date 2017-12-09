@@ -123,8 +123,8 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
-		context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
-		coordinates.remove(index);
+		//context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
+		//coordinates.remove(index);
 
 		for (int i = 0; i < coordinates.size(); i++)
 			context.add(new UndiscoveredCell(coordinates.get(i).getX(), coordinates.get(i).getY()));

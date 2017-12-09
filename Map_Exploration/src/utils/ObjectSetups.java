@@ -64,7 +64,9 @@ public class ObjectSetups {
     			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
     			continue;
     		}
-			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
+    		if(coordinates2.equals(new Coordinates(2, 5)))
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 1));
+    		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
 			coordinates.remove(coordinates2);
     	}
     }
