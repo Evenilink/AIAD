@@ -4,13 +4,11 @@ import java.util.List;
 
 import algorithms.astar.Node;
 import behaviours.Exploration;
-import utils.Coordinates;
 
 public class TravelNearestUndiscovered implements IAgentState {
 
 	private Exploration behaviour;
 	private List<Node> path;
-	private int pathNode;
 
 	@Override
 	public void enter(Exploration behaviour) {
@@ -39,13 +37,5 @@ public class TravelNearestUndiscovered implements IAgentState {
 	@Override
 	public void exit() {
 		
-	}
-
-	private void printPath() {
-		//System.out.println("Printing path");
-		for (Node node : path) {
-			//System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
-		}
-		//System.out.println("End");
 	}
 }
