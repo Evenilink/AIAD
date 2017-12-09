@@ -97,4 +97,13 @@ public class Utils {
 		}
 		return false;
 	}
+
+	public static GridCell<Object> getFirstObstacleCell(List<GridCell<Object>> cells) {
+		for (GridCell<Object> gridCell : cells) {
+			Iterator it = gridCell.items().iterator();
+			while (it.hasNext())
+				if (it.next() instanceof Obstacle) return gridCell;
+		}
+		return null;
+	}
 }

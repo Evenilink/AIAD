@@ -86,6 +86,10 @@ public class NeighbourObstacles {
         }
     }
 
+    public boolean hasObstacle() {
+        return frontObject != null || leftObject != null || rightObject != null || backObject != null;
+    }
+
     public Object front() {
         return frontObject;
     }
