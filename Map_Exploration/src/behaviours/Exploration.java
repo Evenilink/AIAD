@@ -20,6 +20,7 @@ import states.Explore;
 import states.IAgentState;
 import states.IAgentTemporaryState;
 import states.Recruiting;
+import states.TravelNearestUndiscovered;
 import states.WaitingForObstacleDestroy;
 import utils.Coordinates;
 import utils.Matrix;

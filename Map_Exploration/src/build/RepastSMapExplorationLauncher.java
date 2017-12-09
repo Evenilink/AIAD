@@ -9,6 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import agents.Explorer;
 import entities.Entity;
 import entities.Exit;
+import entities.Obstacle;
 import entities.UndiscoveredCell;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -42,10 +43,10 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 	private static int MAX_GRID_X = 15;
 	private static int MAX_GRID_Y = 15;
 	private static int NUM_OBSTACLES = 0;
-	
+
 	private ContainerController mainContainer;
 	private ArrayList<Explorer> explorers;
-	
+
 	@Override
 	public String getName() {
 		return "Map Exploration Test";
@@ -58,22 +59,21 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		mainContainer = runtime.createMainContainer(profile);
 		launchAgents();
 	}
-	
+
 	private void launchAgents() {
 		try {
-			for(int i = 0; i < NUM_AGENTS + NUM_SUPER_AGENTS; i++)
-				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();				
+			for (int i = 0; i < NUM_AGENTS + NUM_SUPER_AGENTS; i++)
+				mainContainer.acceptNewAgent("Explorer_" + i, explorers.get(i)).start();
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public Context build(Context<Object> context) 
-	{
-		//Get Parameters
+	public Context build(Context<Object> context) {
+		// Get Parameters
 		Parameters params = RunEnvironment.getInstance().getParameters();
-		
+
 		NUM_AGENTS = params.getInteger("numberOfAgents");
 		NUM_SUPER_AGENTS = params.getInteger("numberSuperAgents");
 		MAX_GRID_X = params.getInteger("gridSizeX");
@@ -81,71 +81,70 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		VISION_RADIOUS = params.getInteger("visionRadius");
 		COMMUNICATION_LIMIT = params.getInteger("communicationLimit");
 		NUM_OBSTACLES = params.getInteger("numObstacles");
-		
+
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Map Exploration Network", context, true);
-		netBuilder.buildNetwork();		
+		netBuilder.buildNetwork();
 		context.setId("Map Exploration");
 
 		ContinuousSpaceFactory spaceFactory = ContinuousSpaceFactoryFinder.createContinuousSpaceFactory(null);
-		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context, new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.StrictBorders(), MAX_GRID_X, MAX_GRID_Y);
-		
+		ContinuousSpace<Object> space = spaceFactory.createContinuousSpace("space", context,
+				new RandomCartesianAdder<Object>(), new repast.simphony.space.continuous.StrictBorders(), MAX_GRID_X,
+				MAX_GRID_Y);
+
 		GridFactory gridFactory = GridFactoryFinder.createGridFactory(null);
-		Grid<Object> grid = gridFactory.createGrid("grid", context, 
-				new GridBuilderParameters<Object>(
-						new StrictBorders(),
-						new SimpleGridAdder<Object>(), 
-						true, MAX_GRID_X, MAX_GRID_Y));
-		
-		
+		Grid<Object> grid = gridFactory.createGrid("grid", context, new GridBuilderParameters<Object>(
+				new StrictBorders(), new SimpleGridAdder<Object>(), true, MAX_GRID_X, MAX_GRID_Y));
+
 		// Create instances of agents.
 		explorers = new ArrayList<Explorer>();
-		for(int i = 0; i < NUM_AGENTS; i++) {
-			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT, NUM_AGENTS + NUM_SUPER_AGENTS, context);
+		for (int i = 0; i < NUM_AGENTS; i++) {
+			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, COMMUNICATION_LIMIT,
+					NUM_AGENTS + NUM_SUPER_AGENTS, context);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
-				
-		for(int i = 0; i < NUM_SUPER_AGENTS; i++) {
+
+		for (int i = 0; i < NUM_SUPER_AGENTS; i++) {
 			Explorer explorer = new Explorer(space, grid, VISION_RADIOUS, NUM_AGENTS + NUM_SUPER_AGENTS, context);
 			explorers.add(explorer);
 			context.add(explorer);
 		}
-		
+
 		List<Coordinates> coordinates = new ArrayList<Coordinates>();
-		for(int row = 0; row < MAX_GRID_Y; row++) {
-			for(int column = 0; column < MAX_GRID_X; column++)
+		for (int row = 0; row < MAX_GRID_Y; row++) {
+			for (int column = 0; column < MAX_GRID_X; column++)
 				coordinates.add(new Coordinates(column, row));
 		}
-		
+
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
-		context.add(new Exit(4, 4));
+		context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
 		coordinates.remove(index);
-		
-		// Create obstacles.
-		//for(int i = 0; i < NUM_OBSTACLES; i++)
-			//context.add(new Obstacle(5 + i, 6));
-		 ObjectSetups.Setup2(context);
 
-		for(int i = 0; i < coordinates.size(); i++)
+		// Create obstacles.
+		for (int i = 0; i < NUM_OBSTACLES; i++)
+			context.add(new Obstacle(5 + i, 6));
+		ObjectSetups.Setup2(context);
+
+		for (int i = 0; i < coordinates.size(); i++)
 			context.add(new UndiscoveredCell(coordinates.get(i).getX(), coordinates.get(i).getY()));
-	 
+
 		// Updates/Sets all the objects location.
-		for(Object obj : context) {
-			if(obj instanceof Explorer) {
-				index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);				
+		for (Object obj : context) {
+			if (obj instanceof Explorer) {
+				index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
 				space.moveTo(obj, coordinates.get(index).getX(), coordinates.get(index).getY());
 				grid.moveTo(obj, coordinates.get(index).getX(), coordinates.get(index).getY());
 				coordinates.remove(index);
-			} else if(obj instanceof Entity) {
+			} else if (obj instanceof Entity) {
 				space.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 				grid.moveTo(obj, ((Entity) obj).getCoordinates().getX(), ((Entity) obj).getCoordinates().getY());
 			} else {
 				NdPoint pt = space.getLocation(obj);
-				grid.moveTo(obj, (int)pt.getX(), (int)pt.getY());	
+				grid.moveTo(obj, (int) pt.getX(), (int) pt.getY());
 			}
 		}
-		
+
 		return super.build(context);
 	}
 }
