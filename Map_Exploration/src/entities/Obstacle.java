@@ -14,7 +14,7 @@ public class Obstacle extends Entity {
 	}
 
 	public Obstacle(int posX, int posY, int neededAgentsForRemoving) {
-		super(posX, posY, Utils.CODE_OBSTACLE_CELL);
+		super(posX, posY, Utils.CODE_OBSTACLE_DOOR);
 		this.seeThrough = false;
 		this.neededAgentsForRemoving = neededAgentsForRemoving;
 	}

@@ -117,13 +117,13 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		}
 
 		// Create obstacles.
-		for (int i = 0; i < NUM_OBSTACLES; i++)
-			context.add(new Obstacle(5 + i, 6));
+		//for (int i = 0; i < NUM_OBSTACLES; i++)
+		//	context.add(new Obstacle(5 + i, 6));
 		ObjectSetups.Setup2(context, coordinates);
 		
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
-		//context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
+		context.add(new Exit(5, 6));
 		//coordinates.remove(index);
 
 		for (int i = 0; i < coordinates.size(); i++)

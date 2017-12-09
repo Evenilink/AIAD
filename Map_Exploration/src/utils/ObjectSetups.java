@@ -42,7 +42,6 @@ public class ObjectSetups {
     	tempCoordinates.add(new Coordinates(5, 8));
     	tempCoordinates.add(new Coordinates(4, 8));
     	tempCoordinates.add(new Coordinates(3, 8));
-    	tempCoordinates.add(new Coordinates(2, 8));
     	tempCoordinates.add(new Coordinates(2, 3));
     	tempCoordinates.add(new Coordinates(2, 4));
     	tempCoordinates.add(new Coordinates(2, 5));
@@ -60,11 +59,12 @@ public class ObjectSetups {
     	tempCoordinates.add(new Coordinates(11, 12));
     	
     	for (Coordinates coordinates2 : tempCoordinates) {
+    		
     		if(!coordinates.contains(coordinates2)) {
     			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
     			continue;
     		}
-    		if(coordinates2.equals(new Coordinates(2, 5)))
+    		if(coordinates2.equals(new Coordinates(2, 5))) 
     			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 1));
     		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
 			coordinates.remove(coordinates2);

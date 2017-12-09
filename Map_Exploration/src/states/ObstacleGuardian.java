@@ -53,13 +53,14 @@ public class ObstacleGuardian implements IAgentState {
 		//Tries to receive WAITING_TO_BREAK messages
 		//receiveMessagesHandler();
 		 getNumberAgentsAroundMe();
-		 System.out.println(this.numberAgentsReached);
+		 //System.out.println(this.numberAgentsReached);
 		
 		// When we have enough agents, break wall and search the inside
 		if (this.numberAgentsNeeded == this.numberAgentsReached) {
 			System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
-			this.behaviour.getAgent().removeObstacleCell(obstacle);
+			this.behaviour.getAgent().removeObstacleCell(obstacle,behaviour);
+			this.behaviour.getAgent().getMatrix().printMatrix();
 			this.behaviour.changeState(new TravelNearestUndiscovered());
 		}
 	}

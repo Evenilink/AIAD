@@ -14,11 +14,15 @@ public class TravelNearestUndiscovered implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
+		
+		
+		
 		this.behaviour = behaviour;
 		if (!behaviour.getAgent().getMatrix().hasUndiscoveredCells()) {
 			System.out.println("Map is fully explored.");
 			behaviour.changeState(new TravelExit());
 		}
+		this.behaviour.getAgent().getMatrix().printMatrix();
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import entities.DiscoveredCell;
 import entities.Obstacle;
 import entities.UndiscoveredCell;
 import jade.core.AID;
+import jade.core.behaviours.Behaviour;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -81,13 +82,13 @@ public class Explorer extends Agent {
 	 * Clears a cell from the space, representing a door to an obstacle
 	 * @param obj the obstacle door object
 	 */
-	public void removeObstacleCell(Object obj) {
+	public void removeObstacleCell(Object obj, Exploration beh) {
 		
 		if (obj instanceof Obstacle){
 			context.remove(obj);
-			matrix.setValue(((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY(), Utils.CODE_UNDISCOVERED);
+			matrix.updateMatrix(beh, grid, ((Obstacle) obj).getCoordinates(), this.radious);
 			System.out.println("AAAAAAAAAAAAAAAAAAAA");
-			System.out.println(matrix.getValue(((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY()));
+			matrix.printMatrix();
 		}
 	}
 	
