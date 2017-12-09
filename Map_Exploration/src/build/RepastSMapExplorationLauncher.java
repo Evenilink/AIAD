@@ -116,15 +116,15 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 				coordinates.add(new Coordinates(column, row));
 		}
 
+		// Create obstacles.
+		for (int i = 0; i < NUM_OBSTACLES; i++)
+			context.add(new Obstacle(5 + i, 6));
+		ObjectSetups.Setup2(context, coordinates);
+		
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
 		context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
 		coordinates.remove(index);
-
-		// Create obstacles.
-		for (int i = 0; i < NUM_OBSTACLES; i++)
-			context.add(new Obstacle(5 + i, 6));
-		ObjectSetups.Setup2(context);
 
 		for (int i = 0; i < coordinates.size(); i++)
 			context.add(new UndiscoveredCell(coordinates.get(i).getX(), coordinates.get(i).getY()));

@@ -126,8 +126,6 @@ public class AStar {
 				}
 			}
 		}
-		
-		System.out.println(nearestCoordinate);
 		return nearestCoordinate;
 		
 	}
