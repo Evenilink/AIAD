@@ -19,7 +19,7 @@ public class ObjectSetups {
     }
 
     public static void Setup2(Context<Object> context) {
-        context.add(new Obstacle(6, 3,false,2));
+        //context.add(new Obstacle(4, 3,false,2));
         context.add(new Obstacle(6, 4));
         context.add(new Obstacle(6, 5));
         context.add(new Obstacle(6, 6));
@@ -31,7 +31,7 @@ public class ObjectSetups {
         context.add(new Obstacle(2, 8));
         context.add(new Obstacle(2, 3));
         context.add(new Obstacle(2, 4));
-        context.add(new Obstacle(2, 5));
+        context.add(new Obstacle(2, 5,false,2));
         context.add(new Obstacle(2, 6));
         context.add(new Obstacle(2, 7));
         context.add(new Obstacle(3, 3));
@@ -41,13 +41,12 @@ public class ObjectSetups {
         context.add(new Obstacle(7, 3));
         
         //ADDED FOR TESTING
-        context.add(new Obstacle(13, 13));
-        context.add(new Obstacle(12, 13));
-        context.add(new Obstacle(13, 12));
-        context.add(new Obstacle(13, 11));
+        
+        
+        
         context.add(new Obstacle(12, 11));
         context.add(new Obstacle(11, 11));
         context.add(new Obstacle(11, 12));
-        context.add(new Obstacle(11, 13));
+        
     }
 }

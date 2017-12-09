@@ -24,6 +24,7 @@ import states.TravelNearestUndiscovered;
 import states.WaitingForObstacleDestroy;
 import utils.Coordinates;
 import utils.Matrix;
+import utils.Utils;
 import utils.Utils.AgentType;
 import utils.Utils.MessageType;
 
@@ -76,6 +77,7 @@ public class Exploration extends CyclicBehaviour {
 							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
+							sendMessagesHandlerBreakObstacle(getNeighborhoodCells());
 							this.changeState(new WaitingForObstacleDestroy());
 							break;
 						case OBSTACLEDOOR_DESTROYED:
@@ -97,6 +99,32 @@ public class Exploration extends CyclicBehaviour {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Searches for other explorers in the neighborhood and sends them his matrix.
+	 * @param neighborhoodCells
+	 */
+	private void sendMessagesHandlerBreakObstacle(List<GridCell<Object>> neighborhoodCells) {
+		for (GridCell<Object> gridCell : neighborhoodCells) {
+            Iterator<Object> it = gridCell.items().iterator();
+            while(it.hasNext()) {
+            	Object obj = it.next();
+            	if(obj instanceof Explorer) {
+            		Explorer otherExplorer = (Explorer) obj;
+            		sendMessageToNeighbor(otherExplorer, Utils.MessageType.WAITING_TO_BREAK);
+            	}
+            }
+		}
+	}
+	
+	private void sendMessageToNeighbor(Explorer otherExplorer, MessageType msgType) {
+		// Super agents don't need to exchange matrix messages when they're close to each other.
+		if(agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
+			return;
+		
+		IndividualMessage message = new IndividualMessage(msgType, null, otherExplorer.getAID());
+		agent.sendMessage(message);
 	}
 	
 	public void changeState(IAgentState newState) {
@@ -163,6 +191,8 @@ public class Exploration extends CyclicBehaviour {
             }
 		}
 	}
+	
+	
 	
 	private void sendMessageToNeighbor(Explorer otherExplorer) {
 		// Super agents don't need to exchange matrix messages when they're close to each other.

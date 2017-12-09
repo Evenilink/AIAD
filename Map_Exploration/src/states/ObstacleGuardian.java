@@ -7,7 +7,10 @@ import agents.Explorer;
 import behaviours.Exploration;
 import communication.IndividualMessage;
 import entities.Obstacle;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import repast.simphony.query.space.grid.GridCell;
+import utils.Matrix;
 import utils.Utils;
 import utils.Utils.MessageType;
 
@@ -30,7 +33,7 @@ public class ObstacleGuardian implements IAgentState {
 
 			while (it.hasNext()) {
 				Object oneCell = it.next();
-				if (oneCell instanceof Obstacle && ((Obstacle) oneCell).getCode() == 3) {
+				if (oneCell instanceof Obstacle && ((Obstacle) oneCell).getCode() == Utils.CODE_OBSTACLE_DOOR) {
 					this.numberAgentsNeeded = ((Obstacle) oneCell).getNeededAgentsForRemoving();
 					this.obstacle = ((Obstacle) oneCell);
 				}
@@ -44,15 +47,64 @@ public class ObstacleGuardian implements IAgentState {
 		// Each iteration get agents around and asks for help
 		communicateAroundMe(MessageType.HELP);
 
+		//Tries to receive WAITING_TO_BREAK messages
+		receiveMessagesHandler();
+		
 		// When we have enough agents, break wall and search the inside
 		if (this.numberAgentsNeeded == this.numberAgentsReached) {
+			System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.getAgent().removeObstacleCell(obstacle);
 			this.behaviour.changeState(new TravelNearestUndiscovered());
-		} else if (this.behaviour.getAgent().getMatrix().getValue(obstacle.getCoordinates().getY(), obstacle.getCoordinates().getX()) != Utils.CODE_OBSTACLE_DOOR) {
+			
+		}if (this.behaviour.getAgent().getMatrix().getValue(obstacle.getCoordinates().getY(),
+				obstacle.getCoordinates().getX()) != Utils.CODE_OBSTACLE_DOOR) {
+			System.out.println("Entrou if 2");
 			// Another agent has broken the wall
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.changeState(new TravelNearestUndiscovered());
+		}
+		
+	}
+
+	private void receiveMessagesHandler() {
+		ACLMessage acl;
+		while ((acl = behaviour.getAgent().receiveMessage()) != null) {
+			try {
+				Object obj = acl.getContentObject();
+				if (obj instanceof IndividualMessage) {
+					IndividualMessage message = (IndividualMessage) obj;
+					switch (message.getMessageType()) {
+					case MATRIX:
+						Matrix otherMatrix = (Matrix) message.getContent();
+						behaviour.getAgent().getMatrix().mergeMatrix(otherMatrix, behaviour);
+						break;
+					case HELP:
+						behaviour.changeState(new WaitingForObstacleDestroy());
+						break;
+					case OBSTACLEDOOR_DESTROYED:
+						behaviour.changeState(new TravelNearestUndiscovered());
+						break;
+					case WAITING_TO_BREAK:
+						this.numberAgentsReached++;
+						System.out.println("one more agent");
+						break;
+					case OTHER_GUARDING:
+						boolean isToExit = (boolean) message.getContent();
+						if (isToExit)
+							behaviour.getAgent().exitFromSimulation();
+						else {
+							System.out.println(behaviour.getAgent().getLocalName() + " keeps recuiting.");
+							behaviour.changeState(new Recruiting());
+						}
+						break;
+					default:
+						break;
+					}
+				}
+			} catch (UnreadableException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -64,8 +116,6 @@ public class ObstacleGuardian implements IAgentState {
 				Explorer otherExplorer = it.next();
 				IndividualMessage message = new IndividualMessage(msgType, obstacle, otherExplorer.getAID());
 				behaviour.getAgent().sendMessage(message);
-				if (msgType == MessageType.HELP)
-					numberAgentsReached++;
 			}
 		}
 	}

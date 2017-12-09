@@ -17,7 +17,8 @@ public class Utils {
 		HELP,
 		OTHER_GUARDING,
 		REACHED_EXIT,
-		OBSTACLEDOOR_DESTROYED
+		OBSTACLEDOOR_DESTROYED,
+		WAITING_TO_BREAK
 	}
 	
 	public enum AgentType {

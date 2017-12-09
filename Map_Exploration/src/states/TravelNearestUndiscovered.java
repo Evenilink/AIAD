@@ -20,15 +20,15 @@ public class TravelNearestUndiscovered implements IAgentState {
 			path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
 			if (path != null) {
 				pathNode = 0;
-				System.out.println("Going to nearest zero: " + path.get(path.size() - 1).getWorldPosition().getX()
-						+ " and " + path.get(path.size() - 1).getWorldPosition().getY());
+				//System.out.println("Going to nearest zero: " + path.get(path.size() - 1).getWorldPosition().getX()
+						//+ " and " + path.get(path.size() - 1).getWorldPosition().getY());
 				printPath();
 			} else {
-				System.err.println("Going to travel obstacle");
+				//System.err.println("Going to travel obstacle");
 				behaviour.changeState(new TravelToObstacle());
 			}
 		} else {
-			System.out.println("Map is fully explored.");
+			//System.out.println("Map is fully explored.");
 			behaviour.changeState(new TravelExit());
 		}
 	}
@@ -51,10 +51,10 @@ public class TravelNearestUndiscovered implements IAgentState {
 	}
 
 	private void printPath() {
-		System.out.println("Printing path");
+		//System.out.println("Printing path");
 		for (Node node : path) {
-			System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
+			//System.out.println("x: " + node.getWorldPosition().getX() + ", y: " + node.getWorldPosition().getY());
 		}
-		System.out.println("End");
+		//System.out.println("End");
 	}
 }

@@ -32,7 +32,7 @@ public class TravelExit implements IAgentState {
 		
 		if(pathNode == path.size()) {
 			boolean becameMasterAgent = true;
-			System.out.println("tamanho: " + path.size());
+			//System.out.println("tamanho: " + path.size());
 			Coordinates target = behaviour.getAgentCoordinates();
 			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
 			while(it.hasNext()) {
@@ -50,7 +50,7 @@ public class TravelExit implements IAgentState {
 			}
 			
 			if(becameMasterAgent) {
-				System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
+				//System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
 				behaviour.changeState(new Guarding());
 			}
 		}

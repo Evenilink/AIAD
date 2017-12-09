@@ -38,7 +38,6 @@ public class TravelToObstacle implements IAgentState {
 	@Override
 	public void exit() {
 		// TODO Auto-generated method stub
-
 	}
 
 }
