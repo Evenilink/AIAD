@@ -2,10 +2,8 @@ package utils;
 
 import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
-import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 

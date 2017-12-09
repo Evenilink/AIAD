@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import agents.Explorer;
 import entities.Entity;
 import entities.Exit;
-import entities.Obstacle;
 import entities.UndiscoveredCell;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
