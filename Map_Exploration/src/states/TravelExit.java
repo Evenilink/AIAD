@@ -15,24 +15,20 @@ public class TravelExit implements IAgentState {
 	private Exploration behaviour;
 	private List<Node> path;
 	private int pathNode;
+	private Coordinates exit;
 	
 	@Override
 	public void enter(Exploration behaviour) {
 		this.behaviour = behaviour;
-		path = behaviour.getAStar().getPathToExit();
-		if(path == null) System.err.println("The exit should have been found already.");
-		pathNode = 0;
+		exit = behaviour.getAgent().getMatrix().getExit();
 	}
 
 	@Override
 	public void execute() {
-		if(pathNode < path.size())
-			if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
-				pathNode++;	
+		path = behaviour.getAStar().getPathToExit();		
 		
-		if(pathNode == path.size()) {
+		if(path == null || path.size() == 0) {
 			boolean becameMasterAgent = true;
-			//System.out.println("tamanho: " + path.size());
 			Coordinates target = behaviour.getAgentCoordinates();
 			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
 			while(it.hasNext()) {
@@ -53,7 +49,7 @@ public class TravelExit implements IAgentState {
 				//System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
 				behaviour.changeState(new Guarding());
 			}
-		}
+		} else behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition());
 	}
 
 	@Override

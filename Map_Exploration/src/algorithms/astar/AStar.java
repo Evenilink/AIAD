@@ -1,6 +1,7 @@
 package algorithms.astar;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import agents.Explorer;
@@ -12,11 +13,13 @@ public class AStar {
 
 	private Explorer agent;
 	private Pathfinding pathfinding;
+	private List<Coordinates> dynamicNotWalkable;
 
 	public AStar(Explorer agent) {
 		this.agent = agent;
 		pathfinding = new Pathfinding(agent.getGrid().getDimensions().getWidth(),
 				agent.getGrid().getDimensions().getHeight());
+		dynamicNotWalkable = new ArrayList<>();
 	}
 
 	public List<Node> computePath(Coordinates sourceWorldPosition, Coordinates targetWorldPosition) {
@@ -34,6 +37,19 @@ public class AStar {
 			return computePath(new Coordinates(pt.getX(), pt.getY()), exit);
 		}
 		return null;
+	}
+	
+	public void addDynamicNotWalkable(Coordinates coordinates) {
+		dynamicNotWalkable.add(coordinates);
+		setNodeWalkable(coordinates, false);
+	}
+	
+	public void resetDynamicNotWalkable() {
+		for(Iterator<Coordinates> it = dynamicNotWalkable.iterator(); it.hasNext(); ) {
+			Coordinates coordinates = it.next();
+			setNodeWalkable(coordinates, true);
+			it.remove();
+		}
 	}
 
 	/**

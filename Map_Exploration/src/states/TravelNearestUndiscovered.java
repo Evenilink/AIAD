@@ -16,38 +16,29 @@ public class TravelNearestUndiscovered implements IAgentState {
 	public void enter(Exploration behaviour) {
 		this.behaviour = behaviour;
 
-		if (behaviour.getAgent().getMatrix().hasUndiscoveredCells()) {
-			path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
-			if (path != null) {
-				pathNode = 0;
-				//System.out.println("Going to nearest zero: " + path.get(path.size() - 1).getWorldPosition().getX()
-						//+ " and " + path.get(path.size() - 1).getWorldPosition().getY());
-				printPath();
-			} else {
-				//System.err.println("Going to travel obstacle");
-				behaviour.changeState(new TravelToObstacle());
-			}
-		} else {
-			//System.out.println("Map is fully explored.");
+		if (!behaviour.getAgent().getMatrix().hasUndiscoveredCells()) {
+			System.out.println("Map is fully explored.");
 			behaviour.changeState(new TravelExit());
 		}
 	}
 
 	@Override
 	public void execute() {
-		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(),
-				path.get(pathNode).getWorldPosition().getY());
-		if (behaviour.moveAgentToCoordinate(target))
-			pathNode++;
+		path = behaviour.getAStar().getNearestUndiscoveredPlace(behaviour.getAgentPoint());
 
-		if (pathNode == path.size())
-			behaviour.changeState(new Explore());
+		if (path != null) {
+			behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition());
+			if(path.size() == 1)
+				behaviour.changeState(new Explore());
+		} else {
+			System.err.println("Going to travel obstacle");
+			behaviour.changeState(new TravelToObstacle());
+		}
 	}
 
 	@Override
 	public void exit() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	private void printPath() {

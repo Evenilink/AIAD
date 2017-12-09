@@ -23,6 +23,7 @@ public class Guarding implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
+		System.out.println(behaviour.getAgent().getLocalName() + ": entering Guardian state.");
 		this.behaviour = behaviour;
 		totalNumAgents = behaviour.getAgent().getTotalNumAgents();
 		everyAgentInstructed = false;
@@ -56,19 +57,21 @@ public class Guarding implements IAgentState {
 						String agentName = (String) message.getContent();
 						if (!agentsReachedExit.contains(agentName)) {
 							agentsReachedExit.add(agentName);
+							System.out.println("Current size of agents list: " + agentsReachedExit.size());
 							if (agentsReachedExit.size() == totalNumAgents)
 								everyAgentInstructed = true;
 						}
 
 						if (everyAgentInstructed) {
-							System.out.println(behaviour.getAgent().getLocalName() + ": you're free to exit!");
+							System.out.println(behaviour.getAgent().getLocalName() + ": agent '" + acl.getSender().getLocalName()
+									+ "' is you're free to exit!");
 							message = new IndividualMessage(MessageType.OTHER_GUARDING, true, acl.getSender());
 							behaviour.getAgent().sendMessage(message);
-							totalNumAgents--;
+							agentsReachedExit.remove(acl.getSender().getLocalName());
 							// If this agent is the only one left.
-							if (totalNumAgents == 1) {
+							if (agentsReachedExit.size() == 1) {
 								System.out.println(behaviour.getAgent().getLocalName()
-										+ ": I'm alone in the simulation, and since I'm the guarding, I will also leave. Bye!");
+										+ ": I'm alone in the simulation, and since I'm the guardian, I will also leave. Bye!");
 								behaviour.getAgent().exitFromSimulation();
 							}
 						} else {

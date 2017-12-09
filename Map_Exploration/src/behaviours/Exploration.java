@@ -8,6 +8,7 @@ import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
 import communication.IndividualMessage;
+import entities.Exit;
 import entities.UndiscoveredCell;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
@@ -51,6 +52,8 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
+		updateDynamicEnvironment();
+		
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
 				this.resumeState();
@@ -62,6 +65,27 @@ public class Exploration extends CyclicBehaviour {
 			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCells();
 			if(neighborhoodCells != null)
 				sendMessagesHandler(neighborhoodCells);	
+		}
+		
+		astar.resetDynamicNotWalkable();
+	}
+	
+	private void updateDynamicEnvironment() {
+		for(int row = 0; row < agent.getGrid().getDimensions().getHeight(); row++) {
+			for(int column = 0; column < agent.getGrid().getDimensions().getWidth(); column++) {
+				Iterator<Object> it = agent.getGrid().getObjectsAt(column, row).iterator();
+				boolean hasExit = false;
+				boolean hasExplorer = false;
+				while(it.hasNext()) {
+					Object obj = it.next();
+					if(obj instanceof Explorer)
+						hasExplorer = true;
+					else if(obj instanceof Exit)
+						hasExit = true;
+				}
+				if(hasExplorer && !hasExit)
+					astar.addDynamicNotWalkable(new Coordinates(column, row));
+			}
 		}
 	}
 	
