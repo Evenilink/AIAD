@@ -46,26 +46,41 @@ public class Pledge {
         if (objs.right() != null && objs.right() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving forward");
             if (objs.front() != null && objs.front() instanceof Obstacle) {
-                if (displayMessages) System.out.println("PLEDGE: Can't move forward, going back");
-                return pts.back();
+                if (displayMessages) System.out.println("PLEDGE: Can't move forward, going left");
+                if (objs.left() != null && objs.left() instanceof Obstacle) {
+                    if (displayMessages) System.out.println("PLEDGE: Can't move left, going back");
+                    return pts.back();
+                } else return pts.left();
             } else return pts.front();
+
         } else if (objs.front() != null && objs.front() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving left");
             if (objs.left() != null && objs.left() instanceof Obstacle) {
-                if (displayMessages) System.out.println("PLEDGE: Can't move left, going right");
-                return pts.right();
+                if (displayMessages) System.out.println("PLEDGE: Can't move left, going back");
+                if (objs.back() != null && objs.back() instanceof Obstacle) {
+                    if (displayMessages) System.out.println("PLEDGE: Can't move back, going right");
+                    return pts.right();
+                } else return pts.back();
             } else return pts.left();
+
         } else if (objs.left() != null && objs.left() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving back");
             if (objs.back() != null && objs.back() instanceof Obstacle) {
-                if (displayMessages) System.out.println("PLEDGE: Can't move back, going forward");
-                return pts.front();
+                if (displayMessages) System.out.println("PLEDGE: Can't move back, going right");
+                if (objs.right() != null && objs.right() instanceof Obstacle) {
+                    if (displayMessages) System.out.println("PLEDGE: Can't move right, going forward");
+                    return pts.front();
+                } else return pts.right();
             } else return pts.back();
+
         } else if (objs.back() != null && objs.back() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
             if (objs.right() != null && objs.right() instanceof Obstacle) {
-                if (displayMessages) System.out.println("PLEDGE: Can't move right, going left");
-                return pts.left();
+                if (displayMessages) System.out.println("PLEDGE: Can't move right, going forward");
+                if (objs.front() != null && objs.front() instanceof Obstacle) {
+                    if (displayMessages) System.out.println("PLEDGE: Can't move forward, going left");
+                    return pts.left();
+                } else return pts.front();
             } else return pts.right();
         }
         if (displayMessages) System.err.println("PLEDGE: Can't find a cell to move!");
