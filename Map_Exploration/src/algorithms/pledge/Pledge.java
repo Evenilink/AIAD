@@ -122,12 +122,12 @@ public class Pledge {
             } while ( ++offset <= this.agent.getRadious());
         }
 
-        this.previousPoint = pt;
+        addVisitedCoordinates(Coordinates.FromGridPoint(pt));
 
-        if(nextLocation != null)
-        	addVisitedCoordinates(Coordinates.FromGridPoint(pt));
-
-        this.agent.moveAgent(nextLocation != null ? nextLocation : Coordinates.FromGridPoint(pt));
+        if(nextLocation != null && this.agent.moveAgent(nextLocation))
+            this.previousPoint = pt;
+        else
+            this.agent.moveAgent(Coordinates.FromGridPoint(pt));
     }
     
     public boolean alreadyVisited(Coordinates coordinates) {
