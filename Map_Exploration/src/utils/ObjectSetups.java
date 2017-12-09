@@ -43,7 +43,7 @@ public class ObjectSetups {
         //ADDED FOR TESTING
         
         
-        
+        context.add(new Obstacle(12, 12));
         context.add(new Obstacle(12, 11));
         context.add(new Obstacle(11, 11));
         context.add(new Obstacle(11, 12));

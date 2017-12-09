@@ -106,7 +106,7 @@ public class Exploration extends CyclicBehaviour {
 							this.changeState(new WaitingForObstacleDestroy());
 							break;
 						case OBSTACLEDOOR_DESTROYED:
-							this.changeState(new Explore());
+							this.changeState(new TravelNearestUndiscovered());
 							break;
 						case OTHER_GUARDING:
 							boolean isToExit = (boolean) message.getContent();

@@ -60,7 +60,7 @@ public class ObstacleGuardian implements IAgentState {
 			System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED);
 			this.behaviour.getAgent().removeObstacleCell(obstacle);
-			this.behaviour.changeState(new Explore());
+			this.behaviour.changeState(new TravelNearestUndiscovered());
 		}
 	}
 
