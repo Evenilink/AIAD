@@ -45,16 +45,28 @@ public class Pledge {
     private Coordinates getFirstLocation(NeighbourPoints pts, NeighbourObstacles objs, boolean displayMessages) {
         if (objs.right() != null && objs.right() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving forward");
-            return pts.front();
+            if (objs.front() != null && objs.front() instanceof Obstacle) {
+                if (displayMessages) System.out.println("PLEDGE: Can't move forward, going back");
+                return pts.back();
+            } else return pts.front();
         } else if (objs.front() != null && objs.front() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving left");
-            return pts.left();
+            if (objs.left() != null && objs.left() instanceof Obstacle) {
+                if (displayMessages) System.out.println("PLEDGE: Can't move left, going right");
+                return pts.right();
+            } else return pts.left();
         } else if (objs.left() != null && objs.left() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving back");
-            return pts.back();
+            if (objs.back() != null && objs.back() instanceof Obstacle) {
+                if (displayMessages) System.out.println("PLEDGE: Can't move back, going forward");
+                return pts.front();
+            } else return pts.back();
         } else if (objs.back() != null && objs.back() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
-            return pts.right();
+            if (objs.right() != null && objs.right() instanceof Obstacle) {
+                if (displayMessages) System.out.println("PLEDGE: Can't move right, going left");
+                return pts.left();
+            } else return pts.right();
         }
         if (displayMessages) System.err.println("PLEDGE: Can't find a cell to move!");
         return null;
@@ -95,33 +107,25 @@ public class Pledge {
             // Facing Right
             if (displayMessages) System.out.println("PLEDGE: Detecting direction - RIGHT");
             NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.RIGHT);
-            System.out.println(pts.toString());
             NeighbourObstacles objs = new NeighbourObstacles(this.grid, pts);
-            System.out.println(objs.toString());
             nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getX() < this.previousPoint.getX()) {
             // Facing Left
             if (displayMessages) System.out.println("PLEDGE: Detecting direction - LEFT");
             NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.LEFT);
-            System.out.println(pts.toString());
             NeighbourObstacles objs = new NeighbourObstacles(this.grid, pts);
-            System.out.println(objs.toString());
             nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getY() > this.previousPoint.getY()) {
             // Facing Upwards
             if (displayMessages) System.out.println("PLEDGE: Detecting direction - Upwards");
             NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.UPWARDS);
-            System.out.println(pts.toString());
             NeighbourObstacles objs = new NeighbourObstacles(this.grid, pts);
-            System.out.println(objs.toString());
             nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else if (pt.getY() < this.previousPoint.getY()) {
             // Facing Downwards
             if (displayMessages) System.out.println("PLEDGE: Detecting direction - DOWNWARDS");
             NeighbourPoints pts = new NeighbourPoints(this.grid.getLocation(this.agent), NeighbourPoints.Direction.DOWNWARDS);
-            System.out.println(pts.toString());
             NeighbourObstacles objs = new NeighbourObstacles(this.grid, pts);
-            System.out.println(objs.toString());
             nextLocation = this.getNextLocation(pts, objs, displayMessages);
         } else {
             // First iteration, assuming one direction
