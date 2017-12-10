@@ -63,7 +63,7 @@ public class Exploration extends CyclicBehaviour {
 		}
 		if(agent != null) {
 			receiveMessagesHandler();
-			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCells();
+			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCellsCommunicationLimit();
 			if(neighborhoodCells != null)
 				sendMessagesHandler(neighborhoodCells);	
 		}
@@ -197,6 +197,15 @@ public class Exploration extends CyclicBehaviour {
 		return nghCreator.getNeighborhood(false);
 	}
 	
+	public List<GridCell<Object>> getNeighborhoodCellsCommunicationLimit() {
+		GridPoint pt = getAgentPoint();
+		// This can happen when the agent has already left and the behaviour is finishing executing.
+		if(pt == null)
+			return null;
+		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getCommLimit(), agent.getCommLimit());
+		return nghCreator.getNeighborhood(false);
+	}
+	
 	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorers() {
 		GridPoint pt = getAgentPoint();
 		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
@@ -205,7 +214,7 @@ public class Exploration extends CyclicBehaviour {
 	
 	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorersCommunicationLimit(){
 		GridPoint pt = getAgentPoint();
-		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getCommLimit(), agent.getCommLimit());
 		return nghCreator.getNeighborhood(true);
 	}
 	
