@@ -30,8 +30,9 @@ import utils.Utils.AgentType;
 import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
-	
-	private static final long serialVersionUID = 7526472295622776147L;  // unique id
+
+	private static final long serialVersionUID = 7526472295622776147L; // unique
+																		// id
 
 	private Explorer agent;
 	private DFS dfs;
@@ -40,7 +41,7 @@ public class Exploration extends CyclicBehaviour {
 	private IAgentState currState;
 	private IAgentState pausedState;
 	private boolean newPausedState;
-	
+
 	public Exploration(Explorer agent) {
 		super(agent);
 		this.agent = agent;
@@ -50,7 +51,7 @@ public class Exploration extends CyclicBehaviour {
 		changeState(new Explore());
 		newPausedState = false;
 	}
-	
+
 	@Override
 	public void action() {
 		//printStates();
@@ -62,61 +63,61 @@ public class Exploration extends CyclicBehaviour {
 			else
 				currState.execute();
 		}
-		if(agent != null) {
+		if (agent != null) {
 			receiveMessagesHandler();
 			List<GridCell<Object>> neighborhoodCells = getNeighborhoodCellsCommunicationLimit();
-			if(neighborhoodCells != null)
-				sendMessagesHandler(neighborhoodCells);	
+			if (neighborhoodCells != null)
+				sendMessagesHandler(neighborhoodCells);
 		}
-		
+
 		resetDynamicNotWalkable();
 	}
-	
+
 	private void updateDynamicEnvironment() {
-		for(int row = 0; row < agent.getGrid().getDimensions().getHeight(); row++) {
-			for(int column = 0; column < agent.getGrid().getDimensions().getWidth(); column++) {
+		for (int row = 0; row < agent.getGrid().getDimensions().getHeight(); row++) {
+			for (int column = 0; column < agent.getGrid().getDimensions().getWidth(); column++) {
 				Iterator<Object> it = agent.getGrid().getObjectsAt(column, row).iterator();
 				boolean hasExit = false;
 				boolean hasExplorer = false;
 				boolean isObstacleGuardian = false;
-				while(it.hasNext()) {
+				while (it.hasNext()) {
 					Object obj = it.next();
-					if(obj instanceof Explorer) {
+					if (obj instanceof Explorer) {
 						hasExplorer = true;
-						if(((Explorer) obj).getState() instanceof ObstacleGuardian || ((Explorer) obj).getState() instanceof WaitingForObstacleDestroy)
+						if (((Explorer) obj).getState() instanceof ObstacleGuardian
+								|| ((Explorer) obj).getState() instanceof WaitingForObstacleDestroy)
 							isObstacleGuardian = true;
-					}
-					else if(obj instanceof Exit)
+					} else if (obj instanceof Exit)
 						hasExit = true;
 				}
-				if(hasExplorer && !hasExit && !isObstacleGuardian)
+				if (hasExplorer && !hasExit && !isObstacleGuardian)
 					astar.addDynamicNotWalkable(new Coordinates(column, row));
 			}
 		}
 	}
-	
+
 	private void resetDynamicNotWalkable() {
 		astar.resetDynamicNotWalkable();
 	}
-	
+
 	private void receiveMessagesHandler() {
 		ACLMessage acl;
-		while((acl = agent.receiveMessage()) != null) {
-			if(acl.getSender().getLocalName().equals(agent.getLocalName()))
+		while ((acl = agent.receiveMessage()) != null) {
+			if (acl.getSender().getLocalName().equals(agent.getLocalName()))
 				continue;
 			try {
 				Object obj = acl.getContentObject();
-				if(obj instanceof IndividualMessage) {
+				if (obj instanceof IndividualMessage) {
 					IndividualMessage message = (IndividualMessage) obj;
-					switch(message.getMessageType()) {
+					switch (message.getMessageType()) {
 						case MATRIX:
 							Matrix otherMatrix = (Matrix) message.getContent();
 							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
-							if(!(currState instanceof WaitingForObstacleDestroy)) {
-								System.err.println("HELP MESSAGE HERE");							
-								this.changeState(new WaitingForObstacleDestroy());	
+							if (!(currState instanceof WaitingForObstacleDestroy)) {
+								System.err.println("HELP MESSAGE HERE");
+								this.changeState(new WaitingForObstacleDestroy());
 							}
 							break;
 						case OBSTACLEDOOR_DESTROYED:
@@ -128,13 +129,15 @@ public class Exploration extends CyclicBehaviour {
 							break;
 						case OTHER_GUARDING:
 							boolean isToExit = (boolean) message.getContent();
-							if(isToExit)
+							if (isToExit)
 								agent.exitFromSimulation();
 							else {
-								changeState(new Recruiting());
+								if(!(currState instanceof Recruiting))
+									changeState(new Recruiting());
 							}
 							break;
-						default: break;
+						default:
+							break;
 					}
 				}
 			} catch (UnreadableException e) {
@@ -142,35 +145,39 @@ public class Exploration extends CyclicBehaviour {
 			}
 		}
 	}
-	
+
 	/**
-	 * Searches for other explorers in the neighborhood and sends them WAITING_TO_BREAK
+	 * Searches for other explorers in the neighborhood and sends them
+	 * WAITING_TO_BREAK
+	 * 
 	 * @param neighborhoodCells
 	 */
 	private void sendMessagesHandlerBreakObstacle(List<GridCell<Explorer>> neighborhoodCells) {
 		for (GridCell<Explorer> gridCell : neighborhoodCells) {
-            Iterator<Explorer> it = gridCell.items().iterator();
-            while(it.hasNext()) {
-            	Object obj = it.next();
-            	if(obj instanceof Explorer) {
-            		Explorer otherExplorer = (Explorer) obj;
-            		sendMessageToNeighbor(otherExplorer, Utils.MessageType.WAITING_TO_BREAK);
-            	}
-            }
+			Iterator<Explorer> it = gridCell.items().iterator();
+			while (it.hasNext()) {
+				Object obj = it.next();
+				if (obj instanceof Explorer) {
+					Explorer otherExplorer = (Explorer) obj;
+					sendMessageToNeighbor(otherExplorer, Utils.MessageType.WAITING_TO_BREAK);
+				}
+			}
 		}
 	}
-	
+
 	private void sendMessageToNeighbor(Explorer otherExplorer, MessageType msgType) {
-		// Super agents don't need to exchange matrix messages when they're close to each other.
-		if(agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
+		// Super agents don't need to exchange matrix messages when they're
+		// close to each other.
+		if (agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
 			return;
-		
+
 		IndividualMessage message = new IndividualMessage(msgType, null, otherExplorer.getAID());
 		agent.sendMessage(message);
 	}
-	
+
 	public void changeState(IAgentState newState) {
-		if (newState instanceof IAgentTemporaryState) { // If it's a temporary state
+		if (newState instanceof IAgentTemporaryState) { // If it's a temporary
+														// state
 			if (pausedState != null) {
 				// Will change the current state and leave the paused alone
 				currState.exit();
@@ -188,92 +195,103 @@ public class Exploration extends CyclicBehaviour {
 				newPausedState = true;
 			} else {
 				// Switches the current state with the new one
-				if(currState != null) currState.exit();
+				if (currState != null)
+					currState.exit();
 				currState = newState;
 				currState.enter(this);
 			}
 		}
 	}
-	
+
 	public GridPoint getAgentPoint() {
 		return agent.getGrid().getLocation(agent);
 	}
-	
+
 	public Coordinates getAgentCoordinates() {
 		GridPoint pt = getAgentPoint();
-		if(pt == null)
+		if (pt == null)
 			return null;
 		return new Coordinates(pt.getX(), pt.getY());
 	}
-	
+
 	public List<GridCell<Object>> getNeighborhoodCells() {
 		GridPoint pt = getAgentPoint();
-		// This can happen when the agent has already left and the behaviour is finishing executing.
-		if(pt == null)
+		// This can happen when the agent has already left and the behaviour is
+		// finishing executing.
+		if (pt == null)
 			return null;
-		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(), agent.getRadious());
+		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getRadious(),
+				agent.getRadious());
 		return nghCreator.getNeighborhood(false);
 	}
-	
+
 	public List<GridCell<Object>> getNeighborhoodCellsCommunicationLimit() {
 		GridPoint pt = getAgentPoint();
-		// This can happen when the agent has already left and the behaviour is finishing executing.
-		if(pt == null)
+		// This can happen when the agent has already left and the behaviour is
+		// finishing executing.
+		if (pt == null)
 			return null;
-		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class, agent.getCommLimit(), agent.getCommLimit());
+		GridCellNgh<Object> nghCreator = new GridCellNgh<Object>(agent.getGrid(), pt, Object.class,
+				agent.getCommLimit(), agent.getCommLimit());
 		return nghCreator.getNeighborhood(false);
 	}
-	
+
 	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorers() {
 		GridPoint pt = getAgentPoint();
-		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class,
+				agent.getRadious(), agent.getRadious());
 		return nghCreator.getNeighborhood(false);
 	}
-	
-	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorersCommunicationLimit(){
+
+	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorersCommunicationLimit() {
 		GridPoint pt = getAgentPoint();
-		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getCommLimit(), agent.getCommLimit());
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class,
+				agent.getCommLimit(), agent.getCommLimit());
 		return nghCreator.getNeighborhood(true);
 	}
-	
+
 	public boolean moveAgentToCoordinate(Coordinates targetCoordinates) {
 		return agent.moveAgent(targetCoordinates);
-		// TODO: it's possible 2 agents stop moving if they want to go to each other's place.
+		// TODO: it's possible 2 agents stop moving if they want to go to each
+		// other's place.
 	}
-	
+
 	public void discoverCell(UndiscoveredCell cell) {
-	    agent.discoverCell(cell);
-	  }
+		agent.discoverCell(cell);
+	}
 
 	public void printStates() {
-		System.out.println("Agent: " + agent.getName() + "@" + getAgentCoordinates() +"; State: " + currState + "; Paused State: " + pausedState);
+		System.out.println("Agent: " + agent.getName() + "@" + getAgentCoordinates() + "; State: " + currState
+				+ "; Paused State: " + pausedState);
 	}
-	
+
 	/**
-	 * Searches for other explorers in the neighborhood and sends them his matrix.
+	 * Searches for other explorers in the neighborhood and sends them his
+	 * matrix.
+	 * 
 	 * @param neighborhoodCells
 	 */
 	private void sendMessagesHandler(List<GridCell<Object>> neighborhoodCells) {
 		for (GridCell<Object> gridCell : neighborhoodCells) {
-            Iterator<Object> it = gridCell.items().iterator();
-            while(it.hasNext()) {
-            	Object obj = it.next();
-            	if(obj instanceof Explorer) {
-            		Explorer otherExplorer = (Explorer) obj;
-            		sendMessageToNeighbor(otherExplorer);
-            	}
-            }
+			Iterator<Object> it = gridCell.items().iterator();
+			while (it.hasNext()) {
+				Object obj = it.next();
+				if (obj instanceof Explorer) {
+					Explorer otherExplorer = (Explorer) obj;
+					sendMessageToNeighbor(otherExplorer);
+				}
+			}
 		}
 	}
-	
-	
-	
+
 	private void sendMessageToNeighbor(Explorer otherExplorer) {
-		// Super agents don't need to exchange matrix messages when they're close to each other.
-		if(agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
+		// Super agents don't need to exchange matrix messages when they're
+		// close to each other.
+		if (agent.getAgentType() == AgentType.SUPER_AGENT && otherExplorer.getAgentType() == AgentType.SUPER_AGENT)
 			return;
-		
-		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(), otherExplorer.getAID());
+
+		IndividualMessage message = new IndividualMessage(MessageType.MATRIX, agent.getMatrix(),
+				otherExplorer.getAID());
 		agent.sendMessage(message);
 	}
 
@@ -285,18 +303,19 @@ public class Exploration extends CyclicBehaviour {
 	private void resumeState() {
 		this.currState = this.pausedState;
 		this.pausedState = null;
-		if (this.newPausedState) this.currState.enter(this);
+		if (this.newPausedState)
+			this.currState.enter(this);
 		this.newPausedState = false;
 	}
-	
+
 	public DFS getDFS() {
 		return dfs;
 	}
-	
+
 	public AStar getAStar() {
 		return astar;
 	}
-	
+
 	public Explorer getAgent() {
 		return agent;
 	}
@@ -304,7 +323,7 @@ public class Exploration extends CyclicBehaviour {
 	public Pledge getPledge() {
 		return pledge;
 	}
-	
+
 	public IAgentState getState() {
 		return currState;
 	}

@@ -80,7 +80,6 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		MAX_GRID_Y = params.getInteger("gridSizeY");
 		VISION_RADIOUS = params.getInteger("visionRadius");
 		COMMUNICATION_LIMIT = params.getInteger("communicationLimit");
-		NUM_OBSTACLES = params.getInteger("numObstacles");
 
 		NetworkBuilder<Object> netBuilder = new NetworkBuilder<Object>("Map Exploration Network", context, true);
 		netBuilder.buildNetwork();
@@ -119,13 +118,14 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		// Create obstacles.
 		//for (int i = 0; i < NUM_OBSTACLES; i++)
 		//	context.add(new Obstacle(5 + i, 6));
-		ObjectSetups.Setup2(context, coordinates);
-		ObjectSetups.Setup3(context, coordinates);
+		// ObjectSetups.Setup2(context, coordinates);
+		// ObjectSetups.Setup3(context, coordinates);
 		
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);
-		context.add(new Exit(5, 6));
-		//coordinates.remove(index);
+		//context.add(new Exit(5, 6));
+		context.add(new Exit(coordinates.get(index).getX(), coordinates.get(index).getY()));
+		coordinates.remove(index);
 
 		for (int i = 0; i < coordinates.size(); i++)
 			context.add(new UndiscoveredCell(coordinates.get(i).getX(), coordinates.get(i).getY()));

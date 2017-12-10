@@ -13,19 +13,19 @@
 									
 		/>
 				<parameter name="gridSizeX" displayName="Grid Size X" type="int" 
-						defaultValue="50" 
+						defaultValue="30" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="gridSizeY" displayName="Grid Size Y" type="int" 
-						defaultValue="50" 
+						defaultValue="30" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
 				<parameter name="visionRadius" displayName="Vision Radius" type="int" 
-						defaultValue="1" 
+						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
@@ -36,14 +36,8 @@
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
 		/>
-				<parameter name="numObstacles" displayName="Number of Obstacles" type="int" 
-						defaultValue="0" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
 				<parameter name="numberOfAgents" displayName="Number of Agents" type="int" 
-						defaultValue="3" 
+						defaultValue="4" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 									
