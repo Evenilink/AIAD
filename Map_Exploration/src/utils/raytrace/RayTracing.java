@@ -1,7 +1,8 @@
-package utils;
+package utils.raytrace;
 
 import entities.Obstacle;
 import repast.simphony.space.grid.Grid;
+import utils.Coordinates;
 
 public class RayTracing {
 	
@@ -13,7 +14,7 @@ public class RayTracing {
      * @param onlyOpaque Only checks collision with opaque objects
      * @return Obstacle Returns the first obstacle it hits or null
      */
-    public static Obstacle trace(Grid grid, Coordinates origin, Coordinates target, boolean onlyOpaque) {
+    public static TracedPath trace(Grid grid, Coordinates origin, Coordinates target, boolean onlyOpaque) {
         int dx = Math.abs(target.getX() - origin.getX());
         int dy = Math.abs(target.getY() - origin.getY());
 
@@ -25,6 +26,7 @@ public class RayTracing {
 
         int x = origin.getX();
         int y = origin.getY();
+        TracedPath tracedPath = new TracedPath();
         for (int n = 1 + dx + dy; n > 0; n--) {
             if (x < 0 || x >= grid.getDimensions().getWidth() || y < 0 || y >= grid.getDimensions().getHeight())
                 continue;
@@ -32,9 +34,16 @@ public class RayTracing {
             for (Object obj : objs) {
                 if (obj != null && obj instanceof Obstacle) {
                     Obstacle obstacle = (Obstacle) obj;
-                    if (!onlyOpaque) return obstacle;
-                    else if (!obstacle.isSeeThrough()) return obstacle;
+                    if (!onlyOpaque) {
+                        tracedPath.setHit(new Coordinates(x, y), obstacle);
+                        return tracedPath;
+                    }
+                    else if (!obstacle.isSeeThrough()) {
+                        tracedPath.setHit(new Coordinates(x, y), obstacle);
+                        return tracedPath;
+                    }
                 }
+                tracedPath.addTraveled(new Coordinates(x, y));
             }
 
             if (error > 0) {
@@ -45,6 +54,6 @@ public class RayTracing {
                 error += dx;
             }
         }
-        return null;
+        return tracedPath;
     }
 }

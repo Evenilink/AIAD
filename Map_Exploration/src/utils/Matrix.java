@@ -3,7 +3,6 @@ package utils;
 import agents.Explorer;
 import behaviours.Exploration;
 import entities.DiscoveredCell;
-import entities.Entity;
 import entities.Exit;
 import entities.Obstacle;
 import entities.UndiscoveredCell;
@@ -12,6 +11,8 @@ import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import states.TravelExit;
+import utils.raytrace.RayTracing;
+import utils.raytrace.TracedPath;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -80,12 +81,15 @@ public class Matrix implements Serializable {
 
 		for (GridCell<Object> gridCell : gridCells) {
 			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
-			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
-			if (obstacleHit != null) {
-				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
-				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
+			TracedPath tracedPath = RayTracing.trace(grid, center, targetCoordinates, true);
+			if (tracedPath.getHitObstacle() != null) {
+				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(tracedPath.getHitCoordinates().toGridPoint(), getNumRows());
+				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), tracedPath.getHitObstacle().getCode());
 				// Setting the nodes to not walkable for A*.
-				behaviour.getAStar().setNodeWalkable(obstacleHit.getCoordinates(), false);
+				behaviour.getAStar().setNodeWalkable(tracedPath.getHitCoordinates(), false);
+				/*for (Coordinates coordinates : tracedPath.getTraveled()) {
+					// TODO Update view
+				}*/
 				continue;
 			}
 
