@@ -26,6 +26,11 @@ public class Guarding implements IAgentState {
 		System.out.println(behaviour.getAgent().getLocalName() + ": entering Guardian state.");
 		this.behaviour = behaviour;
 		totalNumAgents = behaviour.getAgent().getTotalNumAgents();
+		if(totalNumAgents == 1) {
+			System.out.println(behaviour.getAgent().getLocalName()
+					+ ": I'm alone in the simulation, and since I'm the guardian, I will also leave. Bye!");
+			behaviour.getAgent().exitFromSimulation();	
+		}
 		everyAgentInstructed = false;
 		agentsReachedExit = new ArrayList<>();
 		agentsReachedExit.add(behaviour.getAgent().getLocalName());
