@@ -24,6 +24,7 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
     Coordinates initialCoordinates;
     boolean pledgeFinished;
     GridCell<Object> obstacle;
+    Coordinates previousCoordinates;
 
     @Override
     public void enter(Exploration behaviour) {
@@ -71,6 +72,8 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
         } else {
             if (pledge.hasFinished())
                 pledgeFinished = true;
+            else if (previousCoordinates != null && previousCoordinates.equals(behaviour.getAgentCoordinates()))
+                pledgeFinished = true;
 
             if (pledgeFinished) {
                 // Moves to initial coordinates
@@ -85,8 +88,6 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
                 else if (initialCoordinates.getY() < newY)
                     newY--;
 
-                System.out.println("Moving back to original position");
-                System.out.println("Agent: " + behaviour.getAgentCoordinates() + "; Target: " + initialCoordinates);
                 if (agent.canMove(new Coordinates(newX, newY)))
                     agent.moveAgent(new Coordinates(newX, newY));
                 else if (agent.canMove(new Coordinates(newX, agentLoc.getY())))

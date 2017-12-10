@@ -51,6 +51,8 @@ public class Recruiting implements IAgentState {
 					if(path.size() == 1)
 						behaviour.changeState(new TravelExit());
 			}
+		} else {
+			behaviour.changeState(new TravelExit());
 		}
 	}
 
