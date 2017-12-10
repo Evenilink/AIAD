@@ -53,7 +53,7 @@ public class Exploration extends CyclicBehaviour {
 	public void action() {
 		updateDynamicEnvironment();
 		
-		// System.out.println(agent.getLocalName() + " => Current state: " + currState);
+		System.out.println(agent.getLocalName() + " => Current state: " + currState + ", current location: " + getAgentCoordinates().toString());
 		
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
@@ -70,8 +70,8 @@ public class Exploration extends CyclicBehaviour {
 		
 		resetDynamicNotWalkable();
 
-		System.out.println(agent.getLocalName() + " => " + currState);
-		agent.getMatrix().printMatrix();
+		//System.out.println(agent.getLocalName() + " => " + currState);
+		//agent.getMatrix().printMatrix();
 	}
 	
 	private void updateDynamicEnvironment() {
@@ -126,10 +126,8 @@ public class Exploration extends CyclicBehaviour {
 							// Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(obstacleCoordinates, agent.getGrid().getDimensions().getHeight());
 							//agent.getMatrix().setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), Utils.CODE_UNDISCOVERED);
 							agent.getMatrix().updateMatrix(this, agent.getGrid(), obstacleCoordinates, agent.getRadious());
-
 							astar.setNodeWalkable(obstacleCoordinates, true);
 							pledge.addVisitedCoordinates(obstacleCoordinates);
-							System.err.println("Waiters changed to TravelNearestUndiscovered.");
 							this.changeState(new TravelNearestUndiscovered());
 							break;
 						case OTHER_GUARDING:

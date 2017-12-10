@@ -27,9 +27,18 @@ public class TravelExit implements IAgentState {
 	public void execute() {
 		path = behaviour.getAStar().getPathToExit();		
 		
+		/*if(path == null) {
+			behaviour.changeState(new TravelNearestUndiscovered());
+			return;
+		}*/
+		
 		if(path == null || path.size() == 0) {
 			boolean becameMasterAgent = true;
 			Coordinates target = behaviour.getAgentCoordinates();
+			if(!target.equals(exit)) {
+				// Couldn't find path to exit
+				return;
+			}
 			Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
 			while(it.hasNext()) {
 				Object obj = it.next();

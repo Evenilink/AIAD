@@ -38,17 +38,6 @@ public class Recruiting implements IAgentState {
 				break;
 			}
 		}
-		
-		/*Coordinates source = behaviour.getAgentCoordinates();
-		if(source != null) {
-			path = behaviour.getAStar().computePath(source, new Coordinates(column, row));
-			//System.out.println("Target hello => " + new Coordinates(column, row).toString());
-			//behaviour.getAgent().getMatrix().printMatrix();
-
-			//behaviour.getAStar().printGrid();
-			//printPath();
-			pathNode = 0;	
-		}*/
 	}
 
 	@Override
