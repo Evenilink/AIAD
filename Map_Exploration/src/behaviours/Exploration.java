@@ -39,6 +39,7 @@ public class Exploration extends CyclicBehaviour {
 	private Pledge pledge;
 	private IAgentState currState;
 	private IAgentState pausedState;
+	private boolean newPausedState;
 	
 	public Exploration(Explorer agent) {
 		super(agent);
@@ -47,6 +48,7 @@ public class Exploration extends CyclicBehaviour {
 		astar = new AStar(agent);
 		pledge = new Pledge(agent);
 		changeState(new Explore());
+		newPausedState = false;
 	}
 	
 	@Override
@@ -168,12 +170,29 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public void changeState(IAgentState newState) {
-		if (newState instanceof IAgentTemporaryState) {
-			this.pauseState();
-		} else if(currState != null)
-			currState.exit();
-		currState = newState;
-		currState.enter(this);
+		if (newState instanceof IAgentTemporaryState) { // If it's a temporary state
+			if (pausedState != null) {
+				// Will change the current state and leave the paused alone
+				currState.exit();
+			} else {
+				// Pauses the sate and uses the new one instead
+				pauseState();
+			}
+			currState = newState;
+			currState.enter(this);
+		} else { // If it's not a temporary state
+			if (pausedState != null) {
+				// Switches the paused state for the new one
+				pausedState.exit();
+				pausedState = newState;
+				newPausedState = true;
+			} else {
+				// Switches the current state with the new one
+				if(currState != null) currState.exit();
+				currState = newState;
+				currState.enter(this);
+			}
+		}
 	}
 	
 	public GridPoint getAgentPoint() {
@@ -266,6 +285,8 @@ public class Exploration extends CyclicBehaviour {
 	private void resumeState() {
 		this.currState = this.pausedState;
 		this.pausedState = null;
+		if (this.newPausedState) this.currState.enter(this);
+		this.newPausedState = false;
 	}
 	
 	public DFS getDFS() {
