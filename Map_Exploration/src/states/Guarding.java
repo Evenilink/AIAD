@@ -71,12 +71,11 @@ public class Guarding implements IAgentState {
 							agentsReachedExit.remove(acl.getSender().getLocalName());
 							// If this agent is the only one left.
 							if (agentsReachedExit.size() == 1) {
-								System.out.println(behaviour.getAgent().getLocalName()
-										+ ": I'm alone in the simulation, and since I'm the guardian, I will also leave. Bye!");
+								//System.out.println(behaviour.getAgent().getLocalName() + ": I'm alone in the simulation, and since I'm the guardian, I will also leave. Bye!");
 								behaviour.getAgent().exitFromSimulation();
 							}
 						} else {
-							System.out.println(behaviour.getAgent().getLocalName() + ": go look for more agents!");
+							//System.out.println(behaviour.getAgent().getLocalName() + ": go look for more agents!");
 							message = new IndividualMessage(MessageType.OTHER_GUARDING, false, acl.getSender());
 							behaviour.getAgent().sendMessage(message);
 						}

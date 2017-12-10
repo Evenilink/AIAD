@@ -55,7 +55,6 @@ public class Exploration extends CyclicBehaviour {
 
 	@Override
 	public void action() {
-		// printStates();
 		updateDynamicEnvironment();
 
 		if (currState != null) {

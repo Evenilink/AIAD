@@ -25,12 +25,7 @@ public class TravelExit implements IAgentState {
 
 	@Override
 	public void execute() {
-		path = behaviour.getAStar().getPathToExit();		
-		
-		/*if(path == null) {
-			behaviour.changeState(new TravelNearestUndiscovered());
-			return;
-		}*/
+		path = behaviour.getAStar().getPathToExit();
 
 		if(path == null || path.size() == 0) {
 			boolean becameMasterAgent = true;
