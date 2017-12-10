@@ -61,14 +61,11 @@ public class Guarding implements IAgentState {
 						String agentName = (String) message.getContent();
 						if (!agentsReachedExit.contains(agentName)) {
 							agentsReachedExit.add(agentName);
-							System.out.println("Current size of agents list: " + agentsReachedExit.size());
 							if (agentsReachedExit.size() == totalNumAgents)
 								everyAgentInstructed = true;
 						}
 
 						if (everyAgentInstructed) {
-							System.out.println(behaviour.getAgent().getLocalName() + ": agent '" + acl.getSender().getLocalName()
-									+ "' is you're free to exit!");
 							message = new IndividualMessage(MessageType.OTHER_GUARDING, true, acl.getSender());
 							behaviour.getAgent().sendMessage(message);
 							agentsReachedExit.remove(acl.getSender().getLocalName());

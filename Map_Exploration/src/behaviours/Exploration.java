@@ -227,7 +227,7 @@ public class Exploration extends CyclicBehaviour {
 	  }
 
 	public void printStates() {
-		System.out.println("Agent: " + agent.getName() + "State: " + currState + "; Paused State: " + pausedState);
+		System.out.println("Agent: " + agent.getName() + "@" + getAgentCoordinates() +"; State: " + currState + "; Paused State: " + pausedState);
 	}
 	
 	/**

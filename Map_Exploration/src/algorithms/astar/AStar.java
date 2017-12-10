@@ -121,7 +121,6 @@ public class AStar {
 							|| agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR
 							|| agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR)
 						&& distance < nearestDistance) {
-						System.out.println("door:" + coordinates);
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
