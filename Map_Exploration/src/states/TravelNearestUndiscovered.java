@@ -24,9 +24,11 @@ public class TravelNearestUndiscovered implements IAgentState {
 	@Override
 	public void execute() {
 		List<GridCell<Object>> neighborhoodCells = behaviour.getNeighborhoodCells();
-		if (Utils.hasObstacle(neighborhoodCells)) {
-			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates(), Utils.getFirstObstacleCell(neighborhoodCells))) {
+		List<GridCell<Object>> obstacles = Utils.getObstacleCells(neighborhoodCells);
+		for (GridCell<Object> obstacle : obstacles) {
+			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates(), obstacle)) {
 				DiscoverObstacleBounds state = new DiscoverObstacleBounds();
+				state.setObstacle(obstacle);
 				behaviour.changeState(state);
 				return;
 			}

@@ -4,6 +4,7 @@ import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.space.grid.GridPoint;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -100,12 +101,13 @@ public class Utils {
 		return false;
 	}
 
-	public static GridCell<Object> getFirstObstacleCell(List<GridCell<Object>> cells) {
+	public static List<GridCell<Object>> getObstacleCells(List<GridCell<Object>> cells) {
+		List<GridCell<Object>> obstacleCells = new ArrayList<>();
 		for (GridCell<Object> gridCell : cells) {
 			Iterator it = gridCell.items().iterator();
 			while (it.hasNext())
-				if (it.next() instanceof Obstacle) return gridCell;
+				if (it.next() instanceof Obstacle) obstacleCells.add(gridCell);
 		}
-		return null;
+		return obstacleCells;
 	}
 }

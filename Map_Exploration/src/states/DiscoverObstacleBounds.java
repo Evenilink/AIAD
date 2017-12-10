@@ -5,6 +5,7 @@ import algorithms.pledge.NeighbourObstacles;
 import algorithms.pledge.NeighbourPoints;
 import algorithms.pledge.Pledge;
 import behaviours.Exploration;
+import entities.Obstacle;
 import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.Grid;
@@ -20,14 +21,19 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
     boolean pledging;
     Explorer agent;
     Grid grid;
+    Coordinates initialCoordinates;
+    boolean pledgeFinished;
+    GridCell<Object> obstacle;
 
     @Override
     public void enter(Exploration behaviour) {
         this.behaviour = behaviour;
-        pledge = this.behaviour.getPledge();
-        agent = this.behaviour.getAgent();
+        pledge = behaviour.getPledge();
+        agent = behaviour.getAgent();
         grid = agent.getGrid();
         pledging = false;
+        pledgeFinished = false;
+        initialCoordinates = behaviour.getAgentCoordinates();
     }
 
     @Override
@@ -41,10 +47,8 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
             } else {
                 GridPoint agentLoc = grid.getLocation(agent);
                 GridCellNgh<Object> nghCreator = new GridCellNgh<>(grid, agentLoc, Object.class, agent.getRadious(), agent.getRadious());
-                List<GridCell<Object>> neighborhood = nghCreator.getNeighborhood(false);
-                GridCell<Object> cell = Utils.getFirstObstacleCell(neighborhood);
 
-                Coordinates obstacleCoords = Coordinates.FromGridPoint(cell.getPoint());
+                Coordinates obstacleCoords = Coordinates.FromGridPoint(obstacle.getPoint());
                 int newX = agentLoc.getX(), newY = agentLoc.getY();
 
                 if (obstacleCoords.getX() > agentLoc.getX())
@@ -65,7 +69,32 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
                 }
             }
         } else {
-            this.pledge.run();
+            if (pledge.hasFinished())
+                pledgeFinished = true;
+
+            if (pledgeFinished) {
+                // Moves to initial coordinates
+                Coordinates agentLoc = behaviour.getAgentCoordinates();
+                int newX = agentLoc.getX(), newY = agentLoc.getY();
+                if (initialCoordinates.getX() > newX)
+                    newX++;
+                else if (initialCoordinates.getX() < newX)
+                    newX--;
+                if (initialCoordinates.getY() > newY)
+                    newY++;
+                else if (initialCoordinates.getY() < newY)
+                    newY--;
+
+                System.out.println("Moving back to original position");
+                System.out.println("Agent: " + behaviour.getAgentCoordinates() + "; Target: " + initialCoordinates);
+                if (agent.canMove(new Coordinates(newX, newY)))
+                    agent.moveAgent(new Coordinates(newX, newY));
+                else if (agent.canMove(new Coordinates(newX, agentLoc.getY())))
+                    agent.moveAgent(new Coordinates(newX, agentLoc.getY()));
+                else if (agent.canMove(new Coordinates(agentLoc.getX(), newY)))
+                    agent.canMove(new Coordinates(agentLoc.getX(), newY));
+                else initialCoordinates = behaviour.getAgentCoordinates();
+            } else this.pledge.run();
         }
     }
 
@@ -74,9 +103,13 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
         // TODO Auto-generated method stub
     }
 
+    public void setObstacle(GridCell<Object> obstacle) {
+        this.obstacle = obstacle;
+    }
+
     @Override
     public boolean canResume() {
-        if (this.pledging) return this.pledge.hasFinished();
+        if (this.pledging) return pledgeFinished && behaviour.getAgentCoordinates().equals(initialCoordinates);
         else return false;
     }
 }
