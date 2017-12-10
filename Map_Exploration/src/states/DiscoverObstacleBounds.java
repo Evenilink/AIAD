@@ -17,7 +17,6 @@ import java.util.List;
 public class DiscoverObstacleBounds implements IAgentTemporaryState {
     Exploration behaviour;
     Pledge pledge;
-    GridCell<Object> obstacle;
     boolean pledging;
     Explorer agent;
     Grid grid;
@@ -64,6 +63,7 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
                         newY++;
                     else if (obstacleCoords.getY() < agentLoc.getY())
                         newY--;
+                    agent.moveAgent(new Coordinates(newX, newY));
                 }
             }
         } else {
@@ -80,9 +80,5 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
     public boolean canResume() {
         if (this.pledging) return this.pledge.hasFinished();
         else return false;
-    }
-
-    public void setObstacle(GridCell<Object> obstacle) {
-        this.obstacle = obstacle;
     }
 }

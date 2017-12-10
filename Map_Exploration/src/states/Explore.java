@@ -22,7 +22,6 @@ public class Explore implements IAgentState {
 		if (Utils.hasObstacle(neighborhoodCells)) {
 			if (!behaviour.getPledge().alreadyVisited(behaviour.getAgentCoordinates())) {
 				DiscoverObstacleBounds state = new DiscoverObstacleBounds();
-				state.setObstacle(Utils.getFirstObstacleCell(neighborhoodCells));
 				behaviour.changeState(state);
 				return;
 			}

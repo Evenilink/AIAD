@@ -18,12 +18,23 @@ public class Pledge {
     
     private List<Coordinates> visitedCoordinates;
 
+    /**
+     * Creates a new instance of the Pledge algorithm
+     * @param agent The agent that's going to run the algorithm
+     */
     public Pledge (Explorer agent) {
         this.agent = agent;
         this.grid = agent.getGrid();
         visitedCoordinates = new ArrayList<>();
     }
-    
+
+    /**
+     * Returns the next location based of the near obstacles
+     * @param pts The points around the explorer
+     * @param objs The obstacles around the explorer
+     * @param displayMessages Selects whether or not it should display debug messages
+     * @return Coordinates the new location the agent should move
+     */
     private Coordinates getNextLocation(NeighbourPoints pts, NeighbourObstacles objs, boolean displayMessages) {
         if (objs.right() == null || !(objs.right() instanceof Obstacle)) {
             if (displayMessages) System.out.println("PLEDGE: Moving right");
@@ -42,6 +53,13 @@ public class Pledge {
         return null;
     }
 
+    /**
+     * Gets the location to move when it first enters the Pledge algorithm
+     * @param pts The points around the explorer
+     * @param objs The obstacles around the explorer
+     * @param displayMessages Selects whether or not it should display debug messages
+     * @return Coordinates the new location the agent should move
+     */
     private Coordinates getFirstLocation(NeighbourPoints pts, NeighbourObstacles objs, boolean displayMessages) {
         if (objs.right() != null && objs.right() instanceof Obstacle) {
             if (displayMessages) System.out.println("PLEDGE: Moving forward");
@@ -87,25 +105,46 @@ public class Pledge {
         return null;
     }
 
+    /**
+     * Prepares for a new Pledge run. It should be called before every first run in a new obstacle
+     */
+    public void init() {
+        this.startingPoint = this.grid.getLocation(this.agent);
+        this.previousPoint = this.startingPoint;
+    }
+
+    /**
+     * Adds a cell to the visited coordinates, so the agent knows where he already pledged.
+     * If the coordinates already exists they won't be inserted
+     * @param coordinates The coordinates to add
+     * @return boolean If the value could be inserted or not
+     */
     public boolean addVisitedCoordinates(Coordinates coordinates) {
         if (alreadyVisited(coordinates)) return false;
         visitedCoordinates.add(coordinates);
         return true;
     }
 
-    public void init() {
-        this.startingPoint = this.grid.getLocation(this.agent);
-        this.previousPoint = this.startingPoint;
-    }
-
+    /**
+     * Whether or not the Pledge has finished going around the obstacle
+     * @return boolean if the algorithm has finished
+     */
     public boolean hasFinished() {
         return this.alreadyVisited(Coordinates.FromGridPoint(grid.getLocation(agent)));
     }
 
+    /**
+     * Runs the algorithm and moves the agent to the next location.
+     * Hides debug messages
+     */
     public void run () {
         this.run(false);
     }
 
+    /**
+     * Runs the algorithm and moves the agent to the next location.
+     * @param displayMessages Whether it should display debug messages
+     */
     public void run (boolean displayMessages) {
         if (this.hasFinished()) {
             if (displayMessages) System.out.println("PLEDGE: Algorithm already ended, skipping...");
@@ -161,7 +200,12 @@ public class Pledge {
             previousPoint = pt;
             agent.moveAgent(nextLocation);
     }
-    
+
+    /**
+     * Verifies if the given coordinates were already visited by the agent while doing the Pledge
+     * @param coordinates The coordinates to check
+     * @return boolean If the coordinates were already visited
+     */
     public boolean alreadyVisited(Coordinates coordinates) {
         for (Coordinates c : visitedCoordinates) {
             if (c.equals(coordinates)) return true;
