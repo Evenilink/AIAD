@@ -26,6 +26,7 @@ import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.Agent;
 import sajas.domain.DFService;
+import states.IAgentState;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils;
@@ -261,5 +262,9 @@ public class Explorer extends Agent {
 	
 	public int getCommLimit() {
 		return communicationLimit;
+	}
+	
+	public IAgentState getState() {
+		return exploration.getState();
 	}
 }

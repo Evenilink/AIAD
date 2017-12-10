@@ -1,11 +1,15 @@
 package states;
 
+import java.util.Iterator;
 import java.util.List;
 
+import agents.Explorer;
 import algorithms.astar.Node;
 import behaviours.Exploration;
+import communication.IndividualMessage;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
+import utils.Utils.MessageType;
 
 public class TravelToObstacle implements IAgentState {
 	private Exploration behaviour;
@@ -26,13 +30,37 @@ public class TravelToObstacle implements IAgentState {
 
 	@Override
 	public void execute() {
-		Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(), path.get(pathNode).getWorldPosition().getY());
-		if (behaviour.moveAgentToCoordinate(target))
-			pathNode++;
+		if (path != null) {
+			Coordinates target = new Coordinates(path.get(pathNode).getWorldPosition().getX(),
+					path.get(pathNode).getWorldPosition().getY());
+			if (behaviour.moveAgentToCoordinate(target))
+				pathNode++;
 
-		if (pathNode == path.size()) {
-			behaviour.changeState(new ObstacleGuardian());
-		}
+			if (pathNode == path.size()) {
+				boolean becameGaurdianAgent = true;
+				target = behaviour.getAgentCoordinates();
+				Iterator it = behaviour.getAgent().getGrid().getObjectsAt(target.getX(), target.getY()).iterator();
+				while (it.hasNext()) {
+					Object obj = it.next();
+					if (obj instanceof Explorer) {
+						Explorer otherExplorer = (Explorer) obj;
+						// Check for Explorer that is not himself.
+						if (!behaviour.getAgent().getLocalName().equals(otherExplorer.getLocalName())) {
+							becameGaurdianAgent = false;
+							break;
+						}
+					}
+				}
+
+				if (becameGaurdianAgent) {
+					System.out.println(behaviour.getAgent().getLocalName() + " is guarding the exit.");
+					behaviour.changeState(new ObstacleGuardian());
+				}
+
+				path = null;
+			}
+		} else
+			behaviour.changeState(new TravelNearestUndiscovered());
 	}
 
 	@Override

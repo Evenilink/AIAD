@@ -1,10 +1,13 @@
 package states;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import agents.Explorer;
 import algorithms.astar.Node;
 import behaviours.Exploration;
+import entities.Obstacle;
 import utils.Coordinates;
 
 public class Recruiting implements IAgentState {
@@ -19,14 +22,24 @@ public class Recruiting implements IAgentState {
 		Coordinates exit = behaviour.getAgent().getMatrix().getExit();
 		
 		int column, row;
-		do {
+		while(true) {
 			column = ThreadLocalRandom.current().nextInt(0, behaviour.getAgent().getGrid().getDimensions().getWidth() - 1);
 			row = ThreadLocalRandom.current().nextInt(0, behaviour.getAgent().getGrid().getDimensions().getHeight() - 1);
-		} while(exit.getX() == column && exit.getY() == row);
+			Iterator<Object> it = behaviour.getAgent().getGrid().getObjectsAt(column, row).iterator();
+			boolean canReach = false;
+			while(it.hasNext()) {
+				Object obj = it.next();
+				if(obj instanceof Obstacle || obj instanceof Explorer)
+					canReach = true;
+			}
+			if(!canReach)
+				break;			
+		}
 		
 		Coordinates source = behaviour.getAgentCoordinates();
 		if(source != null) {
 			path = behaviour.getAStar().computePath(source, new Coordinates(column, row));
+			System.out.println("Target hello => " + new Coordinates(column, row).toString());
 			pathNode = 0;	
 		}
 	}

@@ -54,8 +54,8 @@ public class AStar {
 	}
 
 	/**
-	 * Returns the nearest coordinate that has not yet been discovered based on the
-	 * agent's position.
+	 * Returns the nearest coordinate that has not yet been discovered based on
+	 * the agent's position.
 	 * 
 	 * @param currentPosition
 	 * @return
@@ -91,8 +91,9 @@ public class AStar {
 	}
 
 	/**
-	 * Returns the first coordinate that has a zero on the matrix (is undiscovered)
-	 * distancing 'radious' from the agent.
+	 * Returns the first coordinate that has a zero on the matrix (is
+	 * undiscovered) distancing 'radious' from the agent.
+	 * 
 	 * @param currCoordinates
 	 * @param radious
 	 * @return
@@ -113,18 +114,21 @@ public class AStar {
 
 					Coordinates coordinates = new Coordinates(column, row);
 					float distance = utils.Utils.getDistance(currCoordinates, coordinates);
-					// Gets the cell which has an obstacle nearby (+/- 1 cell distance N/S/E/W )
-					if (	(agent.getMatrix().getValueIfPossRow(row, column, +1) == Utils.CODE_OBSTACLE_DOOR || agent.getMatrix().getValueIfPossRow(row, column, -1) == Utils.CODE_OBSTACLE_DOOR || 
-							agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR || agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR)
-							&& distance < nearestDistance) {
-						System.out.println("door:" + nearestCoordinate);
+					// Gets the cell which has an obstacle nearby (+/- 1 cell
+					// distance N/S/E/W )
+					if ((agent.getMatrix().getValueIfPossRow(row, column, +1) == Utils.CODE_OBSTACLE_DOOR
+							|| agent.getMatrix().getValueIfPossRow(row, column, -1) == Utils.CODE_OBSTACLE_DOOR
+							|| agent.getMatrix().getValueIfPossCol(row, column, -1) == Utils.CODE_OBSTACLE_DOOR
+							|| agent.getMatrix().getValueIfPossCol(row, column, +1) == Utils.CODE_OBSTACLE_DOOR)
+						&& distance < nearestDistance) {
+						System.out.println("door:" + coordinates);
 						nearestCoordinate = coordinates;
 						nearestDistance = distance;
 					}
 				}
 			}
 		}
-		
+
 		return nearestCoordinate;
 	}
 
@@ -132,6 +136,7 @@ public class AStar {
 	/**
 	 * Returns the nearest coordinate that has not yet been discovered based on
 	 * the agent's position.
+	 * 
 	 * @param currentPosition
 	 * @return
 	 */
@@ -156,8 +161,8 @@ public class AStar {
 		for (int radious = 2; radious <= maxDistance; radious++) {
 			nearestUndiscovered = getEntityInRadius(currCoordinates, radious, Utils.CODE_UNDISCOVERED);
 			if (nearestUndiscovered != null) {
-				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition), Utils
-						.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
+				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition),
+						Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
 				if (path != null)
 					return path;
 			}

@@ -53,7 +53,7 @@ public class Exploration extends CyclicBehaviour {
 	public void action() {
 		updateDynamicEnvironment();
 		
-		System.out.println(this.currState);
+		System.out.println(agent.getLocalName() + " => Current state: " + currState);
 		
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
@@ -69,6 +69,9 @@ public class Exploration extends CyclicBehaviour {
 		}
 		
 		resetDynamicNotWalkable();
+		
+		if(currState instanceof Recruiting)
+			agent.getMatrix().printMatrix();
 	}
 	
 	private void updateDynamicEnvironment() {
@@ -77,14 +80,18 @@ public class Exploration extends CyclicBehaviour {
 				Iterator<Object> it = agent.getGrid().getObjectsAt(column, row).iterator();
 				boolean hasExit = false;
 				boolean hasExplorer = false;
+				boolean isObstacleGuardian = false;
 				while(it.hasNext()) {
 					Object obj = it.next();
-					if(obj instanceof Explorer)
+					if(obj instanceof Explorer) {
 						hasExplorer = true;
+						if(((Explorer) obj).getState() instanceof ObstacleGuardian)
+							isObstacleGuardian = true;
+					}
 					else if(obj instanceof Exit)
 						hasExit = true;
 				}
-				if(hasExplorer && !hasExit)
+				if(hasExplorer && !hasExit && !isObstacleGuardian)
 					astar.addDynamicNotWalkable(new Coordinates(column, row));
 			}
 		}
@@ -97,6 +104,8 @@ public class Exploration extends CyclicBehaviour {
 	private void receiveMessagesHandler() {
 		ACLMessage acl;
 		while((acl = agent.receiveMessage()) != null) {
+			if(acl.getSender().getLocalName().equals(agent.getLocalName()))
+				continue;
 			try {
 				Object obj = acl.getContentObject();
 				if(obj instanceof IndividualMessage) {
@@ -107,9 +116,10 @@ public class Exploration extends CyclicBehaviour {
 							agent.getMatrix().mergeMatrix(otherMatrix, this);
 							break;
 						case HELP:
-							System.err.println("HELP MESSAGE HERE");
-							if (!(this.currState instanceof ObstacleGuardian))
-								this.changeState(new WaitingForObstacleDestroy());
+							if(!(currState instanceof WaitingForObstacleDestroy)) {
+								System.err.println("HELP MESSAGE HERE");							
+								this.changeState(new WaitingForObstacleDestroy());	
+							}
 							break;
 						case OBSTACLEDOOR_DESTROYED:
 							this.changeState(new TravelNearestUndiscovered());
@@ -195,8 +205,8 @@ public class Exploration extends CyclicBehaviour {
 	
 	public List<GridCell<Explorer>> getNeighborhoodCellsWithExplorersCommunicationLimit(){
 		GridPoint pt = getAgentPoint();
-		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getCommLimit(), agent.getCommLimit());
-		return nghCreator.getNeighborhood(false);
+		GridCellNgh<Explorer> nghCreator = new GridCellNgh<Explorer>(agent.getGrid(), pt, Explorer.class, agent.getRadious(), agent.getRadious());
+		return nghCreator.getNeighborhood(true);
 	}
 	
 	public boolean moveAgentToCoordinate(Coordinates targetCoordinates) {
@@ -264,5 +274,9 @@ public class Exploration extends CyclicBehaviour {
 
 	public Pledge getPledge() {
 		return pledge;
+	}
+	
+	public IAgentState getState() {
+		return currState;
 	}
 }

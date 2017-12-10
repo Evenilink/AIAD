@@ -66,7 +66,7 @@ public class ObjectSetups {
     			continue;
     		}
     		if(coordinates2.equals(new Coordinates(2, 4))) 
-    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 2));
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 3));
     		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
 			coordinates.remove(coordinates2);
     	}
