@@ -15,6 +15,7 @@ public class Recruiting implements IAgentState {
 	private Exploration behaviour;
 	private List<Node> path;
 	private int pathNode;
+	private Coordinates target;
 	
 	@Override
 	public void enter(Exploration behaviour) {
@@ -26,34 +27,38 @@ public class Recruiting implements IAgentState {
 			column = ThreadLocalRandom.current().nextInt(0, behaviour.getAgent().getGrid().getDimensions().getWidth() - 1);
 			row = ThreadLocalRandom.current().nextInt(0, behaviour.getAgent().getGrid().getDimensions().getHeight() - 1);
 			Iterator<Object> it = behaviour.getAgent().getGrid().getObjectsAt(column, row).iterator();
-			boolean canReach = false;
+			boolean canReach = true;
 			while(it.hasNext()) {
 				Object obj = it.next();
 				if(obj instanceof Obstacle || obj instanceof Explorer)
-					canReach = true;
+					canReach = false;
 			}
-			if(!canReach)
-				break;			
+			if(canReach) {
+				target = new Coordinates(column, row);
+				break;
+			}
 		}
 		
-		Coordinates source = behaviour.getAgentCoordinates();
+		/*Coordinates source = behaviour.getAgentCoordinates();
 		if(source != null) {
 			path = behaviour.getAStar().computePath(source, new Coordinates(column, row));
-			System.out.println("Target hello => " + new Coordinates(column, row).toString());
-			behaviour.getAgent().getMatrix().printMatrix();
+			//System.out.println("Target hello => " + new Coordinates(column, row).toString());
+			//behaviour.getAgent().getMatrix().printMatrix();
 
-			behaviour.getAStar().printGrid();
-			printPath();
+			//behaviour.getAStar().printGrid();
+			//printPath();
 			pathNode = 0;	
-		}
+		}*/
 	}
 
 	@Override
 	public void execute() {
-		if(behaviour.moveAgentToCoordinate(path.get(pathNode).getWorldPosition()))
-			pathNode++;
-		if(pathNode == path.size())
-			behaviour.changeState(new TravelExit());		
+		path = behaviour.getAStar().computePath(behaviour.getAgentCoordinates(), target);
+		if(path != null) {
+			if(behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition()))
+			if(path.size() == 1)
+				behaviour.changeState(new TravelExit());		
+		}	
 	}
 
 	@Override
