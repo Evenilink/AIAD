@@ -5,7 +5,6 @@ import java.util.List;
 import agents.Explorer;
 import communication.GroupMessage;
 import jade.core.AID;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import sajas.core.behaviours.CyclicBehaviour;
 import utils.Utils.MessageType;
 
@@ -27,5 +26,9 @@ public class SendingMessages extends CyclicBehaviour {
 	
 	public GroupMessage getMessage() {
 		return message;
+	}
+	
+	public void checkReceiver(AID aid) {
+		message.checkReceiver(aid);
 	}
 }

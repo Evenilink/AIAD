@@ -7,6 +7,7 @@ import agents.Explorer;
 import algorithms.astar.AStar;
 import algorithms.dfs.DFS;
 import algorithms.pledge.Pledge;
+import communication.GroupMessage;
 import communication.IndividualMessage;
 import entities.Exit;
 import entities.UndiscoveredCell;
@@ -54,7 +55,7 @@ public class Exploration extends CyclicBehaviour {
 
 	@Override
 	public void action() {
-		//printStates();
+		// printStates();
 		updateDynamicEnvironment();
 
 		if (currState != null) {
@@ -110,35 +111,49 @@ public class Exploration extends CyclicBehaviour {
 				if (obj instanceof IndividualMessage) {
 					IndividualMessage message = (IndividualMessage) obj;
 					switch (message.getMessageType()) {
-						case MATRIX:
-							Matrix otherMatrix = (Matrix) message.getContent();
-							agent.getMatrix().mergeMatrix(otherMatrix, this);
-							break;
-						case HELP:
-							if (!(currState instanceof WaitingForObstacleDestroy)) {
-								System.err.println("HELP MESSAGE HERE");
-								this.changeState(new WaitingForObstacleDestroy());
-							}
-							break;
-						case OBSTACLEDOOR_DESTROYED:
-							Coordinates obstacleCoordinates = (Coordinates) message.getContent();
-							agent.getMatrix().updateMatrix(this, agent.getGrid(), obstacleCoordinates, agent.getRadious());
-							astar.setNodeWalkable(obstacleCoordinates, true);
-							pledge.addVisitedCoordinates(obstacleCoordinates);
-							this.changeState(new TravelNearestUndiscovered());
-							break;
-						case OTHER_GUARDING:
-							boolean isToExit = (boolean) message.getContent();
-							if (isToExit)
-								agent.exitFromSimulation();
-							else {
-								if(!(currState instanceof Recruiting))
-									changeState(new Recruiting());
-							}
-							break;
-						default:
-							break;
+					case MATRIX:
+						Matrix otherMatrix = (Matrix) message.getContent();
+						agent.getMatrix().mergeMatrix(otherMatrix, this);
+						break;
+					case HELP:
+						if (!(currState instanceof WaitingForObstacleDestroy)) {
+							System.err.println("HELP MESSAGE HERE");
+							this.changeState(new WaitingForObstacleDestroy());
+						}
+						break;
+					case OBSTACLEDOOR_DESTROYED:
+						Coordinates obstacleCoordinates = (Coordinates) message.getContent();
+						agent.getMatrix().updateMatrix(this, agent.getGrid(), obstacleCoordinates, agent.getRadious());
+						astar.setNodeWalkable(obstacleCoordinates, true);
+						pledge.addVisitedCoordinates(obstacleCoordinates);
+						this.changeState(new TravelNearestUndiscovered());
+						break;
+					case OTHER_GUARDING:
+						boolean isToExit = (boolean) message.getContent();
+						if (isToExit)
+							agent.exitFromSimulation();
+						else {
+							if (!(currState instanceof Recruiting))
+								changeState(new Recruiting());
+						}
+						break;
+					default:
+						break;
 					}
+				} else if (obj instanceof GroupMessage) {
+					if (agent.getAgentType() == AgentType.SUPER_AGENT)
+						agent.getSendingMessagesBehaviour().checkReceiver(acl.getSender());
+
+					GroupMessage message = (GroupMessage) obj;
+					switch (message.getMessageType()) {
+					case MATRIX:
+						Matrix otherMatrix = (Matrix) message.getContent();
+						agent.getMatrix().mergeMatrix(otherMatrix, this);
+						break;
+					default:
+						break;
+					}
+
 				}
 			} catch (UnreadableException e) {
 				e.printStackTrace();

@@ -15,7 +15,6 @@ import entities.DiscoveredCell;
 import entities.Obstacle;
 import entities.UndiscoveredCell;
 import jade.core.AID;
-import jade.core.behaviours.Behaviour;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -29,7 +28,6 @@ import sajas.domain.DFService;
 import states.IAgentState;
 import utils.Coordinates;
 import utils.Matrix;
-import utils.Utils;
 import utils.Utils.AgentType;
 
 public class Explorer extends Agent {
@@ -46,6 +44,8 @@ public class Explorer extends Agent {
 
 	private Exploration exploration;
 	private SendingMessages sendingMessages;
+	
+	private List<AID> superAgentsAID;
 
 	/**
 	 * Super agent constructor.
@@ -62,6 +62,7 @@ public class Explorer extends Agent {
 		this.totalNumAgents = totalNumAgents;
 		this.context = context;
 		agentType = AgentType.SUPER_AGENT;
+		superAgentsAID = new ArrayList<AID>();
 	}
 
 	/**
@@ -272,5 +273,13 @@ public class Explorer extends Agent {
 
 	public IAgentState getState() {
 		return exploration.getState();
+	}
+	
+	public List<AID> getSuperAgentsAID() {
+		return superAgentsAID;
+	}
+	
+	public void addSuperAgentAID(AID aid) {
+		superAgentsAID.add(aid);
 	}
 }
