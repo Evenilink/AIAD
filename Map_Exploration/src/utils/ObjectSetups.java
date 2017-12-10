@@ -32,6 +32,68 @@ public class ObjectSetups {
     	}
     }
     
+    public static void Simple(Context<Object> context, List<Coordinates> coordinates) {
+    	List<Coordinates> tempCoordinates = new ArrayList<>();    	
+    	tempCoordinates.add(new Coordinates(4, 4));
+    	tempCoordinates.add(new Coordinates(4, 5));
+    	tempCoordinates.add(new Coordinates(4, 6));
+    	tempCoordinates.add(new Coordinates(4, 7));
+    	tempCoordinates.add(new Coordinates(4, 8));
+    	tempCoordinates.add(new Coordinates(4, 9));
+    	tempCoordinates.add(new Coordinates(4, 10));
+    	tempCoordinates.add(new Coordinates(4, 11));
+    	tempCoordinates.add(new Coordinates(4, 12));
+    	tempCoordinates.add(new Coordinates(4, 13));
+    	
+    	tempCoordinates.add(new Coordinates(21, 4));
+    	tempCoordinates.add(new Coordinates(21, 5));
+    	tempCoordinates.add(new Coordinates(21, 6));
+    	tempCoordinates.add(new Coordinates(21, 7));
+    	tempCoordinates.add(new Coordinates(21, 8));
+    	tempCoordinates.add(new Coordinates(21, 9));
+    	tempCoordinates.add(new Coordinates(21, 10));
+    	tempCoordinates.add(new Coordinates(21, 11));
+    	tempCoordinates.add(new Coordinates(21, 12));
+    	tempCoordinates.add(new Coordinates(21, 13));
+    	tempCoordinates.add(new Coordinates(21, 14));
+    	tempCoordinates.add(new Coordinates(21, 15));
+    	tempCoordinates.add(new Coordinates(21, 16));
+    	tempCoordinates.add(new Coordinates(21, 17));
+    	tempCoordinates.add(new Coordinates(21, 18));
+    	tempCoordinates.add(new Coordinates(21, 19));
+    	tempCoordinates.add(new Coordinates(21, 20));
+    	tempCoordinates.add(new Coordinates(21, 21));
+    	tempCoordinates.add(new Coordinates(21, 22));
+    	tempCoordinates.add(new Coordinates(21, 23));
+    	
+    	tempCoordinates.add(new Coordinates(4, 21));
+    	tempCoordinates.add(new Coordinates(5, 21));
+    	tempCoordinates.add(new Coordinates(6, 21));
+    	tempCoordinates.add(new Coordinates(7, 21));
+    	tempCoordinates.add(new Coordinates(8, 21));
+    	tempCoordinates.add(new Coordinates(9, 21));
+    	tempCoordinates.add(new Coordinates(10, 21));
+    	tempCoordinates.add(new Coordinates(11, 21));
+    	tempCoordinates.add(new Coordinates(12, 21));
+    	tempCoordinates.add(new Coordinates(13, 21));
+    	tempCoordinates.add(new Coordinates(14, 21));
+    	tempCoordinates.add(new Coordinates(15, 21));
+    	tempCoordinates.add(new Coordinates(16, 21));
+    	tempCoordinates.add(new Coordinates(17, 21));
+    	tempCoordinates.add(new Coordinates(18, 21));
+    	tempCoordinates.add(new Coordinates(19, 21));
+    	tempCoordinates.add(new Coordinates(20, 21));
+
+    	for (Coordinates coordinates2 : tempCoordinates) {
+    		if(!coordinates.contains(coordinates2)) {
+    			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
+    			continue;
+    		}
+			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
+			coordinates.remove(coordinates2);
+    	}
+    }
+    
     public static void Maze1515(Context<Object> context, List<Coordinates> coordinates) {
     	List<Coordinates> tempCoordinates = new ArrayList<>();
     	
