@@ -41,6 +41,7 @@ public class Matrix implements Serializable {
 	/**
 	 * Merges the matrix of the receiving agent with the matrix received from
 	 * other agents inside the communication radius.
+	 * 
 	 * @param otherMatrix
 	 */
 	public void mergeMatrix(Matrix otherMatrix, Exploration behaviour) {
@@ -51,8 +52,9 @@ public class Matrix implements Serializable {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
 				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0) {
 					setValue(row, column, otherMatrix.getValue(row, column));
-					// If this agent knows about the exit through a matrix merge, go to the exit immediately.
-					if(otherMatrix.getValue(row, column) == Utils.CODE_EXIT)
+					// If this agent knows about the exit through a matrix
+					// merge, go to the exit immediately.
+					if (otherMatrix.getValue(row, column) == Utils.CODE_EXIT)
 						behaviour.changeState(new TravelExit());
 				}
 			}
@@ -88,50 +90,53 @@ public class Matrix implements Serializable {
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				// Setting the nodes to not walkable for A*.
-				behaviour.getAStar().setNodeWalkable(Coordinates.FromGridPoint(gridCell.getPoint()), false);
+				behaviour.getAStar().setNodeWalkable(targetCoordinates, false);
 				continue;
 			}
 
 			Iterator<Object> it = gridCell.items().iterator();
-			if (!it.hasNext()) {
-				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), 1);
-			} else {
-				int value = 0;
-				// If the cell has objects
-				while (it.hasNext()) {
-					Object obj = it.next();
-					// If the object found is an Entity use it's value
-					if (obj instanceof Exit) {
-						Exit exit = (Exit) obj;
-						if (exit.getCode() > value)
-							value = exit.getCode();
-					} else if (obj instanceof UndiscoveredCell) {
-						UndiscoveredCell cell = (UndiscoveredCell) obj;
-						behaviour.discoverCell(cell);
-						if (utils.Utils.CODE_DISCOVERED > value)
-							value = utils.Utils.CODE_DISCOVERED;
-					} else if (obj instanceof DiscoveredCell) {
-						DiscoveredCell cell = (DiscoveredCell) obj;
-						if (cell.getCode() > value)
-							value = cell.getCode();
-					} else if (obj instanceof Explorer) {
-						if (utils.Utils.CODE_DISCOVERED > value)
-							value = utils.Utils.CODE_DISCOVERED;
-					} else
-						System.err.println("Matrix: Unidentified object of class '" + obj.getClass()
-								+ "', could't update matrix!");
-				}
-				// Updates the matrix with the new value
-				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
-				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
-				
-				// If we're near the exit, go to exit, to see if this agent is going to be a guardian or a recruiter.
-				if(value == Utils.CODE_EXIT)
-					behaviour.changeState(new TravelExit());
+			/*
+			 * if (!it.hasNext()) { Coordinates matrixCoordinates =
+			 * Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+			 * this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(),
+			 * 1); } else {
+			 */
+			int value = 0;
+			// If the cell has objects
+			while (it.hasNext()) {
+				Object obj = it.next();
+				// If the object found is an Entity use it's value
+				if (obj instanceof Exit) {
+					Exit exit = (Exit) obj;
+					if (exit.getCode() > value)
+						value = exit.getCode();
+				} else if (obj instanceof UndiscoveredCell) {
+					UndiscoveredCell cell = (UndiscoveredCell) obj;
+					behaviour.discoverCell(cell);
+					if (utils.Utils.CODE_DISCOVERED > value)
+						value = utils.Utils.CODE_DISCOVERED;
+				} else if (obj instanceof DiscoveredCell) {
+					DiscoveredCell cell = (DiscoveredCell) obj;
+					if (cell.getCode() > value)
+						value = cell.getCode();
+				} else if (obj instanceof Explorer) {
+					if (utils.Utils.CODE_DISCOVERED > value)
+						value = utils.Utils.CODE_DISCOVERED;
+				} else
+					System.err.println(
+							"Matrix: Unidentified object of class '" + obj.getClass() + "', could't update matrix!");
 			}
+			// }
+			// Updates the matrix with the new value
+			Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(gridCell.getPoint(), getNumRows());
+			this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), value);
+
+			// If we're near the exit, go to exit, to see if this agent is
+			// going to be a guardian or a recruiter.
+			if (value == Utils.CODE_EXIT)
+				behaviour.changeState(new TravelExit());
 		}
-		// printMatrix();
+		printMatrix();
 	}
 
 	public boolean hasUndiscoveredCells() {
@@ -185,12 +190,13 @@ public class Matrix implements Serializable {
 
 	/**
 	 * Returns the exit coordinates.
+	 * 
 	 * @return Exit coordinates or null.
 	 */
 	public Coordinates getExit() {
 		return exitWorldLocation;
 	}
-	
+
 	public final int[][] getMatrix() {
 		return matrix;
 	}
@@ -243,7 +249,7 @@ public class Matrix implements Serializable {
 		if (matrix[row][column] == 0)
 			undiscoveredCells--;
 		this.matrix[row][column] = val;
-		if(val == Utils.CODE_EXIT)
+		if (val == Utils.CODE_EXIT)
 			exitWorldLocation = Utils.worldPointFromMatrix(new Coordinates(column, row), getNumRows());
 	}
 

@@ -153,18 +153,23 @@ public class AStar {
 		int bottomCellsAmount = matrixMaxIndexY - (matrixMaxIndexY - currCoordinates.getY());
 
 		int[] values = { leftCellsAmount, rightCellsAmount, upperCellsAmount, bottomCellsAmount };
-		int maxDistance = utils.Utils.findMax(values); // Distance from the
+		int maxDistance = Utils.findMax(values); // Distance from the
 														// current position to
 														// the furthest edge of
 														// the matrix.
 
-		for (int radious = 2; radious <= maxDistance; radious++) {
+		for (int radious = 1; radious <= maxDistance; radious++) {
 			nearestUndiscovered = getEntityInRadius(currCoordinates, radious, Utils.CODE_UNDISCOVERED);
+			System.out.println("Nearest: " + nearestUndiscovered);
 			if (nearestUndiscovered != null) {
 				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition),
 						Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));
 				if (path != null)
 					return path;
+				else {
+					// System.out.println("Computed path is null. It shouldn't. Going from " + Coordinates.FromGridPoint(currentPosition).toString() + " to " + Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()).toString());
+					// printGrid();
+				}
 			}
 		}
 

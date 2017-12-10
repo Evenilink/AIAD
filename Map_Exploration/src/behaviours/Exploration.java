@@ -51,9 +51,9 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		updateDynamicEnvironment();
+		// updateDynamicEnvironment();
 		
-		System.out.println(agent.getLocalName() + " => Current state: " + currState);
+		// System.out.println(agent.getLocalName() + " => Current state: " + currState);
 		
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
@@ -68,10 +68,10 @@ public class Exploration extends CyclicBehaviour {
 				sendMessagesHandler(neighborhoodCells);	
 		}
 		
-		resetDynamicNotWalkable();
-		
-		if(currState instanceof Recruiting)
-			agent.getMatrix().printMatrix();
+		// resetDynamicNotWalkable();
+
+		System.out.println(agent.getLocalName() + " => " + currState);
+		agent.getMatrix().printMatrix();
 	}
 	
 	private void updateDynamicEnvironment() {
@@ -85,7 +85,7 @@ public class Exploration extends CyclicBehaviour {
 					Object obj = it.next();
 					if(obj instanceof Explorer) {
 						hasExplorer = true;
-						if(((Explorer) obj).getState() instanceof ObstacleGuardian)
+						if(((Explorer) obj).getState() instanceof ObstacleGuardian || ((Explorer) obj).getState() instanceof WaitingForObstacleDestroy)
 							isObstacleGuardian = true;
 					}
 					else if(obj instanceof Exit)
@@ -122,6 +122,14 @@ public class Exploration extends CyclicBehaviour {
 							}
 							break;
 						case OBSTACLEDOOR_DESTROYED:
+							Coordinates obstacleCoordinates = (Coordinates) message.getContent();
+							// Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(obstacleCoordinates, agent.getGrid().getDimensions().getHeight());
+							//agent.getMatrix().setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), Utils.CODE_UNDISCOVERED);
+							agent.getMatrix().updateMatrix(this, agent.getGrid(), obstacleCoordinates, agent.getRadious());
+
+							astar.setNodeWalkable(obstacleCoordinates, true);
+							pledge.addVisitedCoordinates(obstacleCoordinates);
+							System.err.println("Waiters changed to TravelNearestUndiscovered.");
 							this.changeState(new TravelNearestUndiscovered());
 							break;
 						case OTHER_GUARDING:
@@ -169,6 +177,7 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public void changeState(IAgentState newState) {
+		System.out.println(agent.getLocalName() + " => entering '" + newState + "' state.");
 		if (newState instanceof IAgentTemporaryState) {
 			this.pauseState();
 		} else if(currState != null)

@@ -120,6 +120,7 @@ public class RepastSMapExplorationLauncher extends RepastSLauncher {
 		//for (int i = 0; i < NUM_OBSTACLES; i++)
 		//	context.add(new Obstacle(5 + i, 6));
 		ObjectSetups.Setup2(context, coordinates);
+		ObjectSetups.Setup3(context, coordinates);
 		
 		// Create the exit entity.
 		int index = ThreadLocalRandom.current().nextInt(0, coordinates.size() - 1);

@@ -76,6 +76,10 @@ public class Utils {
 	public static Coordinates matrixFromWorldPoint(GridPoint point, int gridSizeY) {
 		return new Coordinates(point.getX(), gridSizeY - 1 - point.getY());
 	}
+	
+	public static Coordinates matrixFromWorldPoint(Coordinates coordinates, int gridSizeY) {
+		return new Coordinates(coordinates.getX(), gridSizeY - 1 - coordinates.getY());
+	}
 
 	/**
 	 * Calculates the matrix coordinate from a world point.

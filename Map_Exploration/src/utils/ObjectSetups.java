@@ -66,7 +66,47 @@ public class ObjectSetups {
     			continue;
     		}
     		if(coordinates2.equals(new Coordinates(2, 4))) 
-    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 3));
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 2));
+    		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
+			coordinates.remove(coordinates2);
+    	}
+    }
+    
+    public static void Setup3(Context<Object> context, List<Coordinates> coordinates) {
+    	List<Coordinates> tempCoordinates = new ArrayList<>();    	
+    	tempCoordinates.add(new Coordinates(6+20, 4));
+    	tempCoordinates.add(new Coordinates(6+20, 5));
+    	tempCoordinates.add(new Coordinates(6+20, 6));
+    	tempCoordinates.add(new Coordinates(6+20, 7));
+    	tempCoordinates.add(new Coordinates(6+20, 8));
+    	tempCoordinates.add(new Coordinates(5+20, 8));
+    	tempCoordinates.add(new Coordinates(4+20, 8));
+    	tempCoordinates.add(new Coordinates(3+20, 8));
+    	tempCoordinates.add(new Coordinates(2+20, 3));
+    	tempCoordinates.add(new Coordinates(2+20, 4));
+    	tempCoordinates.add(new Coordinates(2+20, 5));
+    	tempCoordinates.add(new Coordinates(2+20, 6));
+    	tempCoordinates.add(new Coordinates(2+20, 7));
+    	tempCoordinates.add(new Coordinates(3+20, 3));
+    	tempCoordinates.add(new Coordinates(4+20, 3));
+    	tempCoordinates.add(new Coordinates(5+20, 3));
+    	tempCoordinates.add(new Coordinates(6+20, 3));
+    	tempCoordinates.add(new Coordinates(7+20, 3));
+    	tempCoordinates.add(new Coordinates(2+20, 8));
+    	
+    	tempCoordinates.add(new Coordinates(12+20, 12));
+    	tempCoordinates.add(new Coordinates(12+20, 11));
+    	tempCoordinates.add(new Coordinates(11+20, 11));
+    	tempCoordinates.add(new Coordinates(11+20, 12));
+    	
+    	for (Coordinates coordinates2 : tempCoordinates) {
+    		
+    		if(!coordinates.contains(coordinates2)) {
+    			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
+    			continue;
+    		}
+    		if(coordinates2.equals(new Coordinates(2, 4))) 
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 2));
     		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
 			coordinates.remove(coordinates2);
     	}

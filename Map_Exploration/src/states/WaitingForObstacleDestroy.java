@@ -6,7 +6,6 @@ public class WaitingForObstacleDestroy implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
-		System.out.println("ENTERED WAITING OBSTACLE BREAKING.");
 		
 	}
 

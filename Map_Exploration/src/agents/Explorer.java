@@ -33,7 +33,7 @@ import utils.Utils;
 import utils.Utils.AgentType;
 
 public class Explorer extends Agent {
-	
+
 	private ContinuousSpace<Object> space;
 	private Grid<Object> grid;
 	private int radious;
@@ -43,17 +43,19 @@ public class Explorer extends Agent {
 	private Context<Object> context;
 	private List<CommunicationRadious> visualRadious;
 	private Matrix matrix;
-	
+
 	private Exploration exploration;
 	private SendingMessages sendingMessages;
-			
+
 	/**
 	 * Super agent constructor.
+	 * 
 	 * @param space
 	 * @param grid
 	 * @param radious
 	 */
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int totalNumAgents, Context<Object> context) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int totalNumAgents,
+			Context<Object> context) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
@@ -61,15 +63,17 @@ public class Explorer extends Agent {
 		this.context = context;
 		agentType = AgentType.SUPER_AGENT;
 	}
-	
+
 	/**
 	 * Normal agent constructor.
+	 * 
 	 * @param space
 	 * @param grid
 	 * @param radious
 	 * @param communicationLimit
 	 */
-	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit, int totalNumAgents, Context<Object> context) {
+	public Explorer(ContinuousSpace<Object> space, Grid<Object> grid, int radious, int communicationLimit,
+			int totalNumAgents, Context<Object> context) {
 		this.space = space;
 		this.grid = grid;
 		this.radious = radious;
@@ -78,53 +82,53 @@ public class Explorer extends Agent {
 		this.context = context;
 		agentType = AgentType.NORMAL_AGENT;
 	}
-	
+
 	/**
 	 * Clears a cell from the space, representing a door to an obstacle
-	 * @param obj the obstacle door object
+	 * 
+	 * @param obj
+	 *            the obstacle door object
 	 */
 	public void removeObstacleCell(Object obj, Exploration beh) {
-		
-		if (obj instanceof Obstacle){
-			context.remove(obj);
-			DiscoveredCell dc = new DiscoveredCell(((Obstacle) obj).getCoordinates().getX(),((Obstacle) obj).getCoordinates().getY());
+		if (obj instanceof Obstacle) {
+			DiscoveredCell dc = new DiscoveredCell(((Obstacle) obj).getCoordinates().getX(),
+					((Obstacle) obj).getCoordinates().getY());
 			context.add(dc);
-			matrix.setValue( ((Obstacle) obj).getCoordinates().getX(), ((Obstacle) obj).getCoordinates().getY(), Utils.CODE_UNDISCOVERED);
-			matrix.updateMatrix(beh,grid,((Obstacle) obj).getCoordinates(), this.radious);
 			space.moveTo(dc, dc.getCoordinates().getX(), dc.getCoordinates().getY());
-	        grid.moveTo(dc, dc.getCoordinates().getX(), dc.getCoordinates().getY());
-			beh.getPledge().addVisitedCoordinates(((Obstacle) obj).getCoordinates());
+			grid.moveTo(dc, dc.getCoordinates().getX(), dc.getCoordinates().getY());
+			context.remove(obj);
 		}
 	}
-	
+
 	@Override
 	public void setup() {
 		DFAgentDescription dfAgentDescription = new DFAgentDescription();
 		dfAgentDescription.setName(getAID());
 		ServiceDescription serviceDescription = new ServiceDescription();
 		serviceDescription.setName(getName());
-		if(agentType == AgentType.NORMAL_AGENT)
+		if (agentType == AgentType.NORMAL_AGENT)
 			serviceDescription.setType("Normal Explorer");
-		else serviceDescription.setType("Super Explorer");
+		else
+			serviceDescription.setType("Super Explorer");
 		dfAgentDescription.addServices(serviceDescription);
-		
+
 		try {
 			DFService.register(this, dfAgentDescription);
-		} catch(FIPAException e) {
+		} catch (FIPAException e) {
 			e.printStackTrace();
 		}
 
 		matrix = new Matrix(grid.getDimensions().getHeight(), grid.getDimensions().getWidth(), getName());
-		
+
 		// Sets his initial position in the matrix.
 		GridPoint initLocation = grid.getLocation(this);
-		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);		
-		
+		matrix.setValue(initLocation.getX(), grid.getDimensions().getHeight() - 1 - initLocation.getY(), 1);
+
 		exploration = new Exploration(this);
 		addBehaviour(exploration);
 		// addBehaviour(new ReceivingMessages(this));
-		
-		if(agentType == AgentType.SUPER_AGENT) {
+
+		if (agentType == AgentType.SUPER_AGENT) {
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription sd = new ServiceDescription();
 			sd.setType("Super Explorer");
@@ -132,13 +136,13 @@ public class Explorer extends Agent {
 			try {
 				DFAgentDescription[] results = DFService.search(this, template);
 				List<AID> resultsFiltered = new ArrayList<>();
-				
+
 				// Take himself out from of the results.
-				for(int i = 0; i < results.length; i++) {
-					if(results[i].getName() != getAID())
+				for (int i = 0; i < results.length; i++) {
+					if (results[i].getName() != getAID())
 						resultsFiltered.add(results[i].getName());
 				}
-				
+
 				sendingMessages = new SendingMessages(this, resultsFiltered);
 				addBehaviour(sendingMessages);
 			} catch (FIPAException e) {
@@ -146,18 +150,18 @@ public class Explorer extends Agent {
 			}
 		}
 	}
-	
+
 	@Override
 	public void takeDown() {
 		try {
 			DFService.deregister(this);
-		} catch(FIPAException e) {
+		} catch (FIPAException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean moveAgent(Coordinates targetCoordinates) {
-		if(canMove(targetCoordinates)) {
+		if (canMove(targetCoordinates)) {
 			if (space.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY())) {
 				grid.moveTo(this, targetCoordinates.getX(), targetCoordinates.getY());
 				getMatrix().updateMatrix(exploration, getGrid(), targetCoordinates, getRadious());
@@ -166,22 +170,24 @@ public class Explorer extends Agent {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * If the target coordinates has an obstacle, it returns false. Otherwise, it returns true;
+	 * If the target coordinates has an obstacle, it returns false. Otherwise,
+	 * it returns true;
+	 * 
 	 * @param targetCoordinates
 	 * @return Returns if the agent can move to the specified coordinates.
 	 */
 	public boolean canMove(Coordinates targetCoordinates) {
 		Iterator<Object> it = grid.getObjectsAt(targetCoordinates.getX(), targetCoordinates.getY()).iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			Object obj = it.next();
-			if(obj instanceof Obstacle)//  || obj instanceof Explorer)
+			if (obj instanceof Obstacle)// || obj instanceof Explorer)
 				return false;
 		}
 		return true;
 	}
-	
+
 	public void discoverCell(UndiscoveredCell cell) {
 		DiscoveredCell discoveredCell = new DiscoveredCell(cell.getCoordinates().getX(), cell.getCoordinates().getY());
 		context.add(discoveredCell);
@@ -189,18 +195,18 @@ public class Explorer extends Agent {
 		grid.moveTo(discoveredCell, discoveredCell.getCoordinates().getX(), discoveredCell.getCoordinates().getY());
 		context.remove(cell);
 	}
-	
+
 	public void exitFromSimulation() {
 		removeBehaviour(exploration);
 		removeBehaviour(sendingMessages);
 		takeDown();
 		context.remove(this);
 	}
-	
+
 	/*******************************/
 	/*********** Messages **********/
 	/*******************************/
-	
+
 	public void sendMessage(IndividualMessage message) {
 		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
 		acl.addReceiver(message.getReceiver());
@@ -211,10 +217,10 @@ public class Explorer extends Agent {
 		}
 		send(acl);
 	}
-	
+
 	public void sendMessage(GroupMessage message) {
 		ACLMessage acl = new ACLMessage(ACLMessage.INFORM);
-		for(int i = 0; i < message.getReceivers().size(); i++)
+		for (int i = 0; i < message.getReceivers().size(); i++)
 			acl.addReceiver(message.getReceivers().get(i));
 		try {
 			acl.setContentObject((Serializable) message);
@@ -223,47 +229,47 @@ public class Explorer extends Agent {
 		}
 		send(acl);
 	}
-	
+
 	public ACLMessage receiveMessage() {
 		return receive();
 	}
-	
+
 	/*******************************/
 	/***** Getters and setters *****/
 	/*******************************/
-	
+
 	public Grid<Object> getGrid() {
 		return grid;
 	}
-	
+
 	public int getRadious() {
 		return radious;
 	}
-	
+
 	public ContinuousSpace<Object> getSpace() {
 		return space;
 	}
-	
+
 	public Matrix getMatrix() {
 		return matrix;
 	}
-	
+
 	public SendingMessages getSendingMessagesBehaviour() {
 		return sendingMessages;
 	}
-	
+
 	public AgentType getAgentType() {
 		return agentType;
 	}
-	
+
 	public int getTotalNumAgents() {
 		return totalNumAgents;
 	}
-	
+
 	public int getCommLimit() {
 		return communicationLimit;
 	}
-	
+
 	public IAgentState getState() {
 		return exploration.getState();
 	}

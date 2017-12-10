@@ -64,11 +64,14 @@ public class Grid {
 	
 	public void printGrid() {
 		for(int row = 0; row < gridSizeY; row++) {
-			for(int column = 0; column < gridSizeX; column++) {
+			for(int column = 0; column < gridSizeX; column++)
 				System.out.print((grid[row][column].getWalkable() ? "1" : "0") + " | ");
-			}
-			System.out.println();
+			System.out.println(" " + (gridSizeY - 1 - row));
 		}
-		System.out.println();
+		
+		for(int column = 0; column < gridSizeX; column++)
+			System.out.print(column + "   ");
+		
+		System.out.println("\n");
 	}
 }

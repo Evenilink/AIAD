@@ -40,6 +40,10 @@ public class Recruiting implements IAgentState {
 		if(source != null) {
 			path = behaviour.getAStar().computePath(source, new Coordinates(column, row));
 			System.out.println("Target hello => " + new Coordinates(column, row).toString());
+			behaviour.getAgent().getMatrix().printMatrix();
+
+			behaviour.getAStar().printGrid();
+			printPath();
 			pathNode = 0;	
 		}
 	}
@@ -55,5 +59,14 @@ public class Recruiting implements IAgentState {
 	@Override
 	public void exit() {
 		
+	}
+	
+	private void printPath() {
+		System.out.println("Path");
+		for(int i = 0; i < path.size(); i++) {
+			System.out.println("   " + (i + 1) + ": " + path.get(i).getWorldPosition().toString());
+		}
+		System.out.println("End path");
+		System.out.println();
 	}
 }
