@@ -31,6 +31,59 @@ public class ObjectSetups {
 			coordinates.remove(coordinates2);
     	}
     }
+    
+    public static void Maze(Context<Object> context, List<Coordinates> coordinates) {
+    	List<Coordinates> tempCoordinates = new ArrayList<>();
+    	
+    	tempCoordinates.add(new Coordinates(2, 6));
+    	tempCoordinates.add(new Coordinates(2, 7));
+    	tempCoordinates.add(new Coordinates(3, 7));
+    	
+    	tempCoordinates.add(new Coordinates(2, 3));
+    	tempCoordinates.add(new Coordinates(2, 2));
+    	tempCoordinates.add(new Coordinates(2, 1));
+    	
+    	tempCoordinates.add(new Coordinates(7, 2));
+    	tempCoordinates.add(new Coordinates(8, 2));
+    	tempCoordinates.add(new Coordinates(9, 2));
+    	tempCoordinates.add(new Coordinates(9, 3));
+    	tempCoordinates.add(new Coordinates(9, 4));
+    	tempCoordinates.add(new Coordinates(8, 4));
+    	tempCoordinates.add(new Coordinates(7, 3));
+    	tempCoordinates.add(new Coordinates(7, 4));
+    	
+    	tempCoordinates.add(new Coordinates(12, 3));
+    	tempCoordinates.add(new Coordinates(12, 4));
+    	
+    	tempCoordinates.add(new Coordinates(11, 7));
+    	tempCoordinates.add(new Coordinates(11, 8));
+    	tempCoordinates.add(new Coordinates(12, 8));
+    	
+    	tempCoordinates.add(new Coordinates(3, 10));
+    	tempCoordinates.add(new Coordinates(3, 11));
+    	tempCoordinates.add(new Coordinates(3, 12));
+    	tempCoordinates.add(new Coordinates(3, 13));
+    	
+    	tempCoordinates.add(new Coordinates(9, 11));
+    	tempCoordinates.add(new Coordinates(9, 12));
+    	tempCoordinates.add(new Coordinates(10, 11));
+    	tempCoordinates.add(new Coordinates(10, 12));
+    	tempCoordinates.add(new Coordinates(11, 11));
+    	tempCoordinates.add(new Coordinates(12, 11));
+    	
+    	
+    	for (Coordinates coordinates2 : tempCoordinates) {
+    		
+    		if(!coordinates.contains(coordinates2)) {
+    			System.err.println("The coordinate '" + coordinates2.toString() + "' is already in use.");
+    			continue;
+    		}
+    		if(coordinates2.equals(new Coordinates(7, 3))) 
+    			context.add(new Obstacle(coordinates2.getX(), coordinates2.getY(), 2));
+    		else context.add(new Obstacle(coordinates2.getX(), coordinates2.getY()));
+			coordinates.remove(coordinates2);
+    	}
+    }
 
     public static void Setup2(Context<Object> context, List<Coordinates> coordinates) {
     	List<Coordinates> tempCoordinates = new ArrayList<>();    	
