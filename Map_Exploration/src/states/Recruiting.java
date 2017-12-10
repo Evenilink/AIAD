@@ -44,11 +44,14 @@ public class Recruiting implements IAgentState {
 	public void execute() {
 		path = behaviour.getAStar().computePath(behaviour.getAgentCoordinates(), target);
 		if(path != null) {
-			System.err.println("Going to " + path.get(0).getWorldPosition().toString());
-			if(behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition()))
-			if(path.size() == 1)
-				behaviour.changeState(new TravelExit());	
-		}	
+			if (!behaviour.getAgent().canMove(path.get(0).getWorldPosition())) {
+				behaviour.changeState(new TravelExit());
+			} else {
+				if(behaviour.moveAgentToCoordinate(path.get(0).getWorldPosition()))
+					if(path.size() == 1)
+						behaviour.changeState(new TravelExit());
+			}
+		}
 	}
 
 	@Override
