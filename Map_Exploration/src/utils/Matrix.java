@@ -87,10 +87,11 @@ public class Matrix implements Serializable {
 			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
+				System.err.println("Obstacle at " + targetCoordinates.toString());
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				// Setting the nodes to not walkable for A*.
-				behaviour.getAStar().setNodeWalkable(targetCoordinates, false);
+				behaviour.getAStar().setNodeWalkable(obstacleHit.getCoordinates(), false);
 				continue;
 			}
 

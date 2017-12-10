@@ -51,7 +51,7 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
-		// updateDynamicEnvironment();
+		updateDynamicEnvironment();
 		
 		// System.out.println(agent.getLocalName() + " => Current state: " + currState);
 		
@@ -68,7 +68,7 @@ public class Exploration extends CyclicBehaviour {
 				sendMessagesHandler(neighborhoodCells);	
 		}
 		
-		// resetDynamicNotWalkable();
+		resetDynamicNotWalkable();
 
 		System.out.println(agent.getLocalName() + " => " + currState);
 		agent.getMatrix().printMatrix();
