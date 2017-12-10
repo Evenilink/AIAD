@@ -56,8 +56,6 @@ public class DiscoverObstacleBounds implements IAgentTemporaryState {
                 objs = new NeighbourObstacles(grid, pts);
                 if (objs.hasObstacle()) {
                     agent.moveAgent(new Coordinates(newX, newY));
-                    pledge.init();
-                    pledging = true;
                 } else {
                     if (obstacleCoords.getY() > agentLoc.getY())
                         newY++;

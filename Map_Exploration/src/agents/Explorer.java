@@ -270,6 +270,8 @@ public class Explorer extends Agent {
 		return communicationLimit;
 	}
 
+	public Exploration getExploration() { return exploration; }
+
 	public IAgentState getState() {
 		return exploration.getState();
 	}

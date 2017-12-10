@@ -5,6 +5,7 @@ import java.util.List;
 
 import agents.Explorer;
 import entities.Obstacle;
+import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
@@ -210,6 +211,38 @@ public class Pledge {
         for (Coordinates c : visitedCoordinates) {
             if (c.equals(coordinates)) return true;
         }
-    	return false;
+
+        NeighbourPoints pts = new NeighbourPoints(coordinates.toGridPoint(), NeighbourPoints.Direction.UPWARDS);
+        NeighbourObstacles obj = new NeighbourObstacles(grid, pts);
+
+        return false;
+    }
+
+    public boolean alreadyVisited(Coordinates coordinates, GridCell<Object> obstacle) {
+        if (alreadyVisited(coordinates)) return true;
+
+        Coordinates obstacleCoords = Coordinates.FromGridPoint(obstacle.getPoint());
+        Coordinates explorerCoords = agent.getExploration().getAgentCoordinates();
+
+        int newX = obstacleCoords.getX(), newY = obstacleCoords.getY();
+
+        if (explorerCoords.getX() < newX) {
+            newX--;
+        } else if (explorerCoords.getX() > newX) {
+            newX++;
+        }
+        if (explorerCoords.getY() < newY) {
+            newY--;
+        } else if (explorerCoords.getY() > newY) {
+            newY++;
+        }
+
+        NeighbourPoints pts = new NeighbourPoints(new GridPoint(newX, newY), NeighbourPoints.Direction.UPWARDS);
+        if (NeighbourPoints.validPoint(pts.front(), grid) && alreadyVisited(pts.front())) return true;
+        if (NeighbourPoints.validPoint(pts.back(), grid) && alreadyVisited(pts.back())) return true;
+        if (NeighbourPoints.validPoint(pts.left(), grid) && alreadyVisited(pts.left())) return true;
+        if (NeighbourPoints.validPoint(pts.right(), grid) && alreadyVisited(pts.right())) return true;
+
+        return false;
     }
 }

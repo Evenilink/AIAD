@@ -1,5 +1,6 @@
 package algorithms.pledge;
 
+import repast.simphony.space.grid.Grid;
 import repast.simphony.space.grid.GridPoint;
 import utils.Coordinates;
 
@@ -16,6 +17,15 @@ public class NeighbourPoints {
     private GridPoint leftPoint;
     private GridPoint rightPoint;
     private int offset;
+
+    public static boolean validPoint(Coordinates point, Grid<Object> grid) {
+        int x = grid.getDimensions().getWidth(), y = grid.getDimensions().getHeight();
+
+        if (point.getX() < 0 || point.getX() > x) return false;
+        if (point.getY() < 0 || point.getY() > y) return false;
+
+        return true;
+    }
 
     private void NeighbourPoints(GridPoint centralPoint, Direction direction, int offset) {
         this.offset = offset;
@@ -124,6 +134,23 @@ public class NeighbourPoints {
 
     public int rightY() {
         return rightPoint.getY();
+    }
+
+    public boolean vaildPoints(Grid<Object> grid) {
+        int x = grid.getDimensions().getWidth(), y = grid.getDimensions().getHeight();
+
+        if (frontX() < 0 || frontX() > x) return false;
+        if (frontY() < 0 || frontY() > y) return false;
+
+        if (backX() < 0 || backX() > x) return false;
+        if (backY() < 0 || backY() > y) return false;
+
+        if (leftX() < 0 || leftX() > x) return false;
+        if (leftY() < 0 || leftY() > y) return false;
+
+        if (rightX() < 0 || rightY() > x) return false;
+        if (rightX() < 0 || rightY() > y) return false;
+        return true;
     }
 
     public String toString() {
