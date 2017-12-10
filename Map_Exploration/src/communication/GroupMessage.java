@@ -5,7 +5,6 @@ import java.util.List;
 
 
 import jade.core.AID;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import utils.Utils.MessageType;
 
 public class GroupMessage extends Message {

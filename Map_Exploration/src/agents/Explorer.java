@@ -86,10 +86,9 @@ public class Explorer extends Agent {
 	/**
 	 * Clears a cell from the space, representing a door to an obstacle
 	 * 
-	 * @param obj
-	 *            the obstacle door object
+	 * @param obj the obstacle door object
 	 */
-	public void removeObstacleCell(Object obj, Exploration beh) {
+	public void removeObstacleCell(Object obj) {
 		if (obj instanceof Obstacle) {
 			DiscoveredCell dc = new DiscoveredCell(((Obstacle) obj).getCoordinates().getX(),
 					((Obstacle) obj).getCoordinates().getY());
@@ -142,7 +141,6 @@ public class Explorer extends Agent {
 					if (results[i].getName() != getAID())
 						resultsFiltered.add(results[i].getName());
 				}
-
 				sendingMessages = new SendingMessages(this, resultsFiltered);
 				addBehaviour(sendingMessages);
 			} catch (FIPAException e) {

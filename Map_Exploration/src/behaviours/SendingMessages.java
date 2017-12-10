@@ -21,7 +21,6 @@ public class SendingMessages extends CyclicBehaviour {
 
 	@Override
 	public void action() {
-		// System.out.println(agent.getLocalName() + " sent a message of type '" + message.getMessageType() + "' to " + message.getReceivers().size() + " agents.");
 		agent.sendMessage(message);
 		message.setContent(agent.getMatrix());
 	}

@@ -58,16 +58,11 @@ public class ObstacleGuardian implements IAgentState {
 
 		// When we have enough agents, break wall and search the inside
 		if (getNumberAgentsAroundMe() >= numberAgentsNeeded) {
-			// System.out.println("Entrou if 1");
 			communicateAroundMe(MessageType.OBSTACLEDOOR_DESTROYED, obstacle.getCoordinates());
-			this.behaviour.getAgent().removeObstacleCell(obstacle, behaviour);
-			Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(obstacle.getCoordinates(), behaviour.getAgent().getGrid().getDimensions().getHeight());
-			// behaviour.getAgent().getMatrix().setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), Utils.CODE_UNDISCOVERED);
+			this.behaviour.getAgent().removeObstacleCell(obstacle);
 			behaviour.getAStar().setNodeWalkable(obstacle.getCoordinates(), true);
 			behaviour.getAgent().getMatrix().updateMatrix(behaviour, behaviour.getAgent().getGrid(), obstacle.getCoordinates(), behaviour.getAgent().getRadious());
 			behaviour.getPledge().addVisitedCoordinates(obstacle.getCoordinates());
-			// this.behaviour.getAgent().moveAgent(obstacle.getCoordinates());
-			System.err.println("Obstacle guardian changed to TravelNearestUndiscovered.");
 			this.behaviour.changeState(new TravelNearestUndiscovered());
 		}
 	}
@@ -82,7 +77,6 @@ public class ObstacleGuardian implements IAgentState {
 				count++;
 			}
 		}
-		System.out.println("Count = " + count);
 		return count;
 	}
 
