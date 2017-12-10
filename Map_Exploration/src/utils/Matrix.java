@@ -42,12 +42,10 @@ public class Matrix implements Serializable {
 	 * Merges the matrix of the receiving agent with the matrix received from
 	 * other agents inside the communication radius.
 	 * 
-	 * @param otherMatrix
+	 * @param otherMatrix The matrix to join
+	 * @param behaviour The explorer behaviour to change to TravelExit() if it found an exit
 	 */
 	public void mergeMatrix(Matrix otherMatrix, Exploration behaviour) {
-		// System.out.println("Before merging matrix");
-		// printMatrix();
-
 		for (int row = 0; row < otherMatrix.getNumRows(); row++) {
 			for (int column = 0; column < otherMatrix.getNumColumns(); column++) {
 				if (otherMatrix.getValue(row, column) != 0 && getValue(row, column) == 0) {
@@ -59,9 +57,6 @@ public class Matrix implements Serializable {
 				}
 			}
 		}
-
-		// System.out.println("After merging matrix");
-		// printMatrix();
 	}
 
 	public void printMatrix() {
@@ -87,7 +82,6 @@ public class Matrix implements Serializable {
 			Coordinates targetCoordinates = Coordinates.FromGridPoint(gridCell.getPoint());
 			Obstacle obstacleHit = RayTracing.trace(grid, center, targetCoordinates, true);
 			if (obstacleHit != null) {
-				System.err.println("Obstacle at " + targetCoordinates.toString());
 				Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(grid.getLocation(obstacleHit), getNumRows());
 				this.setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), obstacleHit.getCode());
 				// Setting the nodes to not walkable for A*.
@@ -137,7 +131,7 @@ public class Matrix implements Serializable {
 			if (value == Utils.CODE_EXIT)
 				behaviour.changeState(new TravelExit());
 		}
-		printMatrix();
+		//printMatrix();
 	}
 
 	public boolean hasUndiscoveredCells() {
@@ -164,7 +158,7 @@ public class Matrix implements Serializable {
 	 * @return The coordinates of the closest obstacle
 	 */
 	public Coordinates getNearestObstacle(Coordinates agentPosition) {
-		ArrayList<Coordinates> obstacleCoords = new ArrayList<Coordinates>();
+		ArrayList<Coordinates> obstacleCoords = new ArrayList<>();
 
 		for (int row = 0; row < getNumRows(); row++) {
 			for (int column = 0; column < getNumColumns(); column++) {

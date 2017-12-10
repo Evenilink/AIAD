@@ -31,7 +31,7 @@ public class TravelExit implements IAgentState {
 			behaviour.changeState(new TravelNearestUndiscovered());
 			return;
 		}*/
-		
+
 		if(path == null || path.size() == 0) {
 			boolean becameMasterAgent = true;
 			Coordinates target = behaviour.getAgentCoordinates();

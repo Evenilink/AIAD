@@ -51,10 +51,9 @@ public class Exploration extends CyclicBehaviour {
 	
 	@Override
 	public void action() {
+		printStates();
 		updateDynamicEnvironment();
-		
-		System.out.println(agent.getLocalName() + " => Current state: " + currState + ", current location: " + getAgentCoordinates().toString());
-		
+
 		if (currState != null) {
 			if (currState instanceof IAgentTemporaryState && ((IAgentTemporaryState) currState).canResume())
 				this.resumeState();
@@ -69,9 +68,6 @@ public class Exploration extends CyclicBehaviour {
 		}
 		
 		resetDynamicNotWalkable();
-
-		//System.out.println(agent.getLocalName() + " => " + currState);
-		//agent.getMatrix().printMatrix();
 	}
 	
 	private void updateDynamicEnvironment() {
@@ -123,8 +119,6 @@ public class Exploration extends CyclicBehaviour {
 							break;
 						case OBSTACLEDOOR_DESTROYED:
 							Coordinates obstacleCoordinates = (Coordinates) message.getContent();
-							// Coordinates matrixCoordinates = Utils.matrixFromWorldPoint(obstacleCoordinates, agent.getGrid().getDimensions().getHeight());
-							//agent.getMatrix().setValue(matrixCoordinates.getY(), matrixCoordinates.getX(), Utils.CODE_UNDISCOVERED);
 							agent.getMatrix().updateMatrix(this, agent.getGrid(), obstacleCoordinates, agent.getRadious());
 							astar.setNodeWalkable(obstacleCoordinates, true);
 							pledge.addVisitedCoordinates(obstacleCoordinates);
@@ -135,7 +129,6 @@ public class Exploration extends CyclicBehaviour {
 							if(isToExit)
 								agent.exitFromSimulation();
 							else {
-								System.out.println(agent.getLocalName() + " keeps recuiting.");
 								changeState(new Recruiting());
 							}
 							break;
@@ -175,7 +168,6 @@ public class Exploration extends CyclicBehaviour {
 	}
 	
 	public void changeState(IAgentState newState) {
-		System.out.println(agent.getLocalName() + " => entering '" + newState + "' state.");
 		if (newState instanceof IAgentTemporaryState) {
 			this.pauseState();
 		} else if(currState != null)
@@ -235,7 +227,7 @@ public class Exploration extends CyclicBehaviour {
 	  }
 
 	public void printStates() {
-		System.out.println("State: " + currState + "; Paused State: " + pausedState);
+		System.out.println("Agent: " + agent.getName() + "State: " + currState + "; Paused State: " + pausedState);
 	}
 	
 	/**

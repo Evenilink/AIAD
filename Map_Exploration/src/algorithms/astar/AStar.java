@@ -160,7 +160,6 @@ public class AStar {
 
 		for (int radious = 1; radious <= maxDistance; radious++) {
 			nearestUndiscovered = getEntityInRadius(currCoordinates, radious, Utils.CODE_UNDISCOVERED);
-			System.out.println("Nearest: " + nearestUndiscovered);
 			if (nearestUndiscovered != null) {
 				List<Node> path = computePath(Coordinates.FromGridPoint(currentPosition),
 						Utils.worldPointFromMatrix(nearestUndiscovered, agent.getGrid().getDimensions().getHeight()));

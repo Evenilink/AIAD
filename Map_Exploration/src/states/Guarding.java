@@ -23,7 +23,6 @@ public class Guarding implements IAgentState {
 
 	@Override
 	public void enter(Exploration behaviour) {
-		System.out.println(behaviour.getAgent().getLocalName() + ": entering Guardian state.");
 		this.behaviour = behaviour;
 		totalNumAgents = behaviour.getAgent().getTotalNumAgents();
 		if(totalNumAgents == 1) {
