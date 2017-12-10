@@ -33,6 +33,7 @@ public class TravelExit implements IAgentState {
 		}*/
 
 		if(path == null || path.size() == 0) {
+			System.err.println("PATH IS NULL ");
 			boolean becameMasterAgent = true;
 			Coordinates target = behaviour.getAgentCoordinates();
 			if(!target.equals(exit)) {

@@ -40,7 +40,6 @@ public class TravelNearestUndiscovered implements IAgentState {
 			if(path.size() == 1)
 				behaviour.changeState(new Explore());
 		} else {
-			System.err.println("Going to travel obstacle");
 			behaviour.changeState(new TravelToObstacle());
 		}
 	}
