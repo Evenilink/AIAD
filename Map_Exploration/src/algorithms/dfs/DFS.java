@@ -18,7 +18,7 @@ public class DFS {
 	
 	public GridCell<Object> execute(List<GridCell<Object>> neighborhoodCells) {
 		List<GridCell<Object>> neighborhood = neighborhoodCells;
-		SimUtilities.shuffle(neighborhood, RandomHelper.getUniform());
+		//SimUtilities.shuffle(neighborhood, RandomHelper.getUniform());
 		GridCell<Object> destinationCell = null;
 		for (GridCell<Object> gridCell : neighborhood) {
 			int row = agent.getGrid().getDimensions().getHeight() - 1 - gridCell.getPoint().getY();

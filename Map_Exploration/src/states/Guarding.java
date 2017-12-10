@@ -20,6 +20,8 @@ public class Guarding implements IAgentState {
 	private int totalNumAgents;
 	private boolean everyAgentInstructed;
 	private List<String> agentsReachedExit;
+	private List<Integer> numberOfTimesReachedExit;
+	private static final int MaxNumberOfTimesBeforeBreakingObject = 10;
 
 	@Override
 	public void enter(Exploration behaviour) {
@@ -32,6 +34,7 @@ public class Guarding implements IAgentState {
 		}
 		everyAgentInstructed = false;
 		agentsReachedExit = new ArrayList<>();
+		numberOfTimesReachedExit = new ArrayList<>();
 		agentsReachedExit.add(behaviour.getAgent().getLocalName());
 	}
 
@@ -59,8 +62,10 @@ public class Guarding implements IAgentState {
 						break;
 					case REACHED_EXIT:
 						String agentName = (String) message.getContent();
+
 						if (!agentsReachedExit.contains(agentName)) {
 							agentsReachedExit.add(agentName);
+							numberOfTimesReachedExit.add(0);
 							if (agentsReachedExit.size() == totalNumAgents)
 								everyAgentInstructed = true;
 						}
@@ -77,8 +82,15 @@ public class Guarding implements IAgentState {
 							}
 						} else {
 							System.out.println(behaviour.getAgent().getLocalName() + ": go look for more agents!");
-							message = new IndividualMessage(MessageType.OTHER_GUARDING, false, acl.getSender());
-							behaviour.getAgent().sendMessage(message);
+							int agentIdx = agentsReachedExit.indexOf(agentName);
+							if (agentsReachedExit.contains(agentName) && numberOfTimesReachedExit.get(agentIdx) >= Guarding.MaxNumberOfTimesBeforeBreakingObject) {
+								message = new IndividualMessage(MessageType.OTHER_GUARDING, true, acl.getSender());
+								behaviour.getAgent().sendMessage(message);
+							} else {
+								message = new IndividualMessage(MessageType.OTHER_GUARDING, false, acl.getSender());
+								behaviour.getAgent().sendMessage(message);
+								numberOfTimesReachedExit.set(agentIdx, numberOfTimesReachedExit.get(agentIdx) + 1);
+							}
 						}
 					default:
 						break;

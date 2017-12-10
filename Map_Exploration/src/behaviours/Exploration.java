@@ -17,13 +17,7 @@ import repast.simphony.query.space.grid.GridCell;
 import repast.simphony.query.space.grid.GridCellNgh;
 import repast.simphony.space.grid.GridPoint;
 import sajas.core.behaviours.CyclicBehaviour;
-import states.Explore;
-import states.IAgentState;
-import states.IAgentTemporaryState;
-import states.ObstacleGuardian;
-import states.Recruiting;
-import states.TravelNearestUndiscovered;
-import states.WaitingForObstacleDestroy;
+import states.*;
 import utils.Coordinates;
 import utils.Matrix;
 import utils.Utils;
@@ -32,8 +26,7 @@ import utils.Utils.MessageType;
 
 public class Exploration extends CyclicBehaviour {
 
-	private static final long serialVersionUID = 7526472295622776147L; // unique
-																		// id
+	private static final long serialVersionUID = 7526472295622776147L; // unique id
 
 	private Explorer agent;
 	private DFS dfs;
@@ -55,7 +48,7 @@ public class Exploration extends CyclicBehaviour {
 
 	@Override
 	public void action() {
-		// printStates();
+		 printStates();
 		updateDynamicEnvironment();
 
 		if (currState != null) {
@@ -136,6 +129,9 @@ public class Exploration extends CyclicBehaviour {
 							if (!(currState instanceof Recruiting))
 								changeState(new Recruiting());
 						}
+						break;
+					case OBSTACLEDOOR_DESTROY:
+						changeState(new TravelToObstacle());
 						break;
 					default:
 						break;
